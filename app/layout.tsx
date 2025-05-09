@@ -1,48 +1,33 @@
 import type React from "react"
-import type { Metadata } from "next"
-import { Playfair_Display as PlayfairDisplay, EB_Garamond as EBGaramond } from "next/font/google"
-import "./globals.css"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import "@/app/globals.css"
+import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import ChatWidget from "@/components/chat-widget"
-import WelcomeMessage from "@/components/welcome-message"
+import { MainNav } from "@/components/main-nav"
+import { ChatButton } from "@/components/chat-button"
+import { Footer } from "@/components/footer"
 
-const playfair = PlayfairDisplay({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-})
+const inter = Inter({ subsets: ["latin"] })
 
-const garamond = EBGaramond({
-  subsets: ["latin"],
-  variable: "--font-garamond",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-})
-
-export const metadata: Metadata = {
-  title: "Clean Machine Mobile Detailing | Premium Automotive Care",
-  description:
-    "Exceptional automotive detailing services delivered with meticulous attention to detail and white-glove service.",
+export const metadata = {
+  title: "Curve AI Solutions",
+  description: "The Anti-Gravity for business. Breakaway with no resistance.",
     generator: 'v0.dev'
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${playfair.variable} ${garamond.variable} font-garamond bg-ivory text-navy-dark`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+      <body className={inter.className} suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <div className="flex min-h-screen flex-col">
-            <Header />
+            <MainNav />
             <main className="flex-1">{children}</main>
             <Footer />
-            <WelcomeMessage />
-            <ChatWidget />
+            <ChatButton />
           </div>
         </ThemeProvider>
       </body>
