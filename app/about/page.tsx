@@ -165,11 +165,11 @@ export default function AboutPage() {
       </section>
 
       {/* Introduction Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <div className="prose prose-lg mx-auto">
-              <p className="lead text-xl text-gray-700">
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="lead text-xl text-gray-700 dark:text-gray-300">
                 At Curve AI Solutions, we're not just another tech company. We're a team of innovators, problem-solvers,
                 and business enthusiasts who believe that artificial intelligence should be accessible, practical, and
                 valuable for businesses of all sizes—including yours.
@@ -180,18 +180,18 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Our Story</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Our Story</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 Founded in Tulsa with a simple yet powerful vision: to demystify AI and make it work for real businesses
                 facing real challenges. We saw too many small business owners feeling left behind by the AI
                 revolution—either intimidated by the technical complexity or unsure how this technology could actually
                 improve their bottom line.
               </p>
-              <p>
+              <p className="dark:text-gray-300">
                 That's when we asked ourselves: What if AI could be both powerful AND approachable? What if we could
                 translate the complex world of artificial intelligence into solutions that any business owner could
                 understand, implement, and benefit from immediately?
@@ -202,11 +202,11 @@ export default function AboutPage() {
       </section>
 
       {/* What We Do Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">What We Do</h2>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">What We Do</h2>
           <div className="max-w-3xl mx-auto mb-12">
-            <p className="text-lg text-center text-gray-700">
+            <p className="text-lg text-center text-gray-700 dark:text-gray-300">
               We create custom AI chatbots and workflow solutions (we call them Agentic AI Solutions) that handle the
               mundane, repetitive tasks consuming your valuable time. Our CurveAI technology doesn't just process
               data—it understands context, learns your business needs, and communicates with a personality tailored to
@@ -231,18 +231,18 @@ export default function AboutPage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Why Small Business Owners Choose Us</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Why Small Business Owners Choose Us</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 Unlike large corporate AI solutions that require teams of engineers to implement, or basic chatbots that
                 can only follow simple scripts, our technology strikes the perfect balance: sophisticated enough to
                 deliver real results, simple enough that you don't need a computer science degree to use it.
               </p>
-              <p>When you work with Curve AI Solutions, you get:</p>
-              <ul>
+              <p className="dark:text-gray-300">When you work with Curve AI Solutions, you get:</p>
+              <ul className="dark:text-gray-300">
                 <li>Practical AI tools designed for your specific business challenges—not theoretical capabilities</li>
                 <li>Solutions that speak human—no technical jargon, no endless documentation</li>
                 <li>
@@ -259,15 +259,15 @@ export default function AboutPage() {
       </section>
 
       {/* Our Approach Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Our Approach</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Our Approach</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 We believe in starting with your business problems, not with technology. Our process is straightforward:
               </p>
-              <ol>
+              <ol className="dark:text-gray-300">
                 <li>Listen to understand your specific challenges and goals</li>
                 <li>Design a customized AI solution that addresses your unique needs</li>
                 <li>Implement the technology seamlessly into your existing workflows</li>
@@ -280,12 +280,12 @@ export default function AboutPage() {
       </section>
 
       {/* The Magic Behind Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">The Magic Behind Our Solutions</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">The Magic Behind Our Solutions</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 While we keep the technical talk to a minimum when working with clients, rest assured that under the
                 hood, our solutions leverage cutting-edge AI frameworks and advanced software engineering. Our team
                 brings expertise in machine learning, natural language processing, and data integration—all so you don't
@@ -297,18 +297,18 @@ export default function AboutPage() {
       </section>
 
       {/* Community Commitment Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Community Commitment</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Community Commitment</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 We're deeply invested in the Tulsa business community and beyond. Through our AI Literacy Program, we're
                 helping local business leaders, professionals, and interested parties understand and leverage AI
                 technologies. Our seminars, online content, and collaborations with local businesses bring AI education
                 closer to where people live and work.
               </p>
-              <p>
+              <p className="dark:text-gray-300">
                 By building strategic partnerships with other tech companies, educational institutions, and industry
                 leaders, we're creating an ecosystem where businesses of all sizes can thrive in the digital age.
               </p>
@@ -318,20 +318,20 @@ export default function AboutPage() {
       </section>
 
       {/* What Sets Us Apart Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">What Sets Us Apart</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">What Sets Us Apart</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 The difference is in our philosophy: we believe AI should work for you, not the other way around. Many
                 AI companies make you adapt to their technology; we adapt our technology to fit your business.
               </p>
-              <p>
+              <p className="dark:text-gray-300">
                 Our solutions don't require you to learn new systems, hire technical staff, or completely overhaul your
                 operations. Instead, we meet you where you are and enhance what you're already doing.
               </p>
-              <p>
+              <p className="dark:text-gray-300">
                 And unlike impersonal chatbots or generic AI tools, our solutions come with personalities that reflect
                 your brand and create engaging experiences for both your team and your customers.
               </p>
@@ -392,22 +392,22 @@ export default function AboutPage() {
       </section>
 
       {/* Ready to Transform Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Ready to Transform Your Business?</h2>
-            <div className="prose prose-lg mx-auto">
-              <p>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Ready to Transform Your Business?</h2>
+            <div className="prose prose-lg mx-auto dark:prose-invert">
+              <p className="dark:text-gray-300">
                 Imagine significantly reducing your workload, automating data analysis, and integrating information
                 across your systems—all while maintaining the human touch that makes your business special.
               </p>
-              <p>That's not just a dream; it's what we deliver every day to businesses like yours.</p>
-              <p>
+              <p className="dark:text-gray-300">That's not just a dream; it's what we deliver every day to businesses like yours.</p>
+              <p className="dark:text-gray-300">
                 Whether you're looking to streamline customer service, automate administrative tasks, or gain insights
                 from your business data without the headache, we have the expertise, tools, and approach to make it
                 happen.
               </p>
-              <p>
+              <p className="dark:text-gray-300">
                 Let's take the first step together toward a more efficient, productive, and profitable future for your
                 business. The AI revolution doesn't have to be complicated or confusing—with Curve AI Solutions as your
                 partner, it can be the competitive advantage you've been looking for.
@@ -418,23 +418,23 @@ export default function AboutPage() {
       </section>
 
       {/* Roadmap Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Our Roadmap</h2>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-12 text-center">Our Roadmap</h2>
 
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {keyMilestones.map((milestone, index) => (
                 <div key={index} className="relative pl-8 sm:pl-32 py-4">
-                  <div className="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-12 before:h-full before:px-px before:bg-gray-300 before:ml-0.5 before:top-6 before:bottom-0">
-                    <div className="absolute left-0 sm:left-10 top-6 flex items-center justify-center w-5 h-5 rounded-full bg-[#0076FF] border-4 border-white text-white">
+                  <div className="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-12 before:h-full before:px-px before:bg-gray-300 dark:before:bg-gray-600 before:ml-0.5 before:top-6 before:bottom-0">
+                    <div className="absolute left-0 sm:left-10 top-6 flex items-center justify-center w-5 h-5 rounded-full bg-[#0076FF] border-4 border-white dark:border-gray-900 text-white">
                       <Calendar className="w-3 h-3" />
                     </div>
                     <div className="font-bold text-lg text-[#0076FF] w-32 hidden sm:block">{milestone.date}</div>
                     <div>
                       <div className="sm:hidden font-bold text-lg text-[#0076FF] mb-1">{milestone.date}</div>
-                      <div className="text-xl font-bold text-gray-900">{milestone.title}</div>
-                      <div className="text-gray-600">{milestone.description}</div>
+                      <div className="text-xl font-bold text-gray-900 dark:text-white">{milestone.title}</div>
+                      <div className="text-gray-600 dark:text-gray-300">{milestone.description}</div>
                     </div>
                   </div>
                 </div>
