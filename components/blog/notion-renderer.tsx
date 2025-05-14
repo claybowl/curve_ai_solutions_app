@@ -24,27 +24,44 @@ const Modal = dynamic(
 )
 
 interface NotionRendererProps {
-  recordMap: ExtendedRecordMap
+  recordMap?: ExtendedRecordMap
 }
 
 export function NotionRenderer({ recordMap }: NotionRendererProps) {
-  if (!recordMap) {
-    return <div>Loading...</div>
+  if (!recordMap || !Object.keys(recordMap).length) {
+    return (
+      <div className="p-4 border border-gray-200 rounded-md bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-center text-gray-500 dark:text-gray-400">
+          Content could not be loaded. Please try again later.
+        </p>
+      </div>
+    )
   }
 
-  return (
-    <NotionReactRenderer
-      recordMap={recordMap}
-      components={{
-        nextImage: Image,
-        nextLink: Link,
-        Code,
-        Collection,
-        Equation,
-        Modal,
-      }}
-      fullPage={false}
-      darkMode={false}
-    />
-  )
+  try {
+    return (
+      <NotionReactRenderer
+        recordMap={recordMap}
+        components={{
+          nextImage: Image,
+          nextLink: Link,
+          Code,
+          Collection,
+          Equation,
+          Modal,
+        }}
+        fullPage={false}
+        darkMode={false}
+      />
+    )
+  } catch (error) {
+    console.error("Error rendering Notion content:", error)
+    return (
+      <div className="p-4 border border-gray-200 rounded-md bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-center text-gray-500 dark:text-gray-400">
+          There was an error displaying this content.
+        </p>
+      </div>
+    )
+  }
 } 

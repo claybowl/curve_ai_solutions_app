@@ -63,6 +63,17 @@ try {
   } as unknown as NotionAPI
 }
 
+// Format ID to ensure proper UUID format with hyphens
+function formatNotionId(id: string): string {
+  // If ID already has hyphens, return as is
+  if (id.includes('-')) {
+    return id
+  }
+  
+  // Format ID with hyphens (Notion UUID format)
+  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(16, 20)}-${id.slice(20)}`
+}
+
 // Cache the blog posts to avoid unnecessary API calls
 export const getBlogPosts = cache(async () => {
   debugNotion("getBlogPosts called")
@@ -77,12 +88,14 @@ export const getBlogPosts = cache(async () => {
     return []
   }
   
-  debugNotion("Using database ID:", process.env.NOTION_BLOG_DATABASE_ID)
+  // Format the database ID properly
+  const formattedDatabaseId = formatNotionId(process.env.NOTION_BLOG_DATABASE_ID)
+  debugNotion("Using database ID:", formattedDatabaseId)
   
   try {
     debugNotion("Querying Notion database...")
     const response = await notion.databases.query({
-      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+      database_id: formattedDatabaseId,
       filter: {
         property: "Published",
         checkbox: {
@@ -109,15 +122,17 @@ export const getBlogPosts = cache(async () => {
 // Get a single blog post by ID
 export async function getBlogPost(pageId: string) {
   try {
-    debugNotion(`Getting blog post with ID: ${pageId}`)
+    // Format the page ID properly
+    const formattedPageId = formatNotionId(pageId)
+    debugNotion(`Getting blog post with ID: ${formattedPageId}`)
     
     if (!notion.pages || typeof notion.pages.retrieve !== 'function' ||
         !notion.blocks || !notion.blocks.children || typeof notion.blocks.children.list !== 'function') {
       throw new Error("Notion client is missing required methods")
     }
     
-    const page = await notion.pages.retrieve({ page_id: pageId })
-    const blocks = await notion.blocks.children.list({ block_id: pageId })
+    const page = await notion.pages.retrieve({ page_id: formattedPageId })
+    const blocks = await notion.blocks.children.list({ block_id: formattedPageId })
     
     return {
       page,
@@ -129,16 +144,18 @@ export async function getBlogPost(pageId: string) {
   }
 }
 
-// Get rich text content using unofficial API
+// Get rich content using unofficial API
 export async function getRichContent(pageId: string) {
   try {
-    debugNotion(`Getting rich content for page: ${pageId}`)
+    // Format the page ID properly
+    const formattedPageId = formatNotionId(pageId)
+    debugNotion(`Getting rich content for page: ${formattedPageId}`)
     
     if (!notionUnofficial || typeof notionUnofficial.getPage !== 'function') {
       throw new Error("Unofficial Notion client is missing required methods")
     }
     
-    const recordMap = await notionUnofficial.getPage(pageId)
+    const recordMap = await notionUnofficial.getPage(formattedPageId)
     return recordMap
   } catch (error) {
     console.error(`[NOTION ERROR] Failed to get rich content for ${pageId}:`, error)

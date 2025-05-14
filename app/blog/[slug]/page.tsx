@@ -9,14 +9,17 @@ interface BlogPostPageProps {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  // Properly handle params by ensuring they're properly awaited
+  const slug = params?.slug || "";
+  
   try {
     // For placeholder posts defined in the FallbackBlogPosts component
-    if (params.slug === "getting-started-with-curve-ai" || params.slug === "future-of-ai-infrastructure") {
-      return <PlaceholderBlogPost slug={params.slug} />
+    if (slug === "getting-started-with-curve-ai" || slug === "future-of-ai-infrastructure") {
+      return <PlaceholderBlogPost slug={slug} />
     }
     
-    const { page, blocks } = await getBlogPost(params.slug)
-    const richContent = await getRichContent(params.slug)
+    const { page, blocks } = await getBlogPost(slug)
+    const richContent = await getRichContent(slug)
     
     const title = page.properties.Title?.title[0]?.plain_text || "Untitled"
     const date = page.properties.Date?.date?.start
@@ -35,7 +38,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </header>
         
         <div className="prose dark:prose-invert max-w-none">
-          <NotionRenderer recordMap={richContent} />
+          {richContent && <NotionRenderer recordMap={richContent} />}
         </div>
       </article>
     )
@@ -43,8 +46,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     console.error("Error fetching blog post:", error)
     
     // If it's one of our placeholder slugs, show placeholder content
-    if (params.slug === "getting-started-with-curve-ai" || params.slug === "future-of-ai-infrastructure") {
-      return <PlaceholderBlogPost slug={params.slug} />
+    if (slug === "getting-started-with-curve-ai" || slug === "future-of-ai-infrastructure") {
+      return <PlaceholderBlogPost slug={slug} />
     }
     
     notFound()
