@@ -17,8 +17,8 @@ export default function PromptsPage() {
     <div className="min-h-screen">
       <PromptsHero />
       <div className="container py-8">
+        <h2 className="text-2xl font-bold mb-4">AI Prompt Analysis and Scoring Methodology</h2>
         <PromptAnalysisMethodology />
-        <TradingPromptsAnalysis />
       </div>
       <AgentPromptsSection />
       <TradingPromptsSection />
