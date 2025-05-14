@@ -50,8 +50,8 @@ export function ConsultationProcess() {
   return (
     <div className="space-y-12">
       <div className="text-center max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold text-[#1A365D] mb-6">Our Consultation Framework</h2>
-        <p className="text-gray-600 text-lg">
+        <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-6">Our Consultation Framework</h2>
+        <p className="text-gray-600 dark:text-gray-300 text-lg">
           We've developed a structured approach to help businesses identify and implement AI solutions that drive real
           value. Our six-step process ensures we thoroughly understand your needs and deliver tailored recommendations.
         </p>
@@ -59,49 +59,49 @@ export function ConsultationProcess() {
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {steps.map((step, index) => (
-          <Card key={index} className="border-2 border-[#0076FF]/10 hover:border-[#0076FF] transition-all">
+          <Card key={index} className="border-2 border-[#0076FF]/10 hover:border-[#0076FF] transition-all dark:border-blue-800/50 dark:hover:border-blue-700">
             <CardContent className="p-6">
-              <div className="w-16 h-16 rounded-full bg-[#0076FF]/10 flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-[#0076FF]/10 dark:bg-blue-900/30 flex items-center justify-center mb-4">
                 {step.icon}
               </div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-[#1A365D]">{step.title}</h3>
-                <span className="text-sm font-medium text-[#0076FF] bg-[#0076FF]/10 px-3 py-1 rounded-full">
+                <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300">{step.title}</h3>
+                <span className="text-sm font-medium text-[#0076FF] bg-[#0076FF]/10 dark:bg-blue-900/30 px-3 py-1 rounded-full">
                   {step.timeframe}
                 </span>
               </div>
-              <p className="text-gray-600">{step.description}</p>
+              <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="bg-[#0076FF]/5 p-6 rounded-lg max-w-3xl mx-auto">
-        <h3 className="text-xl font-bold text-[#1A365D] mb-4">Why Our Approach Works</h3>
+      <div className="bg-[#0076FF]/5 dark:bg-blue-900/20 p-6 rounded-lg max-w-3xl mx-auto">
+        <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">Why Our Approach Works</h3>
         <ul className="space-y-2">
           <li className="flex items-start">
             <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0076FF] flex items-center justify-center text-white text-xs mr-2 mt-0.5">
               ✓
             </div>
-            <span className="text-gray-700">Tailored to your specific business needs and industry context</span>
+            <span className="text-gray-700 dark:text-gray-200">Tailored to your specific business needs and industry context</span>
           </li>
           <li className="flex items-start">
             <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0076FF] flex items-center justify-center text-white text-xs mr-2 mt-0.5">
               ✓
             </div>
-            <span className="text-gray-700">Focuses on practical solutions with measurable business impact</span>
+            <span className="text-gray-700 dark:text-gray-200">Focuses on practical solutions with measurable business impact</span>
           </li>
           <li className="flex items-start">
             <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0076FF] flex items-center justify-center text-white text-xs mr-2 mt-0.5">
               ✓
             </div>
-            <span className="text-gray-700">Involves key stakeholders throughout the process to ensure alignment</span>
+            <span className="text-gray-700 dark:text-gray-200">Involves key stakeholders throughout the process to ensure alignment</span>
           </li>
           <li className="flex items-start">
             <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0076FF] flex items-center justify-center text-white text-xs mr-2 mt-0.5">
               ✓
             </div>
-            <span className="text-gray-700">Provides clear implementation roadmap with defined milestones</span>
+            <span className="text-gray-700 dark:text-gray-200">Provides clear implementation roadmap with defined milestones</span>
           </li>
         </ul>
       </div>

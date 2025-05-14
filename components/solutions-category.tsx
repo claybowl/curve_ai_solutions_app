@@ -39,22 +39,22 @@ export function SolutionsCategory({ id, name, description, tools, color, icon }:
           <IconComponent className="h-8 w-8" />
         </div>
         <div>
-          <h2 className="text-3xl font-bold text-[#1A365D]">{name}</h2>
-          <p className="text-gray-600">{description}</p>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300">{name}</h2>
+          <p className="text-gray-600 dark:text-gray-300">{description}</p>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {tools.map((tool) => (
-          <Card key={tool.id} className="border-2 hover:border-[#0076FF]/50 transition-all">
+          <Card key={tool.id} className="border-2 hover:border-[#0076FF]/50 transition-all dark:border-gray-700 dark:hover:border-blue-600/50">
             <CardHeader>
-              <CardTitle>{tool.name}</CardTitle>
+              <CardTitle className="dark:text-blue-300">{tool.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">{tool.description}</p>
+              <p className="text-gray-600 dark:text-gray-300">{tool.description}</p>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" asChild>
+              <Button variant="outline" asChild className="dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
                 <Link href={`/solutions/${tool.id}`}>Learn More</Link>
               </Button>
             </CardFooter>

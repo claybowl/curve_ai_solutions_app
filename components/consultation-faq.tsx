@@ -45,23 +45,25 @@ export function ConsultationFAQ() {
       {faqs.map((faq, index) => (
         <Card
           key={index}
-          className={`border-2 ${openIndex === index ? "border-[#0076FF]" : "border-gray-200"} transition-all`}
+          className={`border-2 ${
+            openIndex === index ? "border-[#0076FF]" : "border-gray-200 dark:border-gray-700"
+          } transition-all`}
         >
           <CardContent className="p-0">
             <button
               className="flex items-center justify-between w-full p-6 text-left"
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
             >
-              <h3 className="text-lg font-medium text-[#1A365D]">{faq.question}</h3>
+              <h3 className="text-lg font-medium text-[#1A365D] dark:text-blue-300">{faq.question}</h3>
               {openIndex === index ? (
                 <ChevronUp className="h-5 w-5 text-[#0076FF]" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-gray-500" />
+                <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               )}
             </button>
             {openIndex === index && (
               <div className="px-6 pb-6 pt-0">
-                <p className="text-gray-600">{faq.answer}</p>
+                <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
               </div>
             )}
           </CardContent>

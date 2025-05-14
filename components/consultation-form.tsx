@@ -50,14 +50,14 @@ export function ConsultationForm() {
 
   if (isSubmitted) {
     return (
-      <Card className="border-2 border-green-500">
+      <Card className="border-2 border-green-500 dark:border-green-600">
         <CardContent className="p-6">
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle className="h-8 w-8 text-green-500" />
+            <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <CheckCircle className="h-8 w-8 text-green-500 dark:text-green-400" />
             </div>
-            <h3 className="text-2xl font-bold text-[#1A365D]">Thank You!</h3>
-            <p className="text-gray-600">
+            <h3 className="text-2xl font-bold text-[#1A365D] dark:text-blue-300">Thank You!</h3>
+            <p className="text-gray-600 dark:text-gray-300">
               Your consultation request has been submitted successfully. One of our experts will contact you within 1-2
               business days to schedule your consultation.
             </p>
@@ -89,7 +89,7 @@ export function ConsultationForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First Name *</Label>
+          <Label htmlFor="firstName" className="text-gray-700 dark:text-gray-300">First Name *</Label>
           <Input
             id="firstName"
             name="firstName"
@@ -100,7 +100,7 @@ export function ConsultationForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name *</Label>
+          <Label htmlFor="lastName" className="text-gray-700 dark:text-gray-300">Last Name *</Label>
           <Input
             id="lastName"
             name="lastName"
@@ -114,7 +114,7 @@ export function ConsultationForm() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="email">Email *</Label>
+          <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email *</Label>
           <Input
             id="email"
             name="email"
@@ -126,7 +126,7 @@ export function ConsultationForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300">Phone</Label>
           <Input
             id="phone"
             name="phone"
@@ -140,7 +140,7 @@ export function ConsultationForm() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="companyName">Company Name *</Label>
+          <Label htmlFor="companyName" className="text-gray-700 dark:text-gray-300">Company Name *</Label>
           <Input
             id="companyName"
             name="companyName"
@@ -151,7 +151,7 @@ export function ConsultationForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="industry">Industry *</Label>
+          <Label htmlFor="industry" className="text-gray-700 dark:text-gray-300">Industry *</Label>
           <select
             id="industry"
             name="industry"
@@ -174,7 +174,7 @@ export function ConsultationForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="employeeCount">Company Size *</Label>
+        <Label htmlFor="employeeCount" className="text-gray-700 dark:text-gray-300">Company Size *</Label>
         <select
           id="employeeCount"
           name="employeeCount"
@@ -194,7 +194,7 @@ export function ConsultationForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="message">Tell us about your business needs *</Label>
+        <Label htmlFor="message" className="text-gray-700 dark:text-gray-300">Tell us about your business needs *</Label>
         <Textarea
           id="message"
           name="message"
@@ -210,7 +210,7 @@ export function ConsultationForm() {
         {isSubmitting ? "Submitting..." : "Request Consultation"}
       </Button>
 
-      <p className="text-sm text-gray-500 text-center">
+      <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
         By submitting this form, you agree to our privacy policy and consent to being contacted regarding your request.
       </p>
     </form>

@@ -13,7 +13,7 @@ export default function ConsultationPage() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF]">
+      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white mb-6">
@@ -28,35 +28,35 @@ export default function ConsultationPage() {
       </SkyBackground>
 
       {/* Consultation Process Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
           <ConsultationProcess />
         </div>
       </section>
 
       {/* Consultation Form Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-6 text-center">Request Your Consultation</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-6 text-center">Request Your Consultation</h2>
             <ConsultationForm />
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Client Success Stories</h2>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-12 text-center">Client Success Stories</h2>
           <Testimonials />
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-12 text-center">Frequently Asked Questions</h2>
             <ConsultationFAQ />
           </div>
         </div>

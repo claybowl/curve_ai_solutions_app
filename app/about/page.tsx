@@ -125,7 +125,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF]">
+      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white mb-6">
@@ -139,7 +139,7 @@ export default function AboutPage() {
       </SkyBackground>
 
       {/* Video Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-950">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-4xl mx-auto">
             <div className="relative pb-4">
@@ -154,8 +154,8 @@ export default function AboutPage() {
                 ></iframe>
               </div>
               <div className="mt-6 text-center">
-                <h3 className="text-xl font-semibold text-[#1A365D]">See Our Vision in Action</h3>
-                <p className="text-gray-600 mt-2">
+                <h3 className="text-xl font-semibold text-[#1A365D] dark:text-blue-300">See Our Vision in Action</h3>
+                <p className="text-gray-600 dark:text-gray-300 mt-2">
                   Watch how Curve AI Solutions is transforming businesses with accessible AI technology
                 </p>
               </div>
@@ -216,13 +216,13 @@ export default function AboutPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
             {whatWeDo.map((item, index) => (
-              <Card key={index} className="border-0 bg-white shadow-md">
+              <Card key={index} className="border-0 bg-white dark:bg-gray-800 shadow-md">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 rounded-full bg-[#0076FF]/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#0076FF]/10 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
                     {item.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-[#1A365D] mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.description}</p>
+                  <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300 mb-2">{item.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -341,9 +341,9 @@ export default function AboutPage() {
       </section>
 
       {/* Our Team Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Meet Our Team</h2>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-12 text-center">Meet Our Team</h2>
 
           <div className="max-w-3xl mx-auto mb-12">
             <img src="/path/to/builders+backers_shirt.jpg" alt="Founders Austin and Clayton" className="w-full h-auto" />
@@ -365,9 +365,9 @@ export default function AboutPage() {
                     </div>
                   )}
                 </div>
-                <h3 className="text-xl font-bold text-[#1A365D]">{member.name}</h3>
-                <p className="text-[#0076FF] font-medium mb-2">{member.role}</p>
-                <p className="text-gray-600">{member.bio}</p>
+                <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300">{member.name}</h3>
+                <p className="text-[#0076FF] dark:text-blue-400 font-medium mb-2">{member.role}</p>
+                <p className="text-gray-600 dark:text-gray-300">{member.bio}</p>
               </div>
             ))}
           </div>
@@ -375,19 +375,19 @@ export default function AboutPage() {
       </section>
 
       {/* Our Values Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Our Core Values</h2>
+          <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-12 text-center">Our Core Values</h2>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
             {coreValues.map((value, index) => (
-              <Card key={index} className="border-0 bg-white shadow-md">
+              <Card key={index} className="border-0 bg-white dark:bg-gray-800 shadow-md">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 rounded-full bg-[#0076FF]/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#0076FF]/10 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
                     {value.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-[#1A365D] mb-2">{value.title}</h3>
-                  <p className="text-gray-600">{value.description}</p>
+                  <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300 mb-2">{value.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{value.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -434,9 +434,9 @@ export default function AboutPage() {
                     <div className="absolute left-0 sm:left-10 top-6 flex items-center justify-center w-5 h-5 rounded-full bg-[#0076FF] border-4 border-white dark:border-gray-900 text-white">
                       <Calendar className="w-3 h-3" />
                     </div>
-                    <div className="font-bold text-lg text-[#0076FF] w-32 hidden sm:block">{milestone.date}</div>
+                    <div className="font-bold text-lg text-[#0076FF] dark:text-blue-400 w-32 hidden sm:block">{milestone.date}</div>
                     <div>
-                      <div className="sm:hidden font-bold text-lg text-[#0076FF] mb-1">{milestone.date}</div>
+                      <div className="sm:hidden font-bold text-lg text-[#0076FF] dark:text-blue-400 mb-1">{milestone.date}</div>
                       <div className="text-xl font-bold text-gray-900 dark:text-white">{milestone.title}</div>
                       <div className="text-gray-600 dark:text-gray-300">{milestone.description}</div>
                     </div>
@@ -449,7 +449,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <SkyBackground className="py-16 bg-gradient-to-b from-[#1A365D] to-[#0076FF] text-white">
+      <SkyBackground className="py-16 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599] text-white">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-6">Connect With Us</h2>
@@ -468,7 +468,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                className="bg-white/10 text-white hover:bg-white/20 border-white/20 dark:border-white/30 dark:hover:bg-white/30"
                 asChild
               >
                 <Link href="/contact">Contact Us</Link>
