@@ -5,7 +5,6 @@ import { PromptsCTA } from "@/components/prompts-cta"
 import { PromptAnalysisMethodology } from "@/components/prompt-analysis-methodology"
 import { AgentPromptsSection } from "@/components/agent-prompts-section"
 import { TradingPromptsSection } from "@/components/trading-prompts-section"
-import { TradingPromptsAnalysis } from "@/components/trading-prompts-analysis"
 
 export const metadata: Metadata = {
   title: "AI Prompt Library | Curve AI Solutions",
