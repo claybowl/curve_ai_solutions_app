@@ -57,15 +57,15 @@ export default function Home() {
             <div className="flex flex-wrap items-center gap-4 md:gap-8">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-[#1A365D] dark:text-gray-200">AiGent® System</span>
-                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">May 31st, 2025</span>
+                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">May 2025</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-[#1A365D] dark:text-gray-200">AiPex Launch</span>
-                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">May 9, 2025</span>
+                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">June 2025</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-[#1A365D] dark:text-gray-200">Official Launch</span>
-                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">Jun 28, 2025</span>
+                <span className="text-xs bg-[#0076FF] text-white px-2 py-0.5 rounded-full">June 28, 2025</span>
               </div>
             </div>
             <Button

@@ -345,6 +345,10 @@ export default function AboutPage() {
         <div className="container px-4 md:px-6 mx-auto">
           <h2 className="text-3xl font-bold text-[#1A365D] mb-12 text-center">Meet Our Team</h2>
 
+          <div className="max-w-3xl mx-auto mb-12">
+            <img src="/path/to/builders+backers_shirt.jpg" alt="Founders Austin and Clayton" className="w-full h-auto" />
+          </div>
+
           <div className="flex flex-wrap justify-center gap-16 max-w-5xl mx-auto">
             {teamMembers.map((member, index) => (
               <div key={index} className="text-center max-w-xs">
