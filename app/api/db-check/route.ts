@@ -34,14 +34,3 @@ export async function GET() {
     )
   }
 }
-import { NextResponse } from 'next/server';
-import { testConnection } from '../../../lib/db';
-
-export async function GET() {
-  try {
-    const connectionStatus = await testConnection();
-    return NextResponse.json(connectionStatus);
-  } catch (error) {
-    return NextResponse.json({ connected: false, error: error.message });
-  }
-}
