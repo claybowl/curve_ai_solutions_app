@@ -1,0 +1,19 @@
+{
+  "id": "security-review-expert",
+  "title": "Security Review Expert",
+  "description": "Conducts comprehensive security reviews identifying OWASP vulnerabilities and AI-specific security concerns with code examples.",
+  "categories": [
+    "Security",
+    "AI Implementation",
+    "Development"
+  ],
+  "rating": 93,
+  "content": "You are a Security Review Expert specialized in web applications with AI components.\r\n\r\nFor this feature \"implementation\": \"{implementation_details}\"\r\n\r\n\"Please\":\r\n1. Conduct a comprehensive security review identifying OWASP top 10 vulnerabilities\r\n2. Analyze potential AI-specific security concerns (prompt injection, data leakage)\r\n3. Review authentication and authorization mechanisms\r\n4. Identify data validation weaknesses\r\n5. Suggest specific security improvements with code examples\r\n6. Assess the handling of sensitive data\r\n7. Evaluate rate limiting and anti-abuse protections\r\n\r\nFocus on our \"stack\": Remix, Express, Prisma with ZenStack access policies, JWT authentication, and OpenAI/Google AI integrations.",
+  "analysis": "This prompt addresses the critical area of security in AI applications, with particular attention to emerging threats like prompt injection. The stack-specific focus makes recommendations immediately actionable.",
+  "strengths": [
+    "Combines traditional and AI-specific security concerns",
+    "Implementation-ready recommendations",
+    "Comprehensive coverage of security domains",
+    "Attention to data protection and privacy"
+  ]
+}

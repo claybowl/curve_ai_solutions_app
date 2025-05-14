@@ -1,0 +1,27 @@
+{
+  "id": "2",
+  "title": "Personalized Fitness Plan Generator",
+  "description": "Create customized workout plans based on user goals, fitness level, and available equipment.",
+  "content": "As a professional fitness coach, create a personalized fitness plan based on the following \"information\":\r\n\r\n\"Goal\": [User's fitness goal]\r\nCurrent fitness \"level\": [Beginner/Intermediate/Advanced]\r\nAvailable \"equipment\": [List equipment or specify \"bodyweight only\"]\r\nTime \"available\": [Minutes per session, days per week]\r\nAny injuries or \"limitations\": [Specify if any]\r\n\r\nYour response should \"include\":\r\n1. A weekly workout schedule with specific exercises, sets, reps, and rest periods\r\n2. Progression plan for 4 weeks\r\n3. Warm-up and cool-down routines\r\n4. Nutrition tips aligned with the fitness goal\r\n5. Recovery recommendations\r\n\r\nFormat the workout plan in an organized, easy-to-follow structure with clear headings and sections.",
+  "categories": [
+    "fitness",
+    "health",
+    "personalization"
+  ],
+  "rating": 92,
+  "analysis": "This prompt effectively structures the input parameters needed and clearly outlines the expected output format, resulting in highly personalized and actionable fitness plans.",
+  "strengths": [
+    "Clear input parameters for personalization",
+    "Comprehensive output requirements",
+    "Includes progression planning for sustainability",
+    "Addresses nutrition and recovery aspects"
+  ],
+  "weaknesses": [
+    "Could include request for visual demonstrations or form tips"
+  ],
+  "instructions": "Fill in the bracketed information with your specific details to receive a customized fitness plan.",
+  "example": "PERSONALIZED 4-WEEK FITNESS PLAN\r\n\r\nCLIENT \"PROFILE\":\r\n- \"Goal\": Build muscle while losing fat\r\n- Fitness \"Level\": Intermediate\r\n- \"Equipment\": Dumbbells, resistance bands, pull-up bar\r\n- Time \"Available\": 45 minutes, 4 days per week\r\n- \"Limitations\": Previous shoulder injury\r\n\r\nWEEKLY \"SCHEDULE\":\r\n\"Monday\": Upper Body Focus\r\n\"Wednesday\": Lower Body Focus\r\n\"Friday\": Full Body Strength\r\n\"Saturday\": HIIT & Core\r\n\r\nWEEK 1 DETAILED \"PLAN\":\r\n\r\nMONDAY - UPPER \"BODY\":\r\nWarm-\"up\": 5 min dynamic stretching + 5 min light cardio\r\nMain \"Workout\":\r\n1. Modified Push-\"ups\": 3 sets x 12 reps (avoid full shoulder extension)\r\n2. Dumbbell \"Rows\": 3 sets x 10 reps each side\r\n3. Lateral \"Raises\": 3 sets x 12 reps (light weight)\r\n4. Bicep \"Curls\": 3 sets x 12 reps\r\n5. Tricep \"Dips\": 3 sets x 10 reps\r\n\"Rest\": 60 seconds between sets\r\nCool-\"down\": 5 min static stretching focusing on chest and back\r\n\r\n[Additional days and weeks would follow in the same detailed format]\r\n\r\nNUTRITION \"RECOMMENDATIONS\":\r\n1. Protein \"intake\": 1.6-1.8g per kg of bodyweight\r\n2. Slight caloric deficit of 300-500 calories below maintenance\r\n3. Focus on whole foods with emphasis on lean protein sources\r\n4. Pre-workout \"meal\": Complex carbs + protein 1-2 hours before training\r\n5. Post-\"workout\": Protein shake within 30 minutes + balanced meal within 2 hours\r\n\r\nRECOVERY \"STRATEGIES\":\r\n1. Ensure 7-8 hours of quality sleep nightly\r\n2. Implement active recovery on rest days (walking, light stretching)\r\n3. Pay special attention to shoulder mobility exercises\r\n4. Consider foam rolling for muscle recovery\r\n5. Progressive \"overload\": Increase weight by 5% or add 1-2 reps each week as form allows",
+  "createdBy": "Fitness Team",
+  "createdAt": "2023-10-05",
+  "updatedAt": "2023-12-10"
+}

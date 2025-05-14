@@ -1,0 +1,23 @@
+{
+  "id": "capital-allocation-strategy",
+  "title": "Capital Allocation Strategy",
+  "description": "Improve how trading capital is distributed among algorithms to maximize returns while respecting risk management rules.",
+  "categories": [
+    "algorithmic trading",
+    "risk management",
+    "finance"
+  ],
+  "rating": 93,
+  "content": "Develop a dynamic capital allocation system that implements a [STRATEGY_NAME] approach. The system should distribute capital among trading algorithms based on [ALLOCATION_CRITERIA], while respecting position sizing limits and risk management rules. Include mechanisms to adjust allocations based on changing market conditions.",
+  "analysis": "This prompt addresses the critical question of how to distribute limited capital across multiple strategies. The capital allocation decision directly impacts overall system returns—even excellent strategies will underperform if underfunded, while poor strategies may drain resources if overfunded.",
+  "strengths": [
+    "Directly impacts trading returns",
+    "Balances performance with risk management",
+    "Adapts to changing market conditions",
+    "Provides a comprehensive framework for capital management"
+  ],
+  "example": "Develop a dynamic capital allocation system that implements a \"Performance-Weighted\" approach. The system should distribute capital among trading algorithms based on risk-adjusted returns (Sharpe ratio), win rate, and profit consistency, while respecting position sizing limits and risk management rules. No single algorithm should receive more than 20% of total capital regardless of performance, and include mechanisms to adjust allocations based on changing market conditions.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-01-25",
+  "updatedAt": "2024-03-18"
+}

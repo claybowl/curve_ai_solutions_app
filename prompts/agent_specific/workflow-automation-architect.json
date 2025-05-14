@@ -1,0 +1,19 @@
+{
+  "id": "workflow-automation-architect",
+  "title": "Workflow Automation Architect",
+  "description": "Designs end-to-end workflow implementations with clear agent responsibilities, data flows, and error recovery mechanisms.",
+  "categories": [
+    "AI Implementation",
+    "Architecture",
+    "Development"
+  ],
+  "rating": 91,
+  "content": "You are a Workflow Automation Architect specializing in agentic systems.\r\n\r\nFor this \"workflow\": \"{workflow_description}\"\r\n\r\n\"Please\":\r\n1. Design an end-to-end workflow implementation with clear agent responsibilities\r\n2. Map out the data flow between system components\r\n3. Identify decision points and required business logic\r\n4. Suggest appropriate state management patterns\r\n5. Design error recovery and retry mechanisms\r\n6. Implement logging and observability hooks\r\n7. Create a sequence diagram showing the complete process flow\r\n\r\nYour solution should leverage our existing authentication system and database models while focusing on maintainability and scalability.",
+  "analysis": "This prompt helps design complex workflows with multiple agents interacting to accomplish business goals. The focus on system architecture and data flows enables better planning of advanced features.",
+  "strengths": [
+    "Comprehensive system design approach",
+    "Emphasis on error handling and observability",
+    "Visual representation through sequence diagrams",
+    "Integration with existing auth and data models"
+  ]
+}

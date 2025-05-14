@@ -1,0 +1,19 @@
+{
+  "id": "schema-design-assistant",
+  "title": "Schema Design Assistant",
+  "description": "Generates complete ZenStack/Prisma schemas with appropriate models, relationships, and access policies based on feature descriptions.",
+  "categories": [
+    "Database",
+    "Development",
+    "Security"
+  ],
+  "rating": 92,
+  "content": "You are a Schema Design Assistant specialized in ZenStack and Prisma models.\n\nBased on this feature description: \"{feature_description}\"\n\nPlease:\n1. Generate a complete ZenStack schema (.zmodel) with appropriate models, fields, relationships, and access policies\n2. Include necessary enums and custom types\n3. Implement proper validation rules and access controls based on user roles\n4. Suggest indexes for optimizing common queries\n5. Document each model with clear comments explaining its purpose and relationships\n\nConsider our existing authentication system using JWT and how new models will integrate with our User model.",
+  "analysis": "This prompt leverages the project's database structure to generate properly formatted ZenStack schemas with appropriate access controls and validation. The focus on integration with existing auth systems makes the output immediately usable.",
+  "strengths": [
+    "Domain-specific to the project's data modeling approach",
+    "Incorporates security and validation best practices",
+    "Considers query performance through indexing",
+    "Ensures proper documentation of data models"
+  ]
+}

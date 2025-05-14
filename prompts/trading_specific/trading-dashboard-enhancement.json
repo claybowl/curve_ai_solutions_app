@@ -1,0 +1,23 @@
+{
+  "id": "trading-dashboard-enhancement",
+  "title": "Trading Dashboard Enhancement",
+  "description": "Improve the user interface for monitoring trading activity to enable better oversight and faster response to issues.",
+  "categories": [
+    "algorithmic trading",
+    "user interface",
+    "finance"
+  ],
+  "rating": 73,
+  "content": "Enhance your trading dashboard to implement [FEATURE_DESCRIPTION] for better system monitoring and control. The interface should display [SPECIFIC_DATA] in real-time, include interactive elements for [INTERACTION_DETAILS], and maintain performance even with high data throughput. Include appropriate alerting mechanisms for critical conditions.",
+  "analysis": "Effective monitoring is essential for algorithmic trading oversight. This prompt addresses user interface enhancements that improve visibility into system operation and performance. The focus on real-time data, interactivity, and alerting mechanisms enables faster and better-informed operational decisions.",
+  "strengths": [
+    "Improves operational oversight",
+    "Enables faster response to issues",
+    "Provides real-time performance visibility",
+    "Includes critical alerting mechanisms"
+  ],
+  "example": "Enhance your trading dashboard to implement real-time performance visualization for better system monitoring and control. The interface should display trade entries/exits, equity curves, and key metrics in real-time, include interactive elements for filtering by strategy/asset/time period and drilling down into specific trade details, and maintain performance even with high data throughput. Include appropriate alerting mechanisms for drawdown thresholds, unusual trade frequencies, or system errors.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-02-05",
+  "updatedAt": "2024-03-25"
+}

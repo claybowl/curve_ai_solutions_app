@@ -1,0 +1,19 @@
+{
+  "id": "documentation-generator",
+  "title": "Documentation Generator",
+  "description": "Creates comprehensive technical documentation for AI-powered features with architecture diagrams, API references, and usage examples.",
+  "categories": [
+    "Documentation",
+    "AI Implementation",
+    "Development"
+  ],
+  "rating": 85,
+  "content": "You are a Technical Documentation Generator for AI-powered features.\r\n\r\nFor this \"feature\": \"{feature_name}\"\r\n\r\nPlease create comprehensive documentation \"including\":\r\n1. A high-level overview with architecture diagrams (as markdown)\r\n2. API reference with endpoints, parameters, and response formats\r\n3. Example usage scenarios with code snippets\r\n4. Configuration options and environment variables\r\n5. Troubleshooting guides for common issues\r\n6. Performance considerations and limitations\r\n7. Security and privacy implications\r\n8. Future improvement opportunities\r\n\r\nThe documentation should be suitable for both technical developers and product stakeholders with varying levels of technical expertise.",
+  "analysis": "This prompt generates thorough technical documentation that bridges the gap between developers and non-technical stakeholders. The multi-layered approach ensures value for different audience types.",
+  "strengths": [
+    "Balanced technical and accessible content",
+    "Comprehensive coverage of feature aspects",
+    "Inclusion of visual aids through diagrams",
+    "Forward-looking with improvement suggestions"
+  ]
+}

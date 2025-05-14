@@ -1,0 +1,23 @@
+{
+  "id": "multi-exchange-integration",
+  "title": "Multi-Exchange Integration",
+  "description": "Expand trading capabilities across multiple venues to increase opportunities and improve system resilience.",
+  "categories": [
+    "algorithmic trading",
+    "exchange integration",
+    "finance"
+  ],
+  "rating": 83,
+  "content": "Develop a modular exchange integration framework that supports trading across multiple exchanges/brokers. Create an abstraction layer that standardizes [COMMON_OPERATIONS] across different APIs, handles the specific requirements of each exchange, and provides a unified interface for your trading strategies to interact with any supported venue.",
+  "analysis": "Trading across multiple exchanges provides diversification benefits and access to more opportunities. This prompt addresses the architectural challenge of creating a unified interface that handles the complexities and differences between exchange APIs. The modular approach supports system expansion without requiring changes to core strategy logic.",
+  "strengths": [
+    "Increases trading opportunities",
+    "Improves system resilience through diversification",
+    "Simplifies strategy development across venues",
+    "Supports system expansion"
+  ],
+  "example": "Develop a modular exchange integration framework that supports trading across multiple exchanges/brokers. Create an abstraction layer that standardizes data retrieval, order execution, position management, and account balance monitoring across different APIs, handles the specific requirements of each exchange (rate limits, order types, authentication), and provides a unified interface for your trading strategies to interact with any supported venue without modifying the strategy code.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-02-15",
+  "updatedAt": "2024-04-01"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "performance-metrics-enhancement",
+  "title": "Performance Metrics Enhancement",
+  "description": "Add new metrics to better evaluate trading algorithms beyond standard metrics like win rate and profit factor.",
+  "categories": [
+    "algorithmic trading",
+    "performance analysis",
+    "finance"
+  ],
+  "rating": 90,
+  "content": "Enhance your performance analytics system to include a new metric called [METRIC_NAME] that measures [METRIC_DESCRIPTION]. Implement the calculation method, update your data storage to record this metric, and integrate it into your algorithm evaluation framework with appropriate weighting relative to existing metrics.",
+  "analysis": "Performance measurement is crucial for algorithmic trading systems. This prompt focuses on expanding evaluation capabilities beyond standard metrics, enabling more nuanced assessment of trading strategies.",
+  "strengths": [
+    "Comprehensive approach from calculation to integration",
+    "Enables more nuanced strategy assessment",
+    "Incorporates new metrics into decision-making processes",
+    "Improves evaluation framework completeness"
+  ],
+  "example": "Enhance your performance analytics system to include a new metric called \"recovery_efficiency\" that measures how quickly a trading strategy recovers from drawdowns. Implement the calculation method, update your data storage to record this metric, and integrate it into your algorithm evaluation framework with appropriate weighting relative to existing metrics like Sharpe ratio and maximum drawdown.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-01-18",
+  "updatedAt": "2024-03-12"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "api-integration-expert",
+  "title": "API Integration Expert",
+  "description": "Designs complete tRPC router implementations with React Query hooks, error handling, and auth middleware for API integrations.",
+  "categories": [
+    "API",
+    "Development",
+    "Frontend"
+  ],
+  "rating": 90,
+  "content": "You are an API Integration Expert familiar with tRPC, React Query, and serverless functions.\r\n\r\nFor this integration \"requirement\": \"{integration_requirement}\"\r\n\r\n\"Please\":\r\n1. Design the complete tRPC router and procedure implementation with proper input validation using Zod\r\n2. Show the client-side React Query hooks for consuming this API\r\n3. Include error handling strategies for common failure scenarios\r\n4. Demonstrate optimistic updates for better UX\r\n5. Suggest caching strategies appropriate for this data type\r\n6. Show how to implement proper auth middleware for this endpoint\r\n\r\nEnsure the code follows our project structure using the @trpc/* and @tanstack/react-query packages.",
+  "analysis": "This prompt creates specialized code for API integrations that adhere to the project's architecture. The focus on both server and client implementations ensures full coverage of requirements.",
+  "strengths": [
+    "End-to-end approach covering backend and frontend",
+    "Emphasizes error handling and user experience",
+    "Incorporates authentication requirements",
+    "Follows project-specific libraries and patterns"
+  ]
+}

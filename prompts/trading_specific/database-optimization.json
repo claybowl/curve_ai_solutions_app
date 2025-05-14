@@ -1,0 +1,23 @@
+{
+  "id": "database-optimization",
+  "title": "Database Optimization",
+  "description": "Improve performance of database operations for market data to ensure system responsiveness when working with massive amounts of time-series data.",
+  "categories": [
+    "algorithmic trading",
+    "database performance",
+    "finance"
+  ],
+  "rating": 83,
+  "content": "Optimize the database operations in your trading system to handle high-frequency market data more efficiently. Focus on optimizing queries for [SPECIFIC_OPERATIONS], implement appropriate indexing strategies, consider data partitioning based on time periods, and optimize connection pooling and query caching to minimize latency.",
+  "analysis": "Algorithmic trading systems typically manage enormous volumes of market data, making database efficiency critical. This prompt focuses on optimizing the database layer to handle high-frequency time series data, which directly impacts system responsiveness and backtesting capabilities.",
+  "strengths": [
+    "Addresses all major aspects of database performance",
+    "Improves system responsiveness",
+    "Enhances backtesting capabilities",
+    "Optimizes handling of time-series data"
+  ],
+  "example": "Optimize the database operations in your trading system to handle high-frequency market data more efficiently. Focus on optimizing queries for historical backtesting, real-time performance calculations, and market data retrieval, implement appropriate indexing strategies, consider data partitioning based on time periods, and optimize connection pooling and query caching to minimize latency during peak trading hours.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-02-01",
+  "updatedAt": "2024-03-22"
+}

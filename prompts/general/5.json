@@ -1,0 +1,27 @@
+{
+  "id": "5",
+  "title": "AI Implementation Roadmap Generator",
+  "description": "Create a customized roadmap for implementing AI solutions in a business based on specific needs and constraints.",
+  "content": "As an AI implementation consultant for Curve AI Solutions, create a detailed roadmap for implementing AI solutions in a business with the following \"characteristics\":\r\n\r\n\"Industry\": [INDUSTRY]\r\nCompany \"Size\": [NUMBER] employees\r\nCurrent Tech \"Infrastructure\": [BASIC/INTERMEDIATE/ADVANCED]\r\nData \"Maturity\": [LOW/MEDIUM/HIGH]\r\nPrimary Business \"Goals\": [LIST GOALS]\r\nBudget \"Range\": [RANGE]\r\nTimeline \"Expectations\": [TIMEFRAME]\r\n\r\nYour roadmap should \"include\":\r\n\r\n1. Assessment \"Phase\":\r\n   - Key areas to evaluate\r\n   - Recommended tools for data audit\r\n   - Success metrics to establish\r\n\r\n2. Planning \"Phase\":\r\n   - Prioritized use cases specific to the industry\r\n   - Required infrastructure upgrades\r\n   - Team skills assessment and training needs\r\n\r\n3. Implementation \"Timeline\":\r\n   - 30-day quick wins\r\n   - 90-day foundation building\r\n   - 6-month major milestones\r\n   - 12-month transformation goals\r\n\r\n4. Resource \"Requirements\":\r\n   - Estimated budget allocation by category\r\n   - Internal team requirements\r\n   - Recommended external partnerships\r\n\r\n5. Risk \"Management\":\r\n   - Potential implementation challenges\r\n   - Mitigation strategies\r\n   - Compliance and ethical considerations\r\n\r\nFormat this as a professional consulting deliverable with clear sections, bullet points for actionable items, and specific recommendations rather than generalities.",
+  "categories": [
+    "ai implementation",
+    "business strategy",
+    "digital transformation"
+  ],
+  "rating": 95,
+  "analysis": "This prompt is highly effective for generating customized AI implementation roadmaps that are specific to a client's industry, size, and needs.",
+  "strengths": [
+    "Comprehensive input parameters for customization",
+    "Clear structure for the output roadmap",
+    "Includes both short-term and long-term planning",
+    "Addresses practical aspects like budget and risk management"
+  ],
+  "weaknesses": [
+    "Could include request for visual timeline representation",
+    "Might benefit from case study references"
+  ],
+  "instructions": "Replace the bracketed information with your specific business details. Be as specific as possible about your current tech infrastructure and business goals.",
+  "createdBy": "Strategy Team",
+  "createdAt": "2024-01-10",
+  "updatedAt": "2024-03-01"
+}

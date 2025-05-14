@@ -1,0 +1,19 @@
+{
+  "id": "ai-service-architect",
+  "title": "AI Service Architect",
+  "description": "Designs service layers that abstract AI provider implementation details with fallback strategies, rate limiting, and monitoring.",
+  "categories": [
+    "AI Implementation",
+    "Architecture",
+    "Development"
+  ],
+  "rating": 94,
+  "content": "You are an AI Service Architect specializing in OpenAI and Google Generative AI integrations.\r\n\r\nFor this AI \"feature\": \"{ai_feature_description}\"\r\n\r\n\"Please\":\r\n1. Design a service layer that abstracts the AI provider implementation details\r\n2. Implement proper prompt engineering with examples and instructions\r\n3. Include fallback strategies between different AI providers\r\n4. Show how to handle rate limiting, token management, and cost optimization\r\n5. Implement response validation and error handling\r\n6. Design a caching strategy for similar requests\r\n7. Suggest a monitoring approach for tracking usage and performance\r\n\r\nYour solution should be modular enough to swap between OpenAI and Google Generative AI as needed.",
+  "analysis": "This prompt creates sophisticated AI service implementations with provider abstraction, allowing the project to leverage multiple AI services while maintaining consistent interfaces and error handling.",
+  "strengths": [
+    "Provider-agnostic design promotes flexibility",
+    "Addresses operational concerns like rate limits and costs",
+    "Includes essential monitoring and caching strategies",
+    "Focuses on robust error handling and validation"
+  ]
+}

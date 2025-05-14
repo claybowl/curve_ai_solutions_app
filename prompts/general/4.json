@@ -1,0 +1,27 @@
+{
+  "id": "4",
+  "title": "Product Description Optimizer",
+  "description": "Enhance product descriptions for e-commerce platforms, focusing on key features and benefits.",
+  "content": "As an e-commerce copywriting specialist, optimize the following product description to increase \"conversions\":\r\n\r\nOriginal Product \"Description\":\r\n[ORIGINAL DESCRIPTION]\r\n\r\nProduct \"Category\": [CATEGORY]\r\nTarget \"Audience\": [AUDIENCE]\r\nKey Selling \"Points\": [LIST 3-5 POINTS]\r\nBrand \"Voice\": [CASUAL/PROFESSIONAL/LUXURY/ETC]\r\nWord Count \"Limit\": [NUMBER] words\r\n\r\nPlease rewrite the product description \"to\":\r\n1. Create a compelling headline that includes primary keywords\r\n2. Highlight key features and their benefits to the customer\r\n3. Use persuasive language that resonates with the target audience\r\n4. Include a clear call-to-action\r\n5. Optimize for SEO while maintaining natural language\r\n6. Match the specified brand voice and word count",
+  "categories": [
+    "e-commerce",
+    "copywriting",
+    "marketing"
+  ],
+  "rating": 90,
+  "analysis": "This prompt effectively structures the input needed for context and provides clear guidelines for the output, resulting in product descriptions that are both SEO-friendly and conversion-focused.",
+  "strengths": [
+    "Comprehensive input parameters for context",
+    "Clear output requirements with numbered points",
+    "Balances SEO needs with persuasive copywriting",
+    "Adaptable to different product types and brand voices"
+  ],
+  "weaknesses": [
+    "Could include request for bullet point format option",
+    "Might benefit from examples of tone/voice for clarity"
+  ],
+  "instructions": "Replace the bracketed sections with your product information. Be specific about your target audience and key selling points for best results.",
+  "createdBy": "Marketing Team",
+  "createdAt": "2023-11-12",
+  "updatedAt": "2024-02-05"
+}

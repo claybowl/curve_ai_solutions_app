@@ -1,0 +1,28 @@
+{
+  "id": "1",
+  "title": "Environmental Impact Calculator",
+  "description": "Estimate the environmental impact of various activities or products based on user input.",
+  "content": "You are an environmental impact calculator. I will provide details about an activity or product, and you \"will\":\r\n1. Calculate the estimated carbon footprint in CO2 equivalent\r\n2. Analyze water usage impact\r\n3. Evaluate waste generation\r\n4. Suggest 3 specific ways to reduce the environmental impact\r\n5. Compare the impact to everyday activities for context\r\n\r\nPlease provide your analysis in a structured format with clear sections and quantitative estimates where possible.",
+  "categories": [
+    "sustainability",
+    "carbon footprint",
+    "environmental analysis"
+  ],
+  "rating": 85,
+  "analysis": "This prompt provides clear instructions and structure for the AI to follow, resulting in consistent and useful environmental impact assessments.",
+  "strengths": [
+    "Clear structure with numbered steps",
+    "Requests quantitative estimates for better decision-making",
+    "Includes actionable suggestions for improvement",
+    "Adds contextual comparisons for better understanding"
+  ],
+  "weaknesses": [
+    "Could specify more parameters for more accurate calculations",
+    "Might benefit from industry-specific variations"
+  ],
+  "instructions": "Provide specific details about the activity or product you want to analyze, including quantity, duration, or other relevant metrics.",
+  "example": "Environmental Impact \"Analysis\": Manufacturing 1000 cotton t-shirts\r\n\r\nCarbon \"Footprint\":\r\n- Estimated 10,500 kg CO2e total\r\n- \"Breakdown\": Cotton cultivation (40%), Manufacturing (35%), Transportation (15%), Retail & Disposal (10%)\r\n\r\nWater Usage \"Impact\":\r\n- Approximately 2.7 million liters of water\r\n- Equivalent to the drinking water of 3,700 people for one day\r\n- Primary impact in cotton growing regions, potentially contributing to water scarcity\r\n\r\nWaste \"Generation\":\r\n- Fabric \"waste\": ~150kg during cutting and manufacturing\r\n- Chemical \"waste\": ~50kg from dyeing processes\r\n- Packaging \"waste\": ~75kg from retail and distribution\r\n\r\n\"Recommendations\":\r\n1. Switch to organic or recycled cotton to reduce water usage by up to 90% and eliminate pesticide use\r\n2. Implement closed-loop water systems in the dyeing process to reduce water consumption by 40%\r\n3. Optimize cutting patterns to reduce fabric waste by 15-20%\r\n\r\nContextual \"Comparison\":\r\nThe total carbon footprint is equivalent to driving an average car for approximately 40,000 miles or the annual carbon absorption of 500 mature trees.",
+  "createdBy": "Environmental Team",
+  "createdAt": "2023-09-15",
+  "updatedAt": "2023-11-02"
+}

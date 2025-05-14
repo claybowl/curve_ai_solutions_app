@@ -1,0 +1,23 @@
+{
+  "id": "implementing-new-trading-strategy",
+  "title": "Implementing a New Trading Strategy",
+  "description": "Add a new algorithmic strategy to your trading system with proper methods for analysis, entry/exit conditions, and risk management.",
+  "categories": [
+    "algorithmic trading",
+    "strategy development",
+    "finance"
+  ],
+  "rating": 88,
+  "content": "Create a new trading algorithm class that implements a [STRATEGY_TYPE] strategy. The class should include methods for analyzing market data, determining entry/exit conditions, handling risk management, and proper error logging. Make the strategy configurable through external parameters and ensure it follows the design patterns of your existing system.",
+  "analysis": "This prompt addresses the fundamental need for expanding a trading system's repertoire of strategies. By focusing on both technical implementation (entry/exit conditions) and operational needs (error handling, configuration), it produces well-structured, maintainable strategy implementations.",
+  "strengths": [
+    "Balances specificity with flexibility",
+    "Enforces architectural consistency",
+    "Addresses both technical and operational needs",
+    "Ensures maintainable implementations"
+  ],
+  "example": "Create a new trading algorithm class that implements a \"Mean Reversion with Volume Confirmation\" strategy. The class should include methods for analyzing market data, determining entry/exit conditions, handling risk management, and proper error logging. The algorithm should identify assets that have moved significantly away from their moving average (2+ standard deviations) but show decreasing volume on the move, suggesting the move may be weakening. It should enter a position in the opposite direction when price starts to return to the mean with increasing volume. Make the strategy configurable through external parameters and ensure it follows the design patterns of your existing system.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-01-15",
+  "updatedAt": "2024-03-10"
+}

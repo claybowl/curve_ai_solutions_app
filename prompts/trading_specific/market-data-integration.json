@@ -1,0 +1,23 @@
+{
+  "id": "market-data-integration",
+  "title": "Market Data Integration",
+  "description": "Expand market data collection capabilities to enable more sophisticated trading strategies with access to deeper market data.",
+  "categories": [
+    "algorithmic trading",
+    "data engineering",
+    "finance"
+  ],
+  "rating": 85,
+  "content": "Extend your market data ingestion system to handle additional data types (such as [DATA_TYPE]) from [DATA_SOURCE]. Implement methods to request this data, process the incoming data stream, and store it in your database with appropriate schema modifications. Include error handling for connection issues and data validation.",
+  "analysis": "Quality and breadth of market data are foundational to algorithmic trading success. This prompt addresses the complete workflow of integrating new data sources: acquisition, processing, storage, and error handling.",
+  "strengths": [
+    "Addresses the complete data integration workflow",
+    "Enables more sophisticated strategy development",
+    "Includes error handling and validation",
+    "Provides potential competitive advantages through unique signals"
+  ],
+  "example": "Extend your market data ingestion system to handle additional data types (such as order book depth data) from your exchange API. Implement methods to request this data, process the incoming data stream, and store it in your database with appropriate schema modifications. Include error handling for connection issues and data validation to ensure data integrity.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-01-22",
+  "updatedAt": "2024-03-15"
+}

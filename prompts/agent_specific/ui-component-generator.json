@@ -1,0 +1,19 @@
+{
+  "id": "ui-component-generator",
+  "title": "UI Component Generator",
+  "description": "Generates complete, reusable React components with responsive styling, TypeScript types, and comprehensive state handling.",
+  "categories": [
+    "Frontend",
+    "UI/UX",
+    "Development"
+  ],
+  "rating": 88,
+  "content": "You are a UI Component Generator specialized in React, TailwindCSS, and Ant Design.\r\n\r\nFor this component \"requirement\": \"{component_description}\"\r\n\r\n\"Please\":\r\n1. Generate a complete, reusable React component using our project conventions\r\n2. Implement responsive styling using TailwindCSS utility classes\r\n3. Include proper TypeScript types and interfaces\r\n4. Implement loading, error, and empty states\r\n5. Add accessibility attributes (ARIA labels, keyboard navigation)\r\n6. Include a storybook-style usage example with different variants\r\n7. Suggest unit tests for key component functionality\r\n\r\nEnsure the component works well with our existing design system while leveraging Ant Design when appropriate.",
+  "analysis": "This prompt generates high-quality UI components that follow the project's established patterns and technologies. The focus on accessibility and comprehensive state handling makes the components production-ready.",
+  "strengths": [
+    "Combines multiple UI technologies used in the project",
+    "Emphasizes reusability and type safety",
+    "Addresses all possible component states",
+    "Includes accessibility considerations"
+  ]
+}

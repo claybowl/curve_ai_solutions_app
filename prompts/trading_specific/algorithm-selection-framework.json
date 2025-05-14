@@ -1,0 +1,23 @@
+{
+  "id": "algorithm-selection-framework",
+  "title": "Algorithm Selection Framework",
+  "description": "Improve the selection of which strategies get deployed to ensure only the most promising strategies are actively trading.",
+  "categories": [
+    "algorithmic trading",
+    "strategy selection",
+    "finance"
+  ],
+  "rating": 93,
+  "content": "Design an algorithm selection framework that evaluates and ranks trading strategies using [RANKING_METHOD]. Incorporate factors such as [EVALUATION_FACTORS] in your ranking system, and implement a mechanism to ensure stability in selections while still being responsive to changing performance patterns.",
+  "analysis": "Not all strategies perform well in all market conditions. This prompt addresses the need for intelligent selection among available strategies based on multiple evaluation factors. By incorporating both historical performance and stability mechanisms, it helps create systems that adapt to changing markets without excessive fluctuation in the active strategy set.",
+  "strengths": [
+    "Adapts to changing market conditions",
+    "Balances responsiveness with stability",
+    "Uses multi-factor evaluation for better decisions",
+    "Optimizes active strategy selection"
+  ],
+  "example": "Design an algorithm selection framework that evaluates and ranks trading strategies using a multi-factor scoring system. Incorporate factors such as historical performance, consistency across market regimes, correlation with other active strategies, and recent volatility-adjusted returns in your ranking system. Implement a mechanism to ensure stability in selections while still being responsive to changing performance patterns, such as using moving averages of rankings or requiring significant score changes before modifying the active strategy set.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-01-28",
+  "updatedAt": "2024-03-20"
+}

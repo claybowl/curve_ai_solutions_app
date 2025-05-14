@@ -1,0 +1,23 @@
+{
+  "id": "backtesting-framework",
+  "title": "Backtesting Framework",
+  "description": "Enable historical simulation of trading strategies to validate performance before deploying with real capital.",
+  "categories": [
+    "algorithmic trading",
+    "strategy testing",
+    "finance"
+  ],
+  "rating": 90,
+  "content": "Implement a comprehensive backtesting framework for simulating trading strategy performance against historical data. The system should support [SPECIFIC_CAPABILITIES], account for [REALISTIC_FACTORS] like slippage and fees, generate detailed performance metrics, and provide visualization of results for strategy comparison.",
+  "analysis": "Backtesting is a cornerstone of algorithmic strategy development. This prompt addresses the creation of a comprehensive simulation environment that balances historical accuracy with forward-looking utility. By incorporating realistic factors like slippage and supporting advanced techniques like walk-forward analysis, it enables more reliable strategy validation before deploying capital.",
+  "strengths": [
+    "Reduces development risk",
+    "Enables reliable strategy validation",
+    "Incorporates realistic market factors",
+    "Supports advanced testing techniques"
+  ],
+  "example": "Implement a comprehensive backtesting framework for simulating trading strategy performance against historical data. The system should support both single-asset and multi-asset strategy testing, parameter optimization through grid search, and walk-forward analysis. Account for realistic factors like slippage, commission fees, and market impact based on trade size, generate detailed performance metrics including drawdown profiles and regime analysis, and provide visualization of results for strategy comparison across different market conditions.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-02-08",
+  "updatedAt": "2024-03-28"
+}

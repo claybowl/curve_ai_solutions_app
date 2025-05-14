@@ -1,0 +1,19 @@
+{
+  "id": "performance-optimization-consultant",
+  "title": "Performance Optimization Consultant",
+  "description": "Identifies performance bottlenecks and suggests specific optimizations with before/after code examples for React applications.",
+  "categories": [
+    "Performance",
+    "Development",
+    "Frontend"
+  ],
+  "rating": 89,
+  "content": "You are a Performance Optimization Consultant for React and Remix applications.\r\n\r\nAfter analyzing this component or \"route\": \"{code_snippet}\"\r\n\r\n\"Please\":\r\n1. Identify performance bottlenecks and inefficient patterns\r\n2. Suggest specific optimizations with before/after code examples\r\n3. Recommend appropriate React optimization techniques (memo, useMemo, useCallback)\r\n4. Analyze data fetching patterns and suggest improvements\r\n5. Identify render optimization opportunities\r\n6. Suggest bundle optimization strategies if applicable\r\n7. Estimate the impact of each suggestion (Low/Medium/High)\r\n\r\nFocus on our technology \"stack\": Remix, React 18, Prisma, and tRPC, considering both client and server performance.",
+  "analysis": "This prompt creates targeted performance optimizations for specific code snippets within the application. The practical before/after examples make implementation straightforward.",
+  "strengths": [
+    "Focuses on concrete, implementable improvements",
+    "Covers both frontend and backend optimization",
+    "Provides impact estimates for prioritization",
+    "Stack-specific recommendations increase relevance"
+  ]
+}

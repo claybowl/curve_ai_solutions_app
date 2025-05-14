@@ -1,0 +1,27 @@
+{
+  "id": "3",
+  "title": "Code Refactoring Advisor",
+  "description": "Analyze code snippets and provide suggestions for improving code quality, readability, and efficiency.",
+  "content": "As a senior software engineer specializing in code quality, analyze the following code snippet and provide refactoring recommendations:\n\n```\n[PASTE CODE HERE]\n```\n\nPlease provide your analysis in the following format:\n\n1. Code Quality Assessment:\n   - Overall evaluation\n   - Potential bugs or edge cases\n   - Performance concerns\n\n2. Refactoring Recommendations:\n   - Structural improvements\n   - Readability enhancements\n   - Performance optimizations\n   - Design pattern suggestions\n\n3. Refactored Code:\n   - Provide a clean, refactored version of the code with comments explaining key changes\n\n4. Additional Best Practices:\n   - Testing suggestions\n   - Documentation recommendations\n   - Maintenance considerations",
+  "categories": [
+    "software development",
+    "code quality",
+    "programming"
+  ],
+  "rating": 88,
+  "analysis": "This prompt provides a clear structure for code review and refactoring, ensuring comprehensive feedback that addresses multiple aspects of code quality.",
+  "strengths": [
+    "Structured format ensures comprehensive analysis",
+    "Requests both feedback and concrete solutions",
+    "Includes considerations beyond just the code itself",
+    "Adaptable to different programming languages"
+  ],
+  "weaknesses": [
+    "Could benefit from language-specific variations",
+    "Might need adjustment for very large code snippets"
+  ],
+  "instructions": "Replace [PASTE CODE HERE] with the code snippet you want to refactor. Specify the programming language if it's not obvious from the syntax.",
+  "createdBy": "Development Team",
+  "createdAt": "2023-08-20",
+  "updatedAt": "2024-01-15"
+}

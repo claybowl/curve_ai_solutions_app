@@ -1,0 +1,23 @@
+{
+  "id": "risk-management-system",
+  "title": "Risk Management System",
+  "description": "Add safeguards to prevent excessive losses and protect trading capital during adverse market conditions.",
+  "categories": [
+    "algorithmic trading",
+    "risk management",
+    "finance"
+  ],
+  "rating": 90,
+  "content": "Design a multi-level risk management system that monitors trading activity and automatically intervenes when [RISK_CONDITIONS] are detected. Include per-strategy controls, account-level protections, and market condition filters. Make risk parameters configurable and implement a notification system for risk events.",
+  "analysis": "Effective risk management is critical for long-term trading success. This prompt addresses the creation of multi-layered protections that operate at different levels of the system. The focus on automatic intervention, configurability, and notifications creates a comprehensive safety framework that can prevent catastrophic losses from strategy failures or adverse market conditions.",
+  "strengths": [
+    "Provides critical protection against losses",
+    "Implements multi-layered safeguards",
+    "Includes automatic intervention mechanisms",
+    "Offers configurable risk parameters"
+  ],
+  "example": "Design a multi-level risk management system that monitors trading activity and automatically intervenes when excessive drawdown, unusual trade frequency, or adverse market conditions are detected. Include per-strategy controls (such as pausing after consecutive losses), account-level protections (maximum daily drawdown limits), and market condition filters (volatility-based position sizing). Make risk parameters configurable and implement a notification system for risk events that alerts the appropriate team members based on severity.",
+  "createdBy": "Trading Systems Team",
+  "createdAt": "2024-02-12",
+  "updatedAt": "2024-03-30"
+}
