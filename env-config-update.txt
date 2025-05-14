@@ -1,0 +1,7 @@
+# To fix the NextAuth login issue, update your .env.local file with:
+
+NEXTAUTH_URL='http://localhost:3000'
+NEXTAUTH_SECRET='fce0f8af7e21c4c8d6f372586d9db4e2a25c3b7fa9c1d2340f6a84b5f7e9d1c3'
+
+# Note: Make sure there's no trailing slash in the NEXTAUTH_URL
+# This configuration is specifically for local development 

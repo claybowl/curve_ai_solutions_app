@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -21,109 +22,29 @@ import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: session, status } = useSession()
   const [error, setError] = useState("")
   const [retryCount, setRetryCount] = useState(0)
 
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        // Get token from localStorage
-        const token = localStorage.getItem("admin-token")
-
-        if (!token) {
-          console.log("No token found, redirecting to login")
-          router.push("/auth/signin")
-          return
-        }
-
-        // Create a fallback user object from the token
-        const [userId, role] = token.split(":")
-        const fallbackUser = {
-          id: userId || "1", // Default to ID 1 if parsing fails
-          role: role || "client",
-          first_name: "Demo",
-          last_name: "User",
-          email: "demo@curveai.com",
-          company_name: "Curve AI Demo",
-        }
-
-        try {
-          // Add a timeout to the fetch request
-          const controller = new AbortController()
-          const timeoutId = setTimeout(() => controller.abort(), 3000)
-
-          // Try to fetch user data from API with error handling
-          const res = await fetch(`/api/user/${userId || "1"}`, {
-            signal: controller.signal,
-            // Add cache: 'no-store' to prevent caching issues
-            cache: "no-store",
-            // Add a timestamp to prevent caching
-            headers: {
-              "Cache-Control": "no-cache",
-              Pragma: "no-cache",
-              "X-Timestamp": Date.now().toString(),
-            },
-          })
-
-          clearTimeout(timeoutId)
-
-          if (!res.ok) {
-            console.warn(`API returned status ${res.status}, using fallback user data`)
-            setUser(fallbackUser)
-            return
-          }
-
-          const data = await res.json()
-
-          if (data.user) {
-            setUser(data.user)
-            if (data._fallback) {
-              console.warn("Using fallback data from API")
-            }
-          } else {
-            console.warn("API response missing user data, using fallback")
-            setUser(fallbackUser)
-          }
-        } catch (apiError) {
-          console.error("API error:", apiError)
-          // Use fallback user data on API error
-          setUser(fallbackUser)
-          console.warn("Using fallback user data due to API error")
-        }
-      } catch (err) {
-        console.error("Dashboard error:", err)
-        setError("Failed to load dashboard. Please try again later.")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchUserData()
-  }, [router, retryCount])
-
   const handleRetry = () => {
-    setLoading(true)
     setError("")
     setRetryCount((prev) => prev + 1)
   }
 
   const handleLogout = () => {
-    // Clear authentication data
-    localStorage.removeItem("admin-token")
-    sessionStorage.removeItem("user-data")
-
-    // Call the logout API to clear cookies
-    fetch("/api/logout", { method: "POST" })
-      .catch((err) => console.error("Error during logout:", err))
-      .finally(() => {
-        // Redirect to home page
-        router.push("/")
-      })
+    signOut({ callbackUrl: "/" })
   }
 
-  if (loading) {
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
+      </div>
+    )
+  }
+
+  if (status === "unauthenticated") {
+    router.push("/login")
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
@@ -147,7 +68,7 @@ export default function DashboardPage() {
                 Retry
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/auth/signin">Return to Login</Link>
+                <Link href="/login">Return to Login</Link>
               </Button>
             </div>
           </CardContent>
@@ -155,6 +76,8 @@ export default function DashboardPage() {
       </div>
     )
   }
+
+  const user = session?.user
 
   return (
     <div className="container py-8">
@@ -187,9 +110,9 @@ export default function DashboardPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold">
-                Welcome, {user?.first_name} {user?.last_name}
+                Welcome, {user?.firstName || user?.name?.split(' ')[0]} {user?.lastName || user?.name?.split(' ')[1] || ''}
               </h2>
-              <p className="text-gray-500">{user?.company_name || "Your Company"}</p>
+              <p className="text-gray-500">{user?.company || "Your Company"}</p>
             </div>
           </div>
           <p className="text-gray-600">

@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { signIn, useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,8 +15,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function SignInPage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const searchParams = useSearchParams()
   const registered = searchParams?.get("registered") === "true"
+  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
 
   // Use demo credentials by default for easier testing
   const [email, setEmail] = useState("demo@curveai.com")
@@ -24,56 +27,45 @@ export default function SignInPage() {
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log("User already authenticated, redirecting to:", callbackUrl)
+      router.push(callbackUrl)
+    }
+  }, [status, router, callbackUrl])
+
   useEffect(() => {
     if (registered) {
       setSuccessMessage("Account created successfully! Please sign in.")
     }
   }, [registered])
 
-  // Update the handleSubmit function to store user data in sessionStorage
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
 
     try {
-      // Use the simple-login API that works
-      const res = await fetch("/api/simple-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      console.log("Attempting login with NextAuth...")
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      const data = await res.json()
+      console.log("Login result:", result)
 
-      if (res.ok) {
-        console.log("Login successful:", data)
-
-        // Store token in localStorage as a backup
-        if (data.token) {
-          localStorage.setItem("admin-token", data.token)
-        }
-
-        // Store user data in sessionStorage
-        if (data.user) {
-          sessionStorage.setItem("user-data", JSON.stringify(data.user))
-        }
-
+      if (result?.error) {
+        setError(`Login failed: ${result.error}`)
+      } else {
         // Show success message briefly before redirect
         setSuccessMessage("Login successful, redirecting...")
-
-        // Redirect based on role
-        setTimeout(() => {
-          if (data.user?.role === "admin") {
-            router.push("/admin")
-          } else {
-            router.push("/dashboard")
-          }
-        }, 500)
-      } else {
-        setError(data.error || "Authentication failed")
+        
+        // Force a session refresh
+        console.log("Login successful, redirecting to:", callbackUrl)
+        router.push(callbackUrl)
+        router.refresh()
       }
     } catch (error) {
       setError("An unexpected error occurred. Please try again.")
@@ -81,6 +73,15 @@ export default function SignInPage() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // If already logged in, don't show the login form
+  if (status === "authenticated") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
+      </div>
+    )
   }
 
   return (

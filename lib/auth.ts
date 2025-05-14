@@ -70,6 +70,7 @@ export const authOptions: NextAuthOptions = {
         token.lastName = user.lastName
         token.role = user.role
       }
+      console.log("JWT callback token:", token)
       return token
     },
     async session({ session, token }) {
@@ -79,6 +80,7 @@ export const authOptions: NextAuthOptions = {
         session.user.lastName = token.lastName as string
         session.user.role = token.role as string
       }
+      console.log("Session callback session:", session)
       return session
     },
   },
@@ -87,7 +89,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: true,
   secret: process.env.NEXTAUTH_SECRET,
 }

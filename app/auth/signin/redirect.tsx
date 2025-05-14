@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-export default function SimpleLoginRedirect() {
+export default function SignInRedirect() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get("callbackUrl")
@@ -14,7 +14,7 @@ export default function SimpleLoginRedirect() {
       ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
       : "/login"
     
-    console.log("Redirecting from deprecated simple-login page to:", redirectUrl)
+    console.log("Redirecting from deprecated signin page to:", redirectUrl)
     router.replace(redirectUrl)
   }, [router, callbackUrl])
   
@@ -23,4 +23,4 @@ export default function SimpleLoginRedirect() {
       <p className="text-gray-500">Redirecting to login page...</p>
     </div>
   )
-}
+} 

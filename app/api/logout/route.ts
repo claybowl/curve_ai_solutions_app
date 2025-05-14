@@ -3,9 +3,10 @@ import { cookies } from "next/headers"
 
 export async function POST() {
   // Clear all auth cookies
-  cookies().delete("next-auth.session-token")
-  cookies().delete("admin-auth")
-  cookies().delete("simple-admin-auth")
+  const cookieStore = cookies()
+  await cookieStore.delete("next-auth.session-token")
+  await cookieStore.delete("admin-auth")
+  await cookieStore.delete("simple-admin-auth")
 
   // Return success response
   return NextResponse.json({

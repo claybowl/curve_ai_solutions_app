@@ -2,8 +2,9 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { signIn, useSession } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,10 +14,22 @@ import { AlertCircle, Loader2 } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
+  
   const [email, setEmail] = useState("admin@curveai.com")
   const [password, setPassword] = useState("admin123")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  // Check if already logged in
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log("User already authenticated, redirecting to:", callbackUrl)
+      router.push(callbackUrl)
+    }
+  }, [status, router, callbackUrl])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,30 +37,38 @@ export default function LoginPage() {
     setError("")
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      console.log("Attempting login with credentials...")
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      const data = await res.json()
+      console.log("Login result:", result)
 
-      if (res.ok) {
-        // Store token in localStorage
-        if (data.token) {
-          localStorage.setItem("admin-token", data.token)
-        }
-
-        // Redirect to admin dashboard
-        router.push("/admin")
+      if (result?.error) {
+        setError(`Login failed: ${result.error}`)
       } else {
-        setError(`Login failed: ${data.error || "Unknown error"}`)
+        // Force a session refresh
+        console.log("Login successful, redirecting to:", callbackUrl)
+        router.push(callbackUrl)
+        router.refresh()
       }
     } catch (error) {
+      console.error("Login error:", error)
       setError(`An unexpected error occurred: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // If already logged in, don't show the login form
+  if (status === "authenticated") {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
+      </div>
+    )
   }
 
   return (

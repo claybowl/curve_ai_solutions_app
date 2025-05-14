@@ -21,13 +21,6 @@ interface AssessmentFormProps {
 }
 
 export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
-  ;<style jsx>{`
-  .rating-label input:checked + span {
-    background-color: #0076FF;
-    color: white;
-    border-color: #0076FF;
-  }
-`}</style>
   const router = useRouter()
   const [formData, setFormData] = useState<{ [key: number]: string }>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -91,7 +84,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
   }
 
   return (
-    <Card className="border-2 border-[#0076FF]">
+    <Card className="border-2 border-[#0076FF] dark:border-[#0076FF]/70">
       <CardHeader className="bg-gradient-to-r from-[#0076FF] to-[#1A365D] text-white">
         <CardTitle className="text-2xl">AI Readiness Assessment</CardTitle>
       </CardHeader>
@@ -105,9 +98,9 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
             const questionType = getQuestionType(question, index)
 
             return (
-              <div key={question.id} className="mb-8 p-4 border border-gray-100 rounded-lg bg-white shadow-sm">
+              <div key={question.id} className="mb-8 p-4 border border-gray-100 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
                 <div className="mb-3">
-                  <span className="inline-block bg-[#0076FF]/10 text-[#0076FF] text-xs font-medium px-2 py-1 rounded-full mb-2">
+                  <span className="inline-block bg-[#0076FF]/10 dark:bg-[#0076FF]/20 text-[#0076FF] dark:text-[#3B9DFF] text-xs font-medium px-2 py-1 rounded-full mb-2">
                     {question.category}
                   </span>
                   <Label htmlFor={`question_${question.id}`} className="text-lg font-medium block mb-2">
@@ -117,7 +110,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
 
                 {questionType === "text" && (
                   <div className="space-y-2">
-                    <p className="text-sm text-gray-500 italic mb-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-2">
                       Please provide a detailed response. Your insights here will significantly impact your assessment
                       results.
                     </p>
@@ -126,14 +119,14 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
                       name={`question_${question.id}`}
                       placeholder="Enter your detailed response..."
                       onChange={(e) => handleChange(question.id, e.target.value)}
-                      className="min-h-[150px] border-gray-200 focus:border-[#0076FF] focus:ring-1 focus:ring-[#0076FF]"
+                      className="min-h-[150px] border-gray-200 dark:border-gray-700 focus:border-[#0076FF] focus:ring-1 focus:ring-[#0076FF]"
                     />
                   </div>
                 )}
 
                 {questionType === "multiple-choice" && (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-500 italic mb-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-2">
                       Select the option that best describes your situation:
                     </p>
                     {[
@@ -152,7 +145,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
                           onChange={(e) => handleChange(question.id, e.target.value)}
                           className="h-4 w-4 text-[#0076FF] focus:ring-[#0076FF]"
                         />
-                        <label htmlFor={`question_${question.id}_option_${i}`} className="ml-2 text-gray-700">
+                        <label htmlFor={`question_${question.id}_option_${i}`} className="ml-2 text-gray-700 dark:text-gray-300">
                           {option}
                         </label>
                       </div>
@@ -162,7 +155,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
 
                 {questionType === "rating" && (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-500 italic mb-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-2">
                       Rate your organization's capability in this area:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -180,7 +173,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
                             onChange={(e) => handleChange(question.id, e.target.value)}
                             className="sr-only"
                           />
-                          <span className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:border-[#0076FF] hover:bg-[#0076FF]/5 cursor-pointer transition-colors peer-checked:bg-[#0076FF] peer-checked:text-white">
+                          <span className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 hover:border-[#0076FF] hover:bg-[#0076FF]/5 dark:hover:bg-[#0076FF]/20 cursor-pointer transition-colors text-gray-700 dark:text-gray-300">
                             {rating}
                           </span>
                         </label>
@@ -191,7 +184,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
 
                 {questionType === "checkbox" && (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-500 italic mb-2">Select all that apply to your organization:</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-2">Select all that apply to your organization:</p>
                     {[
                       "Data collection processes",
                       "Data quality measures",
@@ -216,7 +209,7 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
                           }}
                           className="h-4 w-4 text-[#0076FF] focus:ring-[#0076FF] rounded"
                         />
-                        <label htmlFor={`question_${question.id}_checkbox_${i}`} className="ml-2 text-gray-700">
+                        <label htmlFor={`question_${question.id}_checkbox_${i}`} className="ml-2 text-gray-700 dark:text-gray-300">
                           {option}
                         </label>
                       </div>
@@ -226,12 +219,12 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
 
                 {questionType === "dropdown" && (
                   <div className="space-y-2">
-                    <p className="text-sm text-gray-500 italic mb-2">Select the most appropriate option:</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-2">Select the most appropriate option:</p>
                     <select
                       id={`question_${question.id}`}
                       name={`question_${question.id}`}
                       onChange={(e) => handleChange(question.id, e.target.value)}
-                      className="w-full rounded-md border border-gray-200 py-2 pl-3 pr-10 text-gray-700 focus:border-[#0076FF] focus:outline-none focus:ring-1 focus:ring-[#0076FF]"
+                      className="w-full rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 py-2 pl-3 pr-10 text-gray-700 dark:text-gray-300 focus:border-[#0076FF] focus:outline-none focus:ring-1 focus:ring-[#0076FF]"
                     >
                       <option value="">Select an option</option>
                       <option value="Not started">Not started</option>
@@ -247,16 +240,33 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
           })}
 
           <div className="mt-6">
-            <p className="text-sm text-gray-500 mb-2">Your assessment completion: {progress}%</p>
-            <Progress value={progress} className="mb-6" />
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Your assessment completion: {progress}%</p>
+            <Progress value={progress} className="h-2 bg-gray-100 dark:bg-gray-700" />
+          </div>
+
+          <div className="mt-8 flex justify-between">
+            <Button
+              type="button"
+              onClick={() => router.push("/dashboard")}
+              variant="outline"
+              className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              Cancel
+            </Button>
             <Button
               type="submit"
-              className="w-full bg-[#0076FF] hover:bg-[#0076FF]/90 text-white py-2 h-12 text-lg"
-              disabled={isSubmitting}
+              disabled={isSubmitting || progress < 50}
+              className="bg-[#0076FF] hover:bg-[#0064D6] text-white"
             >
               {isSubmitting ? "Submitting..." : "Submit Assessment"}
             </Button>
           </div>
+
+          {progress < 50 && (
+            <p className="text-sm text-amber-600 dark:text-amber-400 mt-2 text-center">
+              Please complete at least 50% of the assessment before submitting.
+            </p>
+          )}
         </form>
       </CardContent>
     </Card>
