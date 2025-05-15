@@ -27,8 +27,8 @@ export async function getToolsByCategory() {
     const categories = [
       {
         id: "agent-development",
-        name: "AI Agent Development Tools",
-        description: "Build, deploy, and manage intelligent autonomous agents for your business.",
+        name: "AI Agent Development",
+        description: "Designing and deploying custom autonomous agents capable of complex, cross-platform automation with flexible, high-capacity agent infrastructure, seamless integration with phones, text, chat, and data workflows, and advanced decision-making and task orchestration.",
         pattern: ["Agent", "Decision Engine"],
         color: "bg-blue-500",
         icon: "Bot",
@@ -36,7 +36,7 @@ export async function getToolsByCategory() {
       {
         id: "data-visualization",
         name: "Data Visualization Suite",
-        description: "Transform complex data into actionable insights with our advanced visualization tools.",
+        description: "Delivering actionable insights through advanced visual storytelling and analytical tools, including DataLens for live data exploration, VizFlow for pattern discovery, InsightBoard for collaborative metrics sharing, and AI-assisted narrative generation tools.",
         pattern: ["DataLens", "VizFlow", "InsightBoard", "Narrative"],
         color: "bg-purple-500",
         icon: "BarChart",
@@ -44,7 +44,7 @@ export async function getToolsByCategory() {
       {
         id: "trading-systems",
         name: "Trading System Tools",
-        description: "Optimize trading strategies with AI-powered analysis and execution tools.",
+        description: "Advanced AI and algorithmic trading infrastructure for high-performance financial strategies, built around our Know Defeat platform powered by 126 autonomous trading bots operating on NASDAQ with real-time metric-based ranking and fund allocation.",
         pattern: ["Trade", "Market", "Strategy"],
         color: "bg-green-500",
         icon: "LineChart",
@@ -52,7 +52,7 @@ export async function getToolsByCategory() {
       {
         id: "n8n-integration",
         name: "n8n Integration Tools",
-        description: "Seamlessly integrate AI capabilities into your n8n workflows.",
+        description: "Enhancing automation by embedding AI into custom and existing n8n workflows with full-spectrum workflow automation, custom AI agent integration, plug-and-play modules, and support for both simple integrations and complex multi-system orchestration.",
         pattern: ["n8n"],
         color: "bg-orange-500",
         icon: "Workflow",
@@ -60,7 +60,7 @@ export async function getToolsByCategory() {
       {
         id: "low-code",
         name: "Low-Code AI Development Tools",
-        description: "Create sophisticated AI solutions without extensive coding knowledge.",
+        description: "Simplified AI development through intuitive, visual interfaces and automation-first architecture, including our Canvas Interface for drag-and-drop agent design and AiPex System (releasing June 28) with AutoAI, business logic composition, and end-to-end agent deployment.",
         pattern: ["Canvas", "Composer", "AutoAI", "BusinessLogic"],
         color: "bg-teal-500",
         icon: "Code",
@@ -68,7 +68,7 @@ export async function getToolsByCategory() {
       {
         id: "anti-gravity",
         name: "Anti-Gravity Framework Components",
-        description: "Reduce business friction and accelerate processes with our proprietary framework.",
+        description: "Business process optimization and acceleration through automation-first thinking, featuring prototypes like Notion Syncer, Meeting Flow Accelerator, Momentum Pulse dashboard, AutoDoc Agent, and Slack Assistant for SOPs, all designed as modular tools that integrate with your existing productivity stack.",
         pattern: ["Friction", "Orchestrator", "Gravity", "Accelerator"],
         color: "bg-red-500",
         icon: "Zap",
@@ -76,7 +76,7 @@ export async function getToolsByCategory() {
       {
         id: "governance",
         name: "AI Governance and Transparency",
-        description: "Ensure your AI systems are explainable, fair, and compliant with regulations.",
+        description: "Ensuring responsible, ethical, and compliant AI deployments with transparency frameworks, bias detection and mitigation, compliance dashboards, trust and safety modules, and ethical AI playbooks. Currently in prototype phase with advisory support from ethics researchers and legal consultants.",
         pattern: ["Transparency", "Bias", "Compliance", "Trust"],
         color: "bg-indigo-500",
         icon: "Shield",
@@ -84,7 +84,7 @@ export async function getToolsByCategory() {
       {
         id: "industry-solutions",
         name: "Specialized Industry Solutions",
-        description: "Industry-specific AI solutions tailored to your unique business challenges.",
+        description: "Tailored AI solutions designed for specific industries including Finance, Supply Chain, Customer Service, and Healthcare, with deep industry alignment, regulatory-aware development methodologies, and integration-ready architecture for vertical-specific platforms and datasets.",
         pattern: ["Finance", "Supply", "Customer", "Healthcare"],
         color: "bg-amber-500",
         icon: "Building",
