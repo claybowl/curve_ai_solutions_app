@@ -6,6 +6,11 @@ import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 
+// Import styles needed for proper rendering
+import 'react-notion-x/src/styles.css'
+import 'prismjs/themes/prism-tomorrow.css'
+import 'katex/dist/katex.min.css'
+
 // Dynamic imports for components that use browser APIs
 const Code = dynamic(() =>
   import("react-notion-x/build/third-party/code").then((m) => m.Code)
@@ -40,19 +45,27 @@ export function NotionRenderer({ recordMap }: NotionRendererProps) {
 
   try {
     return (
-      <NotionReactRenderer
-        recordMap={recordMap}
-        components={{
-          nextImage: Image,
-          nextLink: Link,
-          Code,
-          Collection,
-          Equation,
-          Modal,
-        }}
-        fullPage={false}
-        darkMode={false}
-      />
+      <div className="notion-renderer">
+        <NotionReactRenderer
+          recordMap={recordMap}
+          components={{
+            nextImage: Image,
+            nextLink: Link,
+            Code,
+            Collection,
+            Equation,
+            Modal,
+          }}
+          fullPage={false}
+          darkMode={false}
+          previewImages={true}
+          showCollectionViewDropdown={false}
+          showTableOfContents={false}
+          minTableOfContentsItems={3}
+          disableHeader={true}
+          className="notion-container"
+        />
+      </div>
     )
   } catch (error) {
     console.error("Error rendering Notion content:", error)

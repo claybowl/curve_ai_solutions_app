@@ -9,8 +9,11 @@ interface BlogPostPageProps {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  // Properly handle params by ensuring they're properly awaited
-  const slug = params?.slug || "";
+  // Fix for Next.js params warning - ensure params is fully resolved
+  const slug = params?.slug;
+  if (!slug) {
+    return notFound();
+  }
   
   try {
     // For placeholder posts defined in the FallbackBlogPosts component

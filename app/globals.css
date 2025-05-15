@@ -227,3 +227,78 @@ body {
   filter: blur(8px);
   box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.05), 0 0 50px 30px rgba(255, 255, 255, 0.02);
 }
+
+/* Notion renderer customizations */
+.notion-renderer {
+  font-family: inherit;
+  color: inherit;
+}
+
+.notion-container {
+  --notion-max-width: 100%;
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Hide Notion page icon and title which are already displayed in our custom layout */
+.notion-frame .notion-page-icon-hero {
+  display: none !important;
+}
+
+.notion-frame .notion-page-no-cover {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.notion-frame .notion-page-has-cover {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.notion-title {
+  display: none !important;
+}
+
+/* Custom styling to match your site's theme */
+.notion-text {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: inherit;
+}
+
+.notion-h1,
+.notion-h2,
+.notion-h3 {
+  font-weight: 600;
+  color: inherit;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.notion-link {
+  color: #3182ce;
+  text-decoration: none;
+}
+
+.notion-link:hover {
+  text-decoration: underline;
+}
+
+/* Fix code block styling */
+.notion-code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.9em;
+}
+
+/* Better table styling */
+.notion-collection {
+  margin: 1.5em 0;
+}
+
+.notion-collection-header {
+  padding: 0.75em;
+}
+
+.notion-collection-page-properties {
+  font-size: 0.875rem;
+}
