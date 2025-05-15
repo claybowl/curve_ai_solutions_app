@@ -2,14 +2,15 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
 
-export default function DebugLoginPage() {
+function DebugLoginContent() {
   const router = useRouter()
   const [email, setEmail] = useState("admin@curveai.com")
   const [password, setPassword] = useState("admin123")
@@ -86,5 +87,17 @@ export default function DebugLoginPage() {
         </Card>
       )}
     </div>
+  )
+}
+
+export default function DebugLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
+      </div>
+    }>
+      <DebugLoginContent />
+    </Suspense>
   )
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-export default function SignInRedirect() {
+function SignInRedirectContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get("callbackUrl")
@@ -22,5 +22,15 @@ export default function SignInRedirect() {
     <div className="flex min-h-screen items-center justify-center">
       <p className="text-gray-500">Redirecting to login page...</p>
     </div>
+  )
+}
+
+export default function SignInRedirect() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">
+      <p className="text-gray-500">Loading...</p>
+    </div>}>
+      <SignInRedirectContent />
+    </Suspense>
   )
 } 
