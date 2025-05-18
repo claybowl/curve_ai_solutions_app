@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(if [ -f /mnt/c/Users/clayb/Desktop/CurveAI/curve_ai_solutions_app/app/actions/permission-actions.ts ])",
+      "Bash(then echo \"File exists\")",
+      "Bash(else echo \"File does not exist\")",
+      "Bash(fi)",
+      "Bash(grep:*)"
+    ],
+    "deny": []
+  }
+}

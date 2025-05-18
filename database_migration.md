@@ -1,48 +1,42 @@
-Ok, Chat. Since I migrated here from v0, I'm going to feed you a bunch of my .env variables so that I can hopefully connect to my database in my dev environment here, locally. That should work, right? I'm not *exactly* sure what information you need, so I'm going to give you everything. Please put it where it needs to go and provide me detailed instructions on how to access my db through my app. I really need to work on my auth system:
+# Database Migration Documentation
 
+This document provides details about the database configuration, connection methods, and schema updates.
 
-## env.local
+## Database Connection
 
+The application uses a PostgreSQL database hosted on Neon.tech. Below are the environment variables and connection methods used:
+
+### Environment Variables
+
+Add the following variables to your `.env.local` file:
+
+```
 # Recommended for most uses
-DATABASE_URL=postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgres://username:password@hostname/database?sslmode=require
 
 # For uses requiring a connection without pgbouncer
-DATABASE_URL_UNPOOLED=postgresql://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq.us-east-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL_UNPOOLED=postgresql://username:password@hostname/database?sslmode=require
+```
 
-# Parameters for constructing your own connection string
-PGHOST=ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech
-PGHOST_UNPOOLED=ep-holy-bush-a4psfbzq.us-east-1.aws.neon.tech
-PGUSER=neondb_owner
-PGDATABASE=neondb
-PGPASSWORD=npg_5NTbPEXdQ1ku
+### Connection Methods
 
-# Parameters for Vercel Postgres Templates
-POSTGRES_URL=postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
-POSTGRES_URL_NON_POOLING=postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq.us-east-1.aws.neon.tech/neondb?sslmode=require
-POSTGRES_USER=neondb_owner
-POSTGRES_HOST=ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech
-POSTGRES_PASSWORD=npg_5NTbPEXdQ1ku
-POSTGRES_DATABASE=neondb
-POSTGRES_URL_NO_SSL=postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech/neondb
-POSTGRES_PRISMA_URL=postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech/neondb?connect_timeout=15&sslmode=require
+The application primarily uses the Neon serverless driver for database queries:
 
-
-## psql
-
-psql "postgres://neondb_owner:npg_5NTbPEXdQ1ku@ep-holy-bush-a4psfbzq-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
-
-## Neon serverless driver:
-
+```javascript
 import { neon } from "@neondatabase/serverless";
 
 export async function getData() {
     const sql = neon(process.env.DATABASE_URL);
-    const data = await sql`SELECT * FROM posts;`;
+    const data = await sql`SELECT * FROM table_name;`;
     return data;
 }
+```
 
-## node-postgres:
+Other connection options include:
 
+#### Using node-postgres
+
+```javascript
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -55,52 +49,74 @@ const pool = new Pool({
 async function getData() {
   const client = await pool.connect();
   try {
-    const { rows } = await client.query('SELECT * FROM posts');
+    const { rows } = await client.query('SELECT * FROM table_name');
     return rows;
   } finally {
     client.release();
   }
 }
+```
 
-export default async function Page() {
-  const data = await getData();
-  return (
-    <div>
-      {data.map((post, index) => (
-        <div key={index}>
-          <h2>{post.title}</h2>
-          <p>{post.content}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
+#### Using postgres.js
 
-
-## postgres.js:
-
+```javascript
 import postgres from 'postgres';
 
-const sql = postgres(process.env.DATABASE_URL,  { ssl: 'verify-full' });
+const sql = postgres(process.env.DATABASE_URL, { ssl: 'verify-full' });
+```
 
+## Schema Updates (Phase 2)
 
-## Drizzle:
+The application has been enhanced with additional tables to support blog posts, prompt libraries, AI tools, and a comprehensive permissions system.
 
-// src/db.ts
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
-import { config } from "dotenv";
+### New Tables Added
 
-config({ path: ".env" }); // or .env.local
+1. **Blog Posts (`blog_posts`)**
+   - Store blog content with support for Notion integration
+   - Supports tagging and categorization
+   - Tracks metrics like view count
 
-const sql = neon(process.env.DATABASE_URL!);
-export const db = drizzle({ client: sql });
+2. **Prompt Library (`prompts`)**
+   - Stores AI prompts with categorization and versioning
+   - Supports public/private visibility
+   - Includes a related `user_saved_prompts` junction table for bookmarking
 
+3. **AI Tools (`ai_tools`)**
+   - Manages available AI tool definitions
+   - Tracks API endpoints and metadata
+   - Supports categorization for UI organization
 
-## Prisma:
+4. **Role-Based Access Control**
+   - Enhanced permissions system with:
+     - Permissions table (`permissions`)
+     - Roles table (`roles`)
+     - Junction tables for role-permission and user-role relationships
+     - Support for direct user permission overrides
 
-// prisma/schema.prisma
-datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-}
+### Applying Schema Updates
+
+To apply these schema changes to your database, run:
+
+```bash
+node scripts/apply-db-updates.js
+```
+
+This script provides two methods:
+1. Using the `psql` command-line tool (if installed)
+2. Using the Neon serverless driver directly (fallback method)
+
+The schema update SQL is located in `db-schema-updates.sql`.
+
+### Data Models
+
+TypeScript interfaces for these new entities are defined in:
+- `types/blog.ts` - Blog post types
+- `types/prompts.ts` - Prompt library types
+- `types/tools.ts` - AI tools types
+- `types/permissions.ts` - Permissions and roles types
+
+Database access functions are implemented in:
+- `lib/db-blog.ts` - Blog post data access
+- `lib/db-prompts.ts` - Prompt library data access
+- `lib/db-tools.ts` - AI tools data access
+- `lib/db-permissions.ts` - Permissions system data access
