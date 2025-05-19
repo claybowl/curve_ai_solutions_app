@@ -249,3 +249,112 @@ Thank you again for your time and consideration.
 Best regards,
 Clayton ChristianFounder & CTO, Curve AI Solutions(539) 424-0777https://curveaisolutions.vercel.app/
 
+### About Us
+
+t Curve AI Solutions, we're not just another tech company. We're a team of innovators, problem-solvers, and business enthusiasts who believe that artificial intelligence should be accessible, practical, and valuable for businesses of all sizes—including yours.
+
+Our Story
+Founded in Tulsa with a simple yet powerful vision: to demystify AI and make it work for real businesses facing real challenges. We saw too many small business owners feeling left behind by the AI revolution—either intimidated by the technical complexity or unsure how this technology could actually improve their bottom line.
+
+That's when we asked ourselves: What if AI could be both powerful AND approachable? What if we could translate the complex world of artificial intelligence into solutions that any business owner could understand, implement, and benefit from immediately?
+
+What We Do
+We create custom AI chatbots and workflow solutions (we call them Agentic AI Solutions) that handle the mundane, repetitive tasks consuming your valuable time. Our CurveAI technology doesn't just process data—it understands context, learns your business needs, and communicates with a personality tailored to your company culture.
+
+Simplify Complex Processes
+We translate technical concepts into everyday language that anyone can understand.
+
+Automate Data Analysis
+We automate data analysis and integration that would otherwise take hours of manual work.
+
+Reduce Operational Costs
+We streamline workflows and eliminate inefficiencies to reduce your operational costs.
+
+Free Up Your Time
+We help you focus on what truly matters—growing your business and serving your customers.
+
+Why Small Business Owners Choose Us
+Unlike large corporate AI solutions that require teams of engineers to implement, or basic chatbots that can only follow simple scripts, our technology strikes the perfect balance: sophisticated enough to deliver real results, simple enough that you don't need a computer science degree to use it.
+
+When you work with Curve AI Solutions, you get:
+
+Practical AI tools designed for your specific business challenges—not theoretical capabilities
+Solutions that speak human—no technical jargon, no endless documentation
+Measurable results with clear ROI—we're about improving your business, not just showcasing fancy technology
+A partner who understands your business needs and translates them into effective AI implementations
+Our Approach
+We believe in starting with your business problems, not with technology. Our process is straightforward:
+
+Listen to understand your specific challenges and goals
+Design a customized AI solution that addresses your unique needs
+Implement the technology seamlessly into your existing workflows
+Measure the results to ensure you're getting real value
+Refine the solution based on feedback and changing business needs
+The Magic Behind Our Solutions
+While we keep the technical talk to a minimum when working with clients, rest assured that under the hood, our solutions leverage cutting-edge AI frameworks and advanced software engineering. Our team brings expertise in machine learning, natural language processing, and data integration—all so you don't have to.
+
+Community Commitment
+We're deeply invested in the Tulsa business community and beyond. Through our AI Literacy Program, we're helping local business leaders, professionals, and interested parties understand and leverage AI technologies. Our seminars, online content, and collaborations with local businesses bring AI education closer to where people live and work.
+
+By building strategic partnerships with other tech companies, educational institutions, and industry leaders, we're creating an ecosystem where businesses of all sizes can thrive in the digital age.
+
+What Sets Us Apart
+The difference is in our philosophy: we believe AI should work for you, not the other way around. Many AI companies make you adapt to their technology; we adapt our technology to fit your business.
+
+Our solutions don't require you to learn new systems, hire technical staff, or completely overhaul your operations. Instead, we meet you where you are and enhance what you're already doing.
+
+And unlike impersonal chatbots or generic AI tools, our solutions come with personalities that reflect your brand and create engaging experiences for both your team and your customers.
+
+Meet Our Team
+Founders Austin and Clayton
+Clayton Christian
+Founder & CTO
+
+Machine Learning Engineering diploma holder with extreme creativity and dedication to development. AI visionary with extensive experience in building agent-based systems and trading infrastructure.
+
+Austin Belcheff
+Founder & CEO
+
+Business graduate from Oklahoma State University and a creative force driving innovation within the company.
+
+Our Core Values
+Innovation
+We constantly push the boundaries of what's possible with AI agent technology.
+
+Accessibility
+We make advanced AI solutions accessible to businesses of all sizes.
+
+Transparency
+We believe in transparent, data-driven solutions with clear insights and measurable results.
+
+Excellence
+We strive for excellence in every aspect of our products and services.
+
+Ready to Transform Your Business?
+Imagine significantly reducing your workload, automating data analysis, and integrating information across your systems—all while maintaining the human touch that makes your business special.
+
+That's not just a dream; it's what we deliver every day to businesses like yours.
+
+Whether you're looking to streamline customer service, automate administrative tasks, or gain insights from your business data without the headache, we have the expertise, tools, and approach to make it happen.
+
+Let's take the first step together toward a more efficient, productive, and profitable future for your business. The AI revolution doesn't have to be complicated or confusing—with Curve AI Solutions as your partner, it can be the competitive advantage you've been looking for.
+
+Our Roadmap
+February 28, 2025
+Databases Complete
+Core database infrastructure with bot_metric table implementation
+March 29, 2025
+AiGent® System Launch
+Release of our proprietary AI agent orchestration system
+April 11, 2025
+Lead Supervisor Orchestration Agent
+Deployment of our advanced AI orchestration capabilities
+April 24, 2025
+Industry Expansion
+Onboarding of new clients and industry partners
+May 9th, 2025
+AiPex Launch
+Official launch of our AI Platform Exchange
+June 28, 2025
+Curve AI Official Launch
+Full public launch with stock market integration and real money accounts
