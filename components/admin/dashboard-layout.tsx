@@ -17,13 +17,13 @@ interface DashboardLayoutProps {
   actions?: ReactNode
 }
 
-export default function DashboardLayout({
+const DashboardLayout = ({
   children,
   title,
   description,
   breadcrumbs,
   actions,
-}: DashboardLayoutProps) {
+}: DashboardLayoutProps) => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
@@ -98,3 +98,5 @@ export default function DashboardLayout({
     </div>
   )
 }
+
+export { DashboardLayout }

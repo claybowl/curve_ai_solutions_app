@@ -355,6 +355,12 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config]
 }
 
+// Define Recharts Components
+const LineChart = RechartsPrimitive.LineChart;
+const BarChart = RechartsPrimitive.BarChart;
+const PieChart = RechartsPrimitive.PieChart;
+const AreaChart = RechartsPrimitive.AreaChart;
+
 export {
   ChartContainer,
   ChartTooltip,
@@ -362,4 +368,9 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+  // Export the chart components
+  LineChart,
+  BarChart,
+  PieChart,
+  AreaChart,
 }

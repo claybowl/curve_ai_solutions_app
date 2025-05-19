@@ -6,7 +6,8 @@
       "Bash(then echo \"File exists\")",
       "Bash(else echo \"File does not exist\")",
       "Bash(fi)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
