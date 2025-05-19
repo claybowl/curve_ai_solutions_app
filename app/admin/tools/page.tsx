@@ -282,6 +282,175 @@ export default function ToolsManagementPage() {
     return category ? category.name : categoryId
   }
 
+  // Tools Table Component
+  const ToolsTable = () => {
+    if (isLoading) {
+      return (
+        <div className="py-8 flex justify-center">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+            <p>Loading AI tools...</p>
+          </div>
+        </div>
+      )
+    }
+    
+    if (error) {
+      return (
+        <div className="py-8 text-center">
+          <p className="text-red-500">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={loadTools}>
+            Retry
+          </Button>
+        </div>
+      )
+    }
+    
+    if (tools.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">No AI tools found</p>
+          <Button onClick={() => setIsCreateDialogOpen(true)}>
+            Create Your First Tool
+          </Button>
+        </div>
+      )
+    }
+    
+    return (
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[40%] min-w-[200px]">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => handleSort("name")}
+                  className="flex items-center gap-1"
+                >
+                  Name
+                  {sortColumn === "name" && (
+                    <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
+                  )}
+                </Button>
+              </TableHead>
+              <TableHead className="hidden md:table-cell">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => handleSort("category")}
+                  className="flex items-center gap-1"
+                >
+                  Category
+                  {sortColumn === "category" && (
+                    <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
+                  )}
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => handleSort("isActive")}
+                  className="flex items-center gap-1"
+                >
+                  Status
+                  {sortColumn === "isActive" && (
+                    <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
+                  )}
+                </Button>
+              </TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tools.map(tool => (
+              <TableRow key={tool.id}>
+                <TableCell className="min-w-[200px]">
+                  <div>
+                    <div className="font-medium flex items-center gap-2">
+                      {tool.iconName ? (
+                        <span className="text-muted-foreground">
+                          <Tool className="h-4 w-4" />
+                        </span>
+                      ) : null}
+                      {tool.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                      {tool.description}
+                    </div>
+                    {/* Show category on mobile as part of description */}
+                    <div className="md:hidden mt-2">
+                      {tool.category ? (
+                        <Badge variant="outline" className="capitalize">
+                          {getCategoryName(tool.category)}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Uncategorized</span>
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {tool.category ? (
+                    <Badge variant="outline" className="capitalize">
+                      {getCategoryName(tool.category)}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">Uncategorized</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {tool.isActive ? (
+                    <Badge variant="success" className="bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-800 dark:bg-gray-800/20 dark:text-gray-400">
+                      Inactive
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-right p-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleEditTool(tool)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      {tool.apiEndpoint && (
+                        <DropdownMenuItem onClick={() => window.open(tool.apiEndpoint, '_blank')}>
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          Open API Endpoint
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem onClick={() => handleToggleActive(tool)}>
+                        <Power className="mr-2 h-4 w-4" />
+                        {tool.isActive ? "Deactivate" : "Activate"}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={() => handleDeleteTool(tool)}
+                        className="text-red-600 dark:text-red-400"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    )
+  }
+
   return (
     <DashboardLayout
       title="AI Tools"
@@ -594,175 +763,6 @@ export default function ToolsManagementPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
-      {/* Tools Table Component */}
-      function ToolsTable() {
-        if (isLoading) {
-          return (
-            <div className="py-8 flex justify-center">
-              <div className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                <p>Loading AI tools...</p>
-              </div>
-            </div>
-          )
-        }
-        
-        if (error) {
-          return (
-            <div className="py-8 text-center">
-              <p className="text-red-500">{error}</p>
-              <Button variant="outline" className="mt-4" onClick={loadTools}>
-                Retry
-              </Button>
-            </div>
-          )
-        }
-        
-        if (tools.length === 0) {
-          return (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No AI tools found</p>
-              <Button onClick={() => setIsCreateDialogOpen(true)}>
-                Create Your First Tool
-              </Button>
-            </div>
-          )
-        }
-        
-        return (
-          <div className="rounded-md border overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[40%] min-w-[200px]">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => handleSort("name")}
-                      className="flex items-center gap-1"
-                    >
-                      Name
-                      {sortColumn === "name" && (
-                        <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
-                      )}
-                    </Button>
-                  </TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => handleSort("category")}
-                      className="flex items-center gap-1"
-                    >
-                      Category
-                      {sortColumn === "category" && (
-                        <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
-                      )}
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => handleSort("isActive")}
-                      className="flex items-center gap-1"
-                    >
-                      Status
-                      {sortColumn === "isActive" && (
-                        <ChevronDown className={`h-4 w-4 ${sortDirection === "asc" ? "rotate-180" : ""}`} />
-                      )}
-                    </Button>
-                  </TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {tools.map(tool => (
-                  <TableRow key={tool.id}>
-                    <TableCell className="min-w-[200px]">
-                      <div>
-                        <div className="font-medium flex items-center gap-2">
-                          {tool.iconName ? (
-                            <span className="text-muted-foreground">
-                              <Tool className="h-4 w-4" />
-                            </span>
-                          ) : null}
-                          {tool.name}
-                        </div>
-                        <div className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                          {tool.description}
-                        </div>
-                        {/* Show category on mobile as part of description */}
-                        <div className="md:hidden mt-2">
-                          {tool.category ? (
-                            <Badge variant="outline" className="capitalize">
-                              {getCategoryName(tool.category)}
-                            </Badge>
-                          ) : (
-                            <span className="text-muted-foreground text-xs">Uncategorized</span>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {tool.category ? (
-                        <Badge variant="outline" className="capitalize">
-                          {getCategoryName(tool.category)}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Uncategorized</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {tool.isActive ? (
-                        <Badge variant="success" className="bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
-                          Active
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-gray-100 text-gray-800 dark:bg-gray-800/20 dark:text-gray-400">
-                          Inactive
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right p-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEditTool(tool)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          {tool.apiEndpoint && (
-                            <DropdownMenuItem onClick={() => window.open(tool.apiEndpoint, '_blank')}>
-                              <ExternalLink className="mr-2 h-4 w-4" />
-                              Open API Endpoint
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuItem onClick={() => handleToggleActive(tool)}>
-                            <Power className="mr-2 h-4 w-4" />
-                            {tool.isActive ? "Deactivate" : "Activate"}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => handleDeleteTool(tool)}
-                            className="text-red-600 dark:text-red-400"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )
-      }
     </DashboardLayout>
   )
 }
