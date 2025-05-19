@@ -17,7 +17,7 @@ interface DashboardLayoutProps {
   actions?: ReactNode
 }
 
-export function DashboardLayout({
+export default function DashboardLayout({
   children,
   title,
   description,
