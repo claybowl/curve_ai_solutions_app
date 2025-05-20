@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { 
   LayoutDashboard, Users, FileText, Calendar, Settings, Wrench, 
   UserCog, Lock, LogOut, BookText, Lightbulb, BarChart3, 
-  Library, Bot, Shield, MessageSquare, Menu, X
+  Library, Bot, Shield, MessageSquare, Menu, RefreshCw
 } from "lucide-react"
 import { signOut, getCurrentUser } from "@/lib/supabase"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -95,9 +95,19 @@ const navItems = [
     ],
   },
   {
-    name: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
+    heading: "System",
+    items: [
+      {
+        name: "Settings",
+        href: "/admin/settings",
+        icon: Settings,
+      },
+      {
+        name: "Auth Migration",
+        href: "/admin/migrate-auth",
+        icon: RefreshCw,
+      },
+    ],
   },
 ]
 

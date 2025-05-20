@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,90 +20,173 @@ import {
 import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
-  const router = useRouter()
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [retryCount, setRetryCount] = useState(0)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const [debugInfo, setDebugInfo] = useState("")
 
+  // Add debug information with timestamp
+  const addDebugInfo = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString()
+    setDebugInfo(prev => `${prev}[${timestamp}] ${message}\n`)
+  }
+
   useEffect(() => {
-    async function getSession() {
+    let mounted = true
+    
+    async function initialSessionCheck() {
       try {
-        setDebugInfo("Checking session in dashboard page...")
+        addDebugInfo("Initial session check...")
         const { data, error } = await supabase.auth.getSession()
         
         if (error) {
-          console.error("Dashboard - Session check error:", error.message)
-          setDebugInfo(prev => prev + "\nSession error: " + error.message)
-          setError(error.message)
-          setLoading(false)
-          return
+          addDebugInfo(`Session error: ${error.message}`)
+          if (mounted) setError(error.message)
+          return false
         }
         
         if (data?.session) {
-          setDebugInfo(prev => prev + "\nSession found: " + data.session.user.id)
-          console.log("Dashboard - Session found:", data.session.user.id)
-          setSession(data.session)
+          addDebugInfo(`Session found: ${data.session.user.id}`)
+          if (mounted) setSession(data.session)
+          return true
         } else {
-          setDebugInfo(prev => prev + "\nNo session found, redirecting to login")
-          console.log("Dashboard - No session found, redirecting to login")
-          // If URL has auth_success parameter, show an error instead of immediately redirecting
-          const url = new URL(window.location.href)
-          if (url.searchParams.get("auth_success") === "true") {
-            setError("Authentication appeared to succeed but no session was found. This may be a temporary issue with session cookies.")
-          } else {
-            router.push("/login?callback=/dashboard&reason=no_session")
-          }
+          addDebugInfo("No session found in initial check")
+          return false
         }
-        setLoading(false)
       } catch (err) {
-        console.error("Dashboard - Error checking session:", err)
-        setDebugInfo(prev => prev + "\nError: " + JSON.stringify(err))
-        setError("Error checking authentication status. Please try again.")
-        setLoading(false)
+        addDebugInfo(`Error in initial check: ${(err as Error).message}`)
+        return false
+      } finally {
+        if (mounted) setCheckingAuth(false)
       }
     }
-
-    getSession()
     
-    // Listen for auth state changes
+    async function trySessionRefresh() {
+      try {
+        addDebugInfo("Attempting session refresh...")
+        const { data, error } = await supabase.auth.refreshSession()
+        
+        if (error) {
+          addDebugInfo(`Refresh error: ${error.message}`)
+          return false
+        }
+        
+        if (data?.session) {
+          addDebugInfo(`Session refreshed: ${data.session.user.id}`)
+          if (mounted) setSession(data.session)
+          return true
+        } else {
+          addDebugInfo("No session after refresh")
+          return false
+        }
+      } catch (err) {
+        addDebugInfo(`Error refreshing: ${(err as Error).message}`)
+        return false
+      }
+    }
+    
+    // Initial checks
+    initialSessionCheck().then(async (hasSession) => {
+      if (!hasSession) {
+        // Try a refresh if no session found
+        await trySessionRefresh()
+      }
+      
+      // Regardless of result, we've done what we can
+      if (mounted) setLoading(false)
+    })
+    
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
-        console.log("Dashboard - Auth state change:", event)
-        setDebugInfo(prev => prev + "\nAuth event: " + event)
+        addDebugInfo(`Auth state event: ${event}`)
         
         if (event === 'SIGNED_OUT') {
-          setSession(null)
-          router.push("/login")
-        } else if (event === 'SIGNED_IN' && newSession) {
-          setSession(newSession)
+          if (mounted) {
+            setSession(null)
+            window.location.href = "/login"
+          }
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          if (mounted && newSession) {
+            setSession(newSession)
+          }
         }
       }
     )
     
     return () => {
+      mounted = false
       subscription.unsubscribe()
     }
-  }, [router, retryCount])
+  }, [])
 
-  const handleRetry = () => {
+  const handleRetry = async () => {
+    setLoading(true)
     setError("")
     setDebugInfo("")
-    setLoading(true)
-    setRetryCount((prev) => prev + 1)
+    
+    try {
+      addDebugInfo("Manual retry - checking session")
+      const { data, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        addDebugInfo(`Session error: ${error.message}`)
+        setError(error.message)
+        return
+      }
+      
+      if (data?.session) {
+        addDebugInfo(`Session found: ${data.session.user.id}`)
+        setSession(data.session)
+      } else {
+        addDebugInfo("No session found, attempting refresh")
+        
+        // Try refresh
+        const refreshResult = await supabase.auth.refreshSession()
+        
+        if (refreshResult.error) {
+          addDebugInfo(`Refresh error: ${refreshResult.error.message}`)
+          setError("Failed to refresh session. Please log in again.")
+        } else if (refreshResult.data.session) {
+          addDebugInfo(`Session refreshed: ${refreshResult.data.session.user.id}`)
+          setSession(refreshResult.data.session)
+        } else {
+          addDebugInfo("No session after refresh")
+          setError("No active session. Please log in again.")
+        }
+      }
+    } catch (err) {
+      const errorMessage = (err as Error).message
+      addDebugInfo(`Unexpected error: ${errorMessage}`)
+      setError(`An unexpected error occurred: ${errorMessage}`)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleLogout = async () => {
+    addDebugInfo("Logging out...")
     try {
       await supabase.auth.signOut()
-      router.push("/")
+      window.location.href = "/"
     } catch (error) {
       console.error("Error signing out:", error)
       setError("Error signing out. Please try again.")
     }
   }
 
+  // If waiting for initial auth check
+  if (checkingAuth) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF] mb-4" />
+        <p>Checking authentication...</p>
+      </div>
+    )
+  }
+
+  // If still loading after auth check
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -114,6 +196,7 @@ export default function DashboardPage() {
     )
   }
 
+  // If there's an error
   if (error) {
     return (
       <div className="container py-8">
@@ -124,19 +207,21 @@ export default function DashboardPage() {
               <h2 className="text-lg font-bold">Error Loading Dashboard</h2>
             </div>
             <p>{error}</p>
+            
             {debugInfo && (
               <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
                 <p className="font-medium mb-1">Debug Information:</p>
                 <pre className="whitespace-pre-wrap">{debugInfo}</pre>
               </div>
             )}
+            
             <div className="mt-4 flex gap-4">
               <Button onClick={handleRetry}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Retry
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/login">Return to Login</Link>
+                <Link href="/direct-login">Try Direct Login</Link>
               </Button>
             </div>
           </CardContent>
@@ -145,6 +230,7 @@ export default function DashboardPage() {
     )
   }
   
+  // If not authenticated
   if (!session) {
     return (
       <div className="container py-8">
@@ -155,10 +241,18 @@ export default function DashboardPage() {
               <h2 className="text-lg font-bold">Authentication Required</h2>
             </div>
             <p>You need to be logged in to view this page. Please log in to continue.</p>
+            
+            {debugInfo && (
+              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
+                <p className="font-medium mb-1">Debug Information:</p>
+                <pre className="whitespace-pre-wrap">{debugInfo}</pre>
+              </div>
+            )}
+            
             <div className="mt-4 flex gap-4">
               <Button asChild>
-                <Link href="/login?callbackUrl=/dashboard">
-                  Log In
+                <Link href="/direct-login">
+                  Try Direct Login
                 </Link>
               </Button>
               <Button variant="outline" asChild>
@@ -171,6 +265,7 @@ export default function DashboardPage() {
     )
   }
 
+  // User is authenticated, show the dashboard
   const user = session?.user
 
   return (
@@ -274,6 +369,15 @@ export default function DashboardPage() {
                   Set as Admin
                 </Button>
               </div>
+            </div>
+          )}
+          
+          {debugInfo && (
+            <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
+              <details>
+                <summary className="font-medium mb-1 cursor-pointer">Debug Information</summary>
+                <pre className="whitespace-pre-wrap mt-2">{debugInfo}</pre>
+              </details>
             </div>
           )}
         </CardContent>
