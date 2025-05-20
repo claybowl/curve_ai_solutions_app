@@ -1,13 +1,13 @@
 "use client"
 
-import { ReactNode } from "react"
-import { useSession } from "next-auth/react"
+import { ReactNode, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { getCurrentUser } from "@/lib/supabase"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -25,9 +25,40 @@ const DashboardLayout = ({
   actions,
 }: DashboardLayoutProps) => {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
-  if (status === "loading") {
+  useEffect(() => {
+    async function checkAdminStatus() {
+      try {
+        // Get the current user from Supabase
+        const { user, error } = await getCurrentUser()
+        
+        if (error || !user) {
+          console.error("Error fetching user:", error)
+          router.push("/login")
+          return
+        }
+
+        // Check if user is an admin
+        const isUserAdmin = user.user_metadata?.role === "admin"
+        setIsAdmin(isUserAdmin)
+        
+        if (!isUserAdmin) {
+          router.push("/dashboard")
+        }
+      } catch (err) {
+        console.error("Error checking admin status:", err)
+        router.push("/login")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkAdminStatus()
+  }, [router])
+
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -35,12 +66,7 @@ const DashboardLayout = ({
     )
   }
 
-  if (status === "unauthenticated") {
-    router.push("/login")
-    return null
-  }
-
-  if (session?.user?.role !== "admin") {
+  if (!isAdmin) {
     return (
       <div className="p-6">
         <Card className="border-red-200 my-8">

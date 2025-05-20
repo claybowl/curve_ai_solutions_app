@@ -1,69 +1,57 @@
 "use client"
 
-import type React from "react"
-
-import { Suspense, useState, useEffect } from "react"
+import React, { Suspense, useState, useEffect } from "react"
+import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { signIn, useSession } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Loader2 } from "lucide-react"
+import { SupabaseLoginForm } from "@/components/auth/supabase-login-form"
+import { SupabaseAuthUI } from "@/components/auth/supabase-auth-ui"
+import { Loader2 } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
 function LoginContent() {
   const router = useRouter()
-  const { data: session, status } = useSession()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
-  
-  const [email, setEmail] = useState("admin@curveai.com")
-  const [password, setPassword] = useState("admin123")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const errorMessage = searchParams?.get("error")
+  const [useCustomUI, setUseCustomUI] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(errorMessage)
 
   // Check if already logged in
   useEffect(() => {
-    if (status === "authenticated") {
-      console.log("User already authenticated, redirecting to:", callbackUrl)
-      router.push(callbackUrl)
-    }
-  }, [status, router, callbackUrl])
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-
-    try {
-      console.log("Attempting login with credentials...")
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-
-      console.log("Login result:", result)
-
-      if (result?.error) {
-        setError(`Login failed: ${result.error}`)
-      } else {
-        // Force a session refresh
-        console.log("Login successful, redirecting to:", callbackUrl)
-        router.push(callbackUrl)
-        router.refresh()
+    async function checkSession() {
+      try {
+        console.log("Checking session...")
+        const { data, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError) {
+          console.error("Session error:", sessionError.message)
+          setError(sessionError.message)
+          setIsLoading(false)
+          return
+        }
+        
+        if (data.session) {
+          console.log("User already authenticated, session found:", data.session.user.id)
+          console.log("Redirecting to:", callbackUrl)
+          router.push(callbackUrl)
+        } else {
+          console.log("No active session found")
+        }
+      } catch (error) {
+        console.error("Error checking session:", error)
+        setError("Error checking authentication status")
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error("Login error:", error)
-      setError(`An unexpected error occurred: ${error instanceof Error ? error.message : String(error)}`)
-    } finally {
-      setIsLoading(false)
     }
-  }
+    
+    checkSession()
+  }, [router, callbackUrl, errorMessage])
 
-  // If already logged in, don't show the login form
-  if (status === "authenticated") {
+  // If checking auth state or already logged in, show loading
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
         <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
@@ -72,63 +60,45 @@ function LoginContent() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">Sign in to your account</CardTitle>
+          <CardDescription>
+            Enter your email and password to sign in to your account
+          </CardDescription>
+          {error && (
+            <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded">
+              {error}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@curveai.com"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </Button>
-          </form>
-          <div className="mt-4 text-sm text-center text-gray-500">
+          {useCustomUI ? (
+            <SupabaseLoginForm />
+          ) : (
+            <SupabaseAuthUI />
+          )}
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-4">
+          <button 
+            onClick={() => setUseCustomUI(!useCustomUI)}
+            className="w-full py-2 px-4 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            {useCustomUI 
+              ? "Use Social Login (Google/GitHub)" 
+              : "Use Email/Password Login"}
+          </button>
+          <div className="text-sm text-center">
+            Don't have an account?{" "}
+            <Link href="/auth/signup" className="text-blue-500 hover:underline">
+              Sign up
+            </Link>
+          </div>
+          <div className="mt-2 text-sm text-center text-gray-500">
             <p>Admin users will be redirected to the admin dashboard.</p>
             <p>Regular users will access client features.</p>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">Curve AI Solutions Admin Portal</p>
         </CardFooter>
       </Card>
     </div>

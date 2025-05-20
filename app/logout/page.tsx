@@ -4,23 +4,32 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
+import { signOut } from "@/lib/supabase"
 
 export default function LogoutPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Clear local storage
-    localStorage.removeItem("admin-token")
-
-    // Clear server-side cookies
-    fetch("/api/logout", { method: "POST" })
-      .catch((err) => console.error("Error during logout:", err))
-      .finally(() => {
+    async function handleLogout() {
+      try {
+        // Sign out from Supabase
+        const { error } = await signOut()
+        
+        if (error) {
+          console.error("Error during logout:", error.message)
+        }
+      } catch (err) {
+        console.error("Unexpected error during logout:", err)
+      } finally {
         // Redirect to login page after a short delay
         setTimeout(() => {
-          router.push("/auth/signin")
+          router.push("/login")
+          router.refresh() // Force a refresh to clear any cached pages
         }, 1000)
-      })
+      }
+    }
+    
+    handleLogout()
   }, [router])
 
   return (

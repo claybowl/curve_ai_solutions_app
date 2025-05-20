@@ -9,8 +9,7 @@ import {
   UserCog, Lock, LogOut, BookText, Lightbulb, BarChart3, 
   Library, Bot, Shield, MessageSquare, Menu, X
 } from "lucide-react"
-import { useIsAdmin, logoutUser } from "@/lib/auth-utils"
-import { useSession } from "next-auth/react"
+import { signOut, getCurrentUser } from "@/lib/supabase"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
@@ -104,8 +103,13 @@ const navItems = [
 
 // Main Sidebar Component content for reuse
 function SidebarContent({ pathname, router, onClose }: { pathname: string, router: any, onClose?: () => void }) {
-  const handleLogout = () => {
-    logoutUser(router)
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      router.push("/logout")
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
   }
 
   return (
@@ -207,23 +211,36 @@ function MobileSidebar({ pathname, router }: { pathname: string, router: any }) 
 export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { data: session, status } = useSession()
-  const isAdmin = session?.user?.role === "admin"
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    async function checkAdminStatus() {
+      try {
+        const { user } = await getCurrentUser()
+        setIsAdmin(user?.user_metadata?.role === "admin")
+      } catch (error) {
+        console.error("Error checking admin status:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     setIsMounted(true)
+    checkAdminStatus()
   }, [])
 
   // Redirect non-admin users to dashboard
-  if (status === "authenticated" && !isAdmin) {
-    console.log("Not an admin user, redirecting from sidebar")
-    router.push("/dashboard")
-    return null
-  }
+  useEffect(() => {
+    if (!isLoading && !isAdmin && isMounted) {
+      console.log("Not an admin user, redirecting from sidebar")
+      router.push("/dashboard")
+    }
+  }, [isAdmin, isLoading, isMounted, router])
 
   // Show loading state or nothing while checking session
-  if (status === "loading" || !isMounted) {
+  if (isLoading || !isMounted || !isAdmin) {
     return null
   }
 

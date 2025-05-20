@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { getToken } from "next-auth/jwt"
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
+  // Create a Supabase client configured to use cookies
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req: request, res })
+  
   // Get the pathname of the request
   const path = request.nextUrl.pathname
   
@@ -22,19 +26,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Refresh session if available
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  
+  if (sessionError) {
+    console.error("Session error in middleware:", sessionError.message)
+    // Continue with no session
+  }
+
   // Handle admin routes
   if (path.startsWith("/admin")) {
     try {
       console.log("Middleware: Checking admin access for", path)
-      const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-
-      console.log("Middleware: Token for admin route:", token ? `Found (role: ${token.role})` : "Not found")
-
+      
       // Check if user is authenticated and is an admin
-      if (!token || token.role !== "admin") {
+      if (!session || session.user.user_metadata?.role !== "admin") {
         console.log("Middleware: Redirecting to login from admin route - Not authorized")
         const url = new URL("/login", request.url)
         url.searchParams.set("callbackUrl", encodeURI(request.url))
@@ -54,18 +60,19 @@ export async function middleware(request: NextRequest) {
   if (path === "/dashboard") {
     try {
       console.log("Middleware: Checking auth for dashboard")
-      const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-      })
-
-      console.log("Middleware: Token for dashboard:", token ? "Found" : "Not found")
-
+      console.log("Session exists:", !!session)
+      if (session) {
+        console.log("User ID:", session.user.id)
+        console.log("User email:", session.user.email)
+        console.log("User role:", session.user.user_metadata?.role)
+      }
+      
       // Check if user is authenticated
-      if (!token) {
+      if (!session) {
         console.log("Middleware: Redirecting to login from dashboard - Not authenticated")
         const url = new URL("/login", request.url)
         url.searchParams.set("callbackUrl", encodeURI(request.url))
+        console.log("Redirect URL:", url.toString())
         return NextResponse.redirect(url)
       }
       
@@ -78,7 +85,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  return res
 }
 
 // See "Matching Paths" below to learn more

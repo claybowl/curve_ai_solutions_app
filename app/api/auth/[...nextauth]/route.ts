@@ -1,8 +1,15 @@
-import NextAuth from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { NextResponse } from "next/server"
 
-// Create the handler with proper error handling
-const handler = NextAuth(authOptions)
+// This route is now deprecated as we've switched to Supabase Auth
+// Keeping the route to avoid breaking existing code during transition
+export async function GET(request: Request) {
+  return NextResponse.json({ 
+    error: "This authentication endpoint is deprecated. The application now uses Supabase Auth." 
+  })
+}
 
-// Export the handler for both GET and POST requests
-export { handler as GET, handler as POST }
+export async function POST(request: Request) {
+  return NextResponse.json({ 
+    error: "This authentication endpoint is deprecated. The application now uses Supabase Auth." 
+  })
+}
