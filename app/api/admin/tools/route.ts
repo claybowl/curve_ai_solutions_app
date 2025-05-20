@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllTools, createTool } from "@/lib/db-tools";
 import { AiToolFilter, AiToolFormData } from "@/types/tools";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-config";
+import { verifyAdminRole, getServerUser } from '@/lib/createServerSupabaseClient';
 
 // GET - Fetch all tools with optional filtering
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -56,8 +54,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -76,7 +73,8 @@ export async function POST(request: NextRequest) {
     };
 
     // Get user ID from session
-    const createdBy = session.user?.id ? parseInt(session.user.id as string, 10) : undefined;
+    const user = await getServerUser();
+    const createdBy = user?.id ? parseInt(user.id as string, 10) : undefined;
 
     // Create tool
     const toolId = await createTool(toolData, createdBy);

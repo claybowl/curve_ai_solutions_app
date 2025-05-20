@@ -1,21 +1,11 @@
 import { NextResponse } from "next/server"
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createServerSupabaseClient, verifyAdminRole } from '@/lib/createServerSupabaseClient'
 import { listUsers } from "@/lib/supabase-admin"
 
 export async function GET() {
   try {
     // Check if the current user is an admin
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-    }
-    
-    if (session.user.user_metadata?.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 })
     }
 
@@ -39,16 +29,9 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     // Check if the current user is an admin
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    const supabase = createServerSupabaseClient()
     
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-    }
-    
-    if (session.user.user_metadata?.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 })
     }
 

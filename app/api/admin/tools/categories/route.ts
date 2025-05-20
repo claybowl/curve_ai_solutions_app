@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { getToolCategories } from "@/lib/db-tools";
-import { authOptions } from "@/lib/auth-config";
-import { getServerSession } from "next-auth";
+import { verifyAdminRole } from '@/lib/createServerSupabaseClient';
 
 export async function GET() {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }

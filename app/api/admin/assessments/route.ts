@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
 import { neon } from "@neondatabase/serverless"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { createServerSupabaseClient, verifyAdminRole } from '@/lib/createServerSupabaseClient'
 
 export async function GET() {
   try {
     // Verify user is authenticated and has admin role
-    const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== "admin") {
+    if (!await verifyAdminRole()) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
