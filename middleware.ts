@@ -3,12 +3,18 @@ import type { NextRequest } from "next/server"
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(request: NextRequest) {
-  // Create a Supabase client configured to use cookies
+  // Create a response to modify
   const res = NextResponse.next()
+  
+  // Create a Supabase client configured to use cookies
   const supabase = createMiddlewareClient({ req: request, res })
   
   // Get the pathname of the request
   const path = request.nextUrl.pathname
+  
+  // Add a unique request ID for debugging
+  const requestId = Math.random().toString(36).substring(2, 10)
+  console.log(`[${requestId}] Middleware processing path: ${path}`)
   
   // Handle redirects for deprecated auth routes
   if (path.startsWith("/auth/signin") || path === "/auth/login") {
@@ -27,29 +33,53 @@ export async function middleware(request: NextRequest) {
   }
 
   // Refresh session if available
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-  
-  if (sessionError) {
-    console.error("Session error in middleware:", sessionError.message)
+  try {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    
+    if (sessionError) {
+      console.error(`[${requestId}] Session error in middleware:`, sessionError.message)
+      // Continue with no session
+    }
+    
+    // Log session status
+    if (session) {
+      console.log(`[${requestId}] Authenticated user:`, session.user.id)
+    } else {
+      console.log(`[${requestId}] No active session found`)
+    }
+  } catch (error) {
+    console.error(`[${requestId}] Error retrieving session:`, error)
     // Continue with no session
   }
 
   // Handle admin routes
   if (path.startsWith("/admin")) {
     try {
-      console.log("Middleware: Checking admin access for", path)
+      console.log(`[${requestId}] Checking admin access for`, path)
+      
+      // Get session with a fresh request to ensure we have the latest data
+      const { data: { session } } = await supabase.auth.getSession()
       
       // Check if user is authenticated and is an admin
-      if (!session || session.user.user_metadata?.role !== "admin") {
-        console.log("Middleware: Redirecting to login from admin route - Not authorized")
+      if (!session) {
+        console.log(`[${requestId}] Redirecting to login from admin route - Not authenticated`)
         const url = new URL("/login", request.url)
         url.searchParams.set("callbackUrl", encodeURI(request.url))
         return NextResponse.redirect(url)
       }
       
-      console.log("Middleware: Admin access granted for", path)
+      if (session.user.user_metadata?.role !== "admin") {
+        console.log(`[${requestId}] User authenticated but not admin:`, session.user.email)
+        console.log(`[${requestId}] User metadata:`, JSON.stringify(session.user.user_metadata))
+        const url = new URL("/login", request.url)
+        url.searchParams.set("callbackUrl", encodeURI(request.url))
+        url.searchParams.set("error", "You do not have admin access")
+        return NextResponse.redirect(url)
+      }
+      
+      console.log(`[${requestId}] Admin access granted for:`, session.user.email)
     } catch (error) {
-      console.error("Error in middleware (admin route):", error)
+      console.error(`[${requestId}] Error in middleware (admin route):`, error)
       // If there's an error, redirect to login as a fallback
       const url = new URL("/login", request.url)
       return NextResponse.redirect(url)
@@ -59,26 +89,30 @@ export async function middleware(request: NextRequest) {
   // Handle dashboard routes
   if (path === "/dashboard") {
     try {
-      console.log("Middleware: Checking auth for dashboard")
-      console.log("Session exists:", !!session)
+      console.log(`[${requestId}] Checking auth for dashboard`)
+      
+      // Get session with a fresh request to ensure we have the latest data
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      console.log(`[${requestId}] Session exists:`, !!session)
       if (session) {
-        console.log("User ID:", session.user.id)
-        console.log("User email:", session.user.email)
-        console.log("User role:", session.user.user_metadata?.role)
+        console.log(`[${requestId}] User ID:`, session.user.id)
+        console.log(`[${requestId}] User email:`, session.user.email)
+        console.log(`[${requestId}] User role:`, session.user.user_metadata?.role || 'none')
       }
       
       // Check if user is authenticated
       if (!session) {
-        console.log("Middleware: Redirecting to login from dashboard - Not authenticated")
+        console.log(`[${requestId}] Redirecting to login from dashboard - Not authenticated`)
         const url = new URL("/login", request.url)
         url.searchParams.set("callbackUrl", encodeURI(request.url))
-        console.log("Redirect URL:", url.toString())
+        console.log(`[${requestId}] Redirect URL:`, url.toString())
         return NextResponse.redirect(url)
       }
       
-      console.log("Middleware: Dashboard access granted")
+      console.log(`[${requestId}] Dashboard access granted for:`, session.user.email)
     } catch (error) {
-      console.error("Error in middleware (dashboard):", error)
+      console.error(`[${requestId}] Error in middleware (dashboard):`, error)
       // If there's an error, redirect to login as a fallback
       const url = new URL("/login", request.url)
       return NextResponse.redirect(url)
@@ -88,7 +122,15 @@ export async function middleware(request: NextRequest) {
   return res
 }
 
-// See "Matching Paths" below to learn more
+// Configure the middleware matcher
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard", "/api/:path*", "/auth/signin", "/auth/login"],
+  matcher: [
+    "/admin/:path*", 
+    "/dashboard", 
+    "/api/:path*", 
+    "/auth/signin", 
+    "/auth/login",
+    "/profile",
+    "/auth/callback"
+  ],
 }

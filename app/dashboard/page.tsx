@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { supabase } from "@/lib/supabase"
 import {
   FileText,
   PlusCircle,
@@ -22,32 +22,94 @@ import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const [session, setSession] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [retryCount, setRetryCount] = useState(0)
+  const [debugInfo, setDebugInfo] = useState("")
+
+  useEffect(() => {
+    async function getSession() {
+      try {
+        setDebugInfo("Checking session in dashboard page...")
+        const { data, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error("Dashboard - Session check error:", error.message)
+          setDebugInfo(prev => prev + "\nSession error: " + error.message)
+          setError(error.message)
+          setLoading(false)
+          return
+        }
+        
+        if (data?.session) {
+          setDebugInfo(prev => prev + "\nSession found: " + data.session.user.id)
+          console.log("Dashboard - Session found:", data.session.user.id)
+          setSession(data.session)
+        } else {
+          setDebugInfo(prev => prev + "\nNo session found, redirecting to login")
+          console.log("Dashboard - No session found, redirecting to login")
+          // If URL has auth_success parameter, show an error instead of immediately redirecting
+          const url = new URL(window.location.href)
+          if (url.searchParams.get("auth_success") === "true") {
+            setError("Authentication appeared to succeed but no session was found. This may be a temporary issue with session cookies.")
+          } else {
+            router.push("/login?callback=/dashboard&reason=no_session")
+          }
+        }
+        setLoading(false)
+      } catch (err) {
+        console.error("Dashboard - Error checking session:", err)
+        setDebugInfo(prev => prev + "\nError: " + JSON.stringify(err))
+        setError("Error checking authentication status. Please try again.")
+        setLoading(false)
+      }
+    }
+
+    getSession()
+    
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, newSession) => {
+        console.log("Dashboard - Auth state change:", event)
+        setDebugInfo(prev => prev + "\nAuth event: " + event)
+        
+        if (event === 'SIGNED_OUT') {
+          setSession(null)
+          router.push("/login")
+        } else if (event === 'SIGNED_IN' && newSession) {
+          setSession(newSession)
+        }
+      }
+    )
+    
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router, retryCount])
 
   const handleRetry = () => {
     setError("")
+    setDebugInfo("")
+    setLoading(true)
     setRetryCount((prev) => prev + 1)
   }
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" })
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push("/")
+    } catch (error) {
+      console.error("Error signing out:", error)
+      setError("Error signing out. Please try again.")
+    }
   }
 
-  if (status === "loading") {
+  if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
-      </div>
-    )
-  }
-
-  if (status === "unauthenticated") {
-    router.push("/login")
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF] mb-4" />
+        <p>Loading dashboard...</p>
       </div>
     )
   }
@@ -59,9 +121,15 @@ export default function DashboardPage() {
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 text-red-600 mb-4">
               <AlertCircle className="h-5 w-5" />
-              <h2 className="text-lg font-bold">Error</h2>
+              <h2 className="text-lg font-bold">Error Loading Dashboard</h2>
             </div>
             <p>{error}</p>
+            {debugInfo && (
+              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
+                <p className="font-medium mb-1">Debug Information:</p>
+                <pre className="whitespace-pre-wrap">{debugInfo}</pre>
+              </div>
+            )}
             <div className="mt-4 flex gap-4">
               <Button onClick={handleRetry}>
                 <RefreshCw className="mr-2 h-4 w-4" />
@@ -69,6 +137,32 @@ export default function DashboardPage() {
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/login">Return to Login</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+  
+  if (!session) {
+    return (
+      <div className="container py-8">
+        <Card className="border-yellow-200 mb-8">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 text-yellow-600 mb-4">
+              <AlertCircle className="h-5 w-5" />
+              <h2 className="text-lg font-bold">Authentication Required</h2>
+            </div>
+            <p>You need to be logged in to view this page. Please log in to continue.</p>
+            <div className="mt-4 flex gap-4">
+              <Button asChild>
+                <Link href="/login?callbackUrl=/dashboard">
+                  Log In
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/">Return to Home</Link>
               </Button>
             </div>
           </CardContent>
@@ -110,15 +204,78 @@ export default function DashboardPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold">
-                Welcome, {user?.firstName || user?.name?.split(' ')[0]} {user?.lastName || user?.name?.split(' ')[1] || ''}
+                Welcome, {user?.user_metadata?.firstName || user?.name?.split(' ')[0]} {user?.user_metadata?.lastName || user?.name?.split(' ')[1] || ''}
               </h2>
-              <p className="text-gray-500">{user?.company || "Your Company"}</p>
+              <p className="text-gray-500">{user?.email}</p>
             </div>
           </div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Your personal dashboard gives you quick access to AI readiness assessments, recommended tools, and insights
             for your business.
           </p>
+          
+          {/* Role info and fix */}
+          {!user?.user_metadata?.role && (
+            <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md border border-yellow-200 dark:border-yellow-800">
+              <h3 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2">User Role Missing</h3>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+                Your account doesn't have a role assigned, which may affect your access to features.
+              </p>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/auth/set-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'client' })
+                      });
+                      
+                      if (response.ok) {
+                        alert('Role set successfully! Please refresh the page.');
+                        window.location.reload();
+                      } else {
+                        const data = await response.json();
+                        alert('Error: ' + (data.error || 'Failed to set role'));
+                      }
+                    } catch (error) {
+                      console.error('Error setting role:', error);
+                      alert('An unexpected error occurred');
+                    }
+                  }}
+                >
+                  Set as Client
+                </Button>
+                <Button 
+                  size="sm"
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/auth/set-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'admin' })
+                      });
+                      
+                      if (response.ok) {
+                        alert('Admin role set successfully! Please refresh the page.');
+                        window.location.reload();
+                      } else {
+                        const data = await response.json();
+                        alert('Error: ' + (data.error || 'Failed to set role'));
+                      }
+                    } catch (error) {
+                      console.error('Error setting role:', error);
+                      alert('An unexpected error occurred');
+                    }
+                  }}
+                >
+                  Set as Admin
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

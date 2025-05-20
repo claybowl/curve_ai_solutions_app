@@ -8,7 +8,14 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Create a singleton supabase client for use throughout the app
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true, // Enable session persistence
+    storageKey: 'supabase.auth.token', // Key used for localStorage
+    autoRefreshToken: true, // Automatically refresh tokens
+    detectSessionInUrl: true // Detect session in URL on page load
+  }
+})
 
 // Type for Supabase user metadata that includes role
 export type UserMetadata = {

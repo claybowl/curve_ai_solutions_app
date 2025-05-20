@@ -1,72 +1,101 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { AlertCircle } from "lucide-react"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
+import { SupabaseUserList } from "@/components/admin/supabase-user-list"
+import { supabase } from "@/lib/supabase"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function UsersPage() {
   const router = useRouter()
-  const [users, setUsers] = useState<any[]>([])
+  const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function fetchData() {
+    async function checkAdminStatus() {
       try {
-        // Check authentication
-        const token = localStorage.getItem("admin-token")
-        if (!token) {
-          router.push("/login")
+        // Check if user is authenticated and is an admin
+        const { data, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error("Error getting session:", error)
+          setError("Authentication error. Please log in again.")
+          setLoading(false)
           return
         }
-
-        // Fetch users
-        const res = await fetch("/api/admin/users")
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch users")
+        
+        if (!data?.session) {
+          // Not authenticated, redirect to login
+          router.push("/login?callbackUrl=/admin/users")
+          return
         }
-
-        const data = await res.json()
-        setUsers(data.users)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-        console.error(err)
-      } finally {
+        
+        // Check if user is an admin
+        const userRole = data.session.user.user_metadata?.role
+        
+        if (userRole !== "admin") {
+          setError("You do not have admin access to view this page.")
+          setLoading(false)
+          return
+        }
+        
+        setIsAdmin(true)
+        setLoading(false)
+      } catch (err: any) {
+        console.error("Error checking admin status:", err)
+        setError(err.message || "An unexpected error occurred")
         setLoading(false)
       }
     }
-
-    fetchData()
+    
+    checkAdminStatus()
   }, [router])
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex min-h-screen">
+        <AdminSidebar />
+        <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold">Users</h1>
+          </div>
+          <div className="flex justify-center items-center h-[500px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </main>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl text-red-600">Error</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{error}</p>
-            <Button className="mt-4 w-full" onClick={() => router.push("/admin")}>
-              Return to Dashboard
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="flex min-h-screen">
+        <AdminSidebar />
+        <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
+          <Card className="border-red-200">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+                <CardTitle className="text-red-500">Access Error</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4">{error}</p>
+              <div className="flex gap-4">
+                <Button onClick={() => router.push("/dashboard")}>
+                  Go to Dashboard
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/login?callbackUrl=/admin/users")}>
+                  Log In Again
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
       </div>
     )
   }
@@ -76,45 +105,17 @@ export default function UsersPage() {
       <AdminSidebar />
       <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Users</h1>
-          <Button>Add New User</Button>
+          <h1 className="text-3xl font-bold">User Management</h1>
         </div>
-
-        <div className="rounded-md border bg-white">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {user.first_name} {user.last_name}
-                  </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.company_name || "N/A"}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.role === "admin" ? "default" : "outline"}>{user.role}</Badge>
-                  </TableCell>
-                  <TableCell className="space-x-2">
-                    <Button variant="outline" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Supabase Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SupabaseUserList />
+          </CardContent>
+        </Card>
       </main>
     </div>
   )

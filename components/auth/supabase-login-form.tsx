@@ -27,31 +27,44 @@ export function SupabaseLoginForm() {
       if (error) {
         console.error("Login error:", error.message)
         setError(error.message || "Authentication failed")
+        setLoading(false)
         return
       }
 
       if (data?.session) {
-        console.log("Login successful, session established")
+        console.log("Login successful, session established with user ID:", data.session.user.id)
+        console.log("User email:", data.session.user.email)
+        console.log("User role:", data.session.user.user_metadata?.role || 'none')
         
         // Get redirect URL from query parameters or default to dashboard
         const params = new URLSearchParams(window.location.search)
         const redirectTo = params.get('callbackUrl') || '/dashboard'
         console.log("Redirecting to:", redirectTo)
         
-        // Force session refresh before redirect
-        await supabase.auth.refreshSession()
-        
-        // Redirect on success
-        router.push(redirectTo)
-        router.refresh()
+        try {
+          // Force session refresh before redirect
+          const refreshResult = await supabase.auth.refreshSession()
+          console.log("Session refresh result:", !!refreshResult.data.session)
+          
+          // Add a slight delay to ensure cookies are properly set
+          setTimeout(() => {
+            // Redirect on success
+            router.push(redirectTo)
+            router.refresh()
+          }, 300)
+        } catch (refreshError) {
+          console.error("Error refreshing session:", refreshError)
+          setError("Login successful but failed to refresh session. Please try again.")
+          setLoading(false)
+        }
       } else {
         console.error("Login returned without error but no session data")
         setError("Authentication succeeded but session not established. Please try again.")
+        setLoading(false)
       }
     } catch (err) {
       console.error("Unexpected login error:", err)
       setError("An unexpected error occurred")
-    } finally {
       setLoading(false)
     }
   }
