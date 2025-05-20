@@ -1,95 +1,61 @@
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { neon } from "@neondatabase/serverless"
-import bcrypt from "bcryptjs"
+/**
+ * Auth compatibility layer for NextAuth to Supabase migration
+ * 
+ * This file provides backward compatibility for components that
+ * still import from the old NextAuth-based authentication system
+ */
 
-export const authOptions: NextAuthOptions = {
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          console.log("Missing credentials")
-          return null
-        }
+import { getCurrentUser, isUserAdmin } from '@/lib/supabase'
 
-        try {
-          const sql = neon(process.env.DATABASE_URL!)
+// Re-export types and functions from existing auth system
+export type { User, UserRole } from '@/lib/supabase'
 
-          console.log(`Attempting to find user with email: ${credentials.email}`)
+// Compatibility function for checking if user is authenticated
+export async function isAuthenticated() {
+  const { user, error } = await getCurrentUser()
+  return !!user && !error
+}
 
-          const users = await sql`
-            SELECT id, email, password_hash, first_name, last_name, role
-            FROM users
-            WHERE email = ${credentials.email}
-          `
+// Compatibility function for checking admin role
+export async function isAdmin() {
+  return await isUserAdmin()
+}
 
-          console.log(`Found ${users.length} users`)
+// Temporary compatibility functions to prevent import errors
+export const getUserById = async () => null
+export const getUserByEmail = async () => null
+export const createUser = async () => null
+export const updateUser = async () => null
+export const deleteUser = async () => null
+export const getUserRoles = async () => ['admin', 'client']
+export const checkEmailExists = async () => false
+export const resetUserPassword = async () => false
 
-          if (users.length === 0) {
-            console.log("No user found with that email")
-            return null
-          }
-
-          const user = users[0]
-          console.log(`User found: ${user.email}, role: ${user.role}`)
-          console.log(`Stored hash: ${user.password_hash.substring(0, 10)}...`)
-
-          const passwordMatch = await bcrypt.compare(credentials.password, user.password_hash)
-          console.log(`Password match: ${passwordMatch}`)
-
-          if (!passwordMatch) {
-            console.log("Password does not match")
-            return null
-          }
-
-          console.log("Authentication successful")
-          return {
-            id: user.id.toString(),
-            email: user.email,
-            firstName: user.first_name,
-            lastName: user.last_name,
-            role: user.role,
-          }
-        } catch (error) {
-          console.error("Auth error:", error)
-          return null
-        }
-      },
-    }),
-  ],
+// Auth options compatibility
+export const authOptions = {
+  providers: [],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.firstName = user.firstName
-        token.lastName = user.lastName
-        token.role = user.role
-      }
-      console.log("JWT callback token:", token)
-      return token
+    async session() {
+      return { user: null, expires: '' }
     },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string
-        session.user.firstName = token.firstName as string
-        session.user.lastName = token.lastName as string
-        session.user.role = token.role as string
-      }
-      console.log("Session callback session:", session)
-      return session
+    async jwt() {
+      return { token: {} }
+    }
+  }
+}
+
+// NextAuth session getter compatibility 
+export async function getSession() {
+  const { user } = await getCurrentUser()
+  if (!user) return null
+  
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      name: `${user.user_metadata?.firstName || ''} ${user.user_metadata?.lastName || ''}`.trim(),
+      role: user.user_metadata?.role || 'client'
     },
-  },
-  pages: {
-    signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }
 }

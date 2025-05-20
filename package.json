@@ -90,5 +90,13 @@
     "onlyBuiltDependencies": [
       "sharp"
     ]
+  },
+  "imports": {
+    "next-auth/react": {
+      "default": "./lib/next-auth-shim/react.ts"
+    },
+    "next-auth/next": {
+      "default": "./lib/next-auth-shim/next.ts"
+    }
   }
 }

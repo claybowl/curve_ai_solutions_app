@@ -1,10 +1,9 @@
 /**
- * Utility functions for authentication using NextAuth session
+ * Utility functions for authentication - compatibility layer for Supabase Auth
  */
-import { signOut, useSession } from "next-auth/react"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "./auth"
-import { checkUserPermission } from "./db-permissions"
+import { loadSession, isUserAdmin, clearSession } from "./session-storage"
+import { signOut } from "@/lib/supabase"
+import type { UserMetadata } from "@/lib/supabase"
 
 // CLIENT-SIDE AUTHENTICATION UTILITIES
 
@@ -13,8 +12,9 @@ import { checkUserPermission } from "./db-permissions"
  * @returns boolean indicating if user is admin
  */
 export function useIsAdmin(): boolean {
-  const { data: session } = useSession()
-  return session?.user?.role === "admin"
+  if (typeof window === "undefined") return false
+  const session = loadSession()
+  return session?.user?.user_metadata?.role === "admin"
 }
 
 /**
@@ -22,7 +22,8 @@ export function useIsAdmin(): boolean {
  * @returns string | null - User ID if available
  */
 export function useUserId(): string | null {
-  const { data: session } = useSession()
+  if (typeof window === "undefined") return null
+  const session = loadSession()
   return session?.user?.id || null
 }
 
@@ -31,74 +32,39 @@ export function useUserId(): string | null {
  * @returns string | null - User role if available
  */
 export function useUserRole(): string | null {
-  const { data: session } = useSession()
-  return session?.user?.role || null
+  if (typeof window === "undefined") return null
+  const session = loadSession()
+  return session?.user?.user_metadata?.role || null
 }
 
 /**
  * Function to check if user is admin (for use in useEffect or non-hook contexts)
- * @deprecated Use useIsAdmin() hook instead for client components
  */
 export function isAdminUser(): boolean {
-  // For compatibility with existing code - should migrate to useIsAdmin hook
   if (typeof window === "undefined") return false
-
-  try {
-    // Check localStorage for backward compatibility
-    const token = localStorage.getItem("admin-token")
-    if (token) {
-      const [_, role] = token.split(":")
-      return role === "admin"
-    }
-    return false
-  } catch (error) {
-    console.error("Error checking admin status:", error)
-    return false
-  }
+  return isUserAdmin()
 }
 
 /**
  * Function to get user ID (for use in useEffect or non-hook contexts)
- * @deprecated Use useUserId() hook instead for client components
  */
 export function getCurrentUserIdClient(): string | null {
-  // For compatibility with existing code - should migrate to useUserId hook
   if (typeof window === "undefined") return null
-
-  try {
-    const token = localStorage.getItem("admin-token")
-    if (!token) return null
-
-    const [userId, _] = token.split(":")
-    return userId
-  } catch (error) {
-    console.error("Error getting user ID:", error)
-    return null
-  }
+  const session = loadSession()
+  return session?.user?.id || null
 }
 
 /**
  * Function to get user role (for use in useEffect or non-hook contexts)
- * @deprecated Use useUserRole() hook instead for client components
  */
 export function getCurrentUserRole(): string | null {
-  // For compatibility with existing code - should migrate to useUserRole hook
   if (typeof window === "undefined") return null
-
-  try {
-    const token = localStorage.getItem("admin-token")
-    if (!token) return null
-
-    const [_, role] = token.split(":")
-    return role
-  } catch (error) {
-    console.error("Error getting user role:", error)
-    return null
-  }
+  const session = loadSession()
+  return session?.user?.user_metadata?.role || null
 }
 
 /**
- * Perform a logout operation using NextAuth
+ * Perform a logout operation
  */
 export async function logoutUser(router?: any): Promise<void> {
   try {
@@ -106,10 +72,11 @@ export async function logoutUser(router?: any): Promise<void> {
     if (typeof window !== "undefined") {
       localStorage.removeItem("admin-token")
       sessionStorage.removeItem("user-data")
+      clearSession()
     }
     
-    // Use NextAuth signOut
-    await signOut({ redirect: false })
+    // Use Supabase signOut
+    await signOut()
   } catch (error) {
     console.error("Error during logout:", error)
   } finally {
@@ -122,140 +89,50 @@ export async function logoutUser(router?: any): Promise<void> {
   }
 }
 
-// SERVER-SIDE AUTHENTICATION UTILITIES
+// SERVER-SIDE AUTHENTICATION UTILITIES - STUBS FOR COMPATIBILITY
 
 /**
  * Authorization utility to check if user has required permissions
- * Can be used in server actions and API routes
- * 
- * @param permissionName - Optional permission to check for 
- * @returns Authorization result with userId
+ * This is a stub for compatibility - server-side auth now requires Supabase middleware
  */
 export async function authorizeUser(permissionName?: string) {
-  const session = await getServerSession(authOptions)
-  
-  if (!session) {
-    return { authorized: false, error: "Authentication required", userId: null }
-  }
-  
-  // Admin role has all permissions (legacy support)
-  if (session.user.role === "admin") {
-    return { 
-      authorized: true, 
-      userId: parseInt(session.user.id), 
-      isAdmin: true 
-    }
-  }
-  
-  // If specific permission is required, check it
-  if (permissionName) {
-    const userId = parseInt(session.user.id)
-    const hasPermission = await checkUserPermission(userId, permissionName)
-    
-    if (!hasPermission) {
-      return { 
-        authorized: false, 
-        error: `You don't have permission to ${permissionName.replace(/_/g, ' ')}`, 
-        userId 
-      }
-    }
-    
-    return { authorized: true, userId, isAdmin: false }
-  }
-  
-  // No specific permission required, just need to be authenticated
-  return { 
-    authorized: true, 
-    userId: parseInt(session.user.id), 
-    isAdmin: false 
-  }
+  console.warn("authorizeUser is a stub - use Supabase Auth directly instead")
+  return { authorized: false, error: "Not implemented", userId: null }
 }
 
 /**
  * Helper function to check if user is authorized to manage a specific content
- * where content has an authorId field
- * 
- * @param contentAuthorId - The ID of the author of the content being accessed
- * @param permissionName - Permission required to manage this type of content
- * @param adminPermissionName - Optional different permission for admins (defaults to permissionName)
+ * This is a stub for compatibility - server-side auth now requires Supabase middleware
  */
 export async function canManageContent(
   contentAuthorId: number, 
   permissionName: string,
   adminPermissionName?: string
 ) {
-  const { authorized, userId, isAdmin, error } = await authorizeUser()
-  
-  if (!authorized) {
-    return { authorized, error, userId }
-  }
-  
-  // If user is the author, check if they have the permission to manage their own content
-  if (contentAuthorId === userId) {
-    const hasPermission = await checkUserPermission(userId!, permissionName)
-    
-    if (hasPermission) {
-      return { authorized: true, userId, isAdmin }
-    }
-  }
-  
-  // If user is not the author, they need admin permission to manage others' content
-  const adminPermission = adminPermissionName || permissionName
-  const hasAdminPermission = await checkUserPermission(userId!, adminPermission)
-  
-  if (!hasAdminPermission && !isAdmin) {
-    return { 
-      authorized: false, 
-      error: "You don't have permission to manage this content", 
-      userId 
-    }
-  }
-  
-  return { authorized: true, userId, isAdmin }
+  console.warn("canManageContent is a stub - use Supabase Auth directly instead")
+  return { authorized: false, error: "Not implemented", userId: null }
 }
 
 /**
- * Helper to safely extract a user ID from the session on server side
- * Returns null if no session exists
+ * Helper to safely extract a user ID - stub for compatibility
  */
 export async function getCurrentUserId(): Promise<number | null> {
-  const session = await getServerSession(authOptions)
-  
-  if (!session) {
-    return null
-  }
-  
-  return parseInt(session.user.id)
+  console.warn("getCurrentUserId is a stub - use Supabase Auth directly instead")
+  return null
 }
 
 /**
- * Check if the current user is an admin (server-side)
+ * Check if the current user is an admin - stub for compatibility
  */
 export async function isCurrentUserAdmin(): Promise<boolean> {
-  const session = await getServerSession(authOptions)
-  
-  if (!session) {
-    return false
-  }
-  
-  return session.user.role === "admin"
+  console.warn("isCurrentUserAdmin is a stub - use Supabase Auth directly instead")
+  return false
 }
 
 /**
- * Check if the current user has a specific permission (server-side)
+ * Check if the current user has a specific permission - stub for compatibility
  */
 export async function currentUserHasPermission(permissionName: string): Promise<boolean> {
-  const session = await getServerSession(authOptions)
-  
-  if (!session) {
-    return false
-  }
-  
-  // Admin role has all permissions
-  if (session.user.role === "admin") {
-    return true
-  }
-  
-  const userId = parseInt(session.user.id)
-  return await checkUserPermission(userId, permissionName)
+  console.warn("currentUserHasPermission is a stub - use Supabase Auth directly instead")
+  return false
 }
