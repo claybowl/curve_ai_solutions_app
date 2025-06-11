@@ -75,8 +75,26 @@ export function PasswordTest() {
         console.error('Sign up error:', error)
       } else {
         setStatus('success')
-        setMessage('Account created successfully! Check your email for verification.')
+        setMessage('Account created successfully! Auto-confirming email for testing...')
         console.log('Sign up successful:', data)
+        
+        // Auto-confirm email for testing
+        try {
+          const confirmResponse = await fetch('/api/admin/confirm-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, autoConfirm: true })
+          })
+          
+          const confirmData = await confirmResponse.json()
+          if (confirmData.success) {
+            setMessage('Account created and email confirmed! You can now sign in.')
+          } else {
+            setMessage(`Account created but email confirmation failed: ${confirmData.error}. Try signing in anyway.`)
+          }
+        } catch (confirmErr) {
+          setMessage('Account created but auto-confirmation failed. Try signing in anyway.')
+        }
       }
     } catch (err) {
       setStatus('error')

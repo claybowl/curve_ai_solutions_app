@@ -44,16 +44,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single()
+        .maybeSingle()
 
       if (error) {
-        console.error('Error fetching profile:', error)
+        // Silently handle "no profile found" - this is expected for users without profiles
         setProfile(null)
       } else {
         setProfile(profileData)
       }
     } catch (error) {
-      console.error('Error fetching profile:', error)
+      console.error('Unexpected error fetching profile:', error)
       setProfile(null)
     }
   }
