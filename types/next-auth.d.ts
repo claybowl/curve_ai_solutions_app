@@ -1,31 +1,23 @@
-import "next-auth"
+// This file is no longer needed since we switched to Supabase Auth
+// Keeping it for reference but the types are now handled by Supabase
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string
-      name?: string | null
-      email?: string | null
-      image?: string | null
-      role?: string | null
-      company?: string | null
+// Supabase User type extensions (if needed)
+import { User } from '@supabase/supabase-js'
+
+declare global {
+  interface SupabaseUser extends User {
+    user_metadata: {
+      role?: string
+      firstName?: string
+      lastName?: string
+      first_name?: string
+      last_name?: string
+      company?: string
+      [key: string]: any
     }
-  }
-
-  interface User {
-    id: string
-    name?: string | null
-    email?: string | null
-    image?: string | null
-    role?: string | null
-    company?: string | null
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string
-    role?: string | null
-    company?: string | null
+    app_metadata: {
+      role?: string
+      [key: string]: any
+    }
   }
 }

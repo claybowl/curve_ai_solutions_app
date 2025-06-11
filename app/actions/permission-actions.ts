@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { auth } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { 
   getAllPermissions,
   getPermissionsByCategory,
@@ -33,18 +33,27 @@ const roleSchema = z.object({
   permissionIds: z.array(z.number()).default([])
 })
 
+// Helper function to get current user
+async function getCurrentUser() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  if (error || !user) {
+    throw new Error("Not authenticated")
+  }
+  
+  return user
+}
+
 // Get all permissions
 export async function getAllPermissionsAction(): Promise<Permission[]> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:permissions"
     )
     
@@ -63,14 +72,11 @@ export async function getAllPermissionsAction(): Promise<Permission[]> {
 export async function getPermissionsByCategoryAction(): Promise<PermissionCategory[]> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:permissions"
     )
     
@@ -89,14 +95,11 @@ export async function getPermissionsByCategoryAction(): Promise<PermissionCatego
 export async function getAllRolesAction(): Promise<Role[]> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:roles"
     )
     
@@ -115,14 +118,11 @@ export async function getAllRolesAction(): Promise<Role[]> {
 export async function getRoleByIdAction(roleId: number): Promise<Role | null> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:roles"
     )
     
@@ -143,14 +143,11 @@ export async function createRoleAction(
 ): Promise<{ success: boolean; error?: string; roleId?: number }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "create:roles"
     )
     
@@ -207,14 +204,11 @@ export async function updateRoleAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "update:roles"
     )
     
@@ -274,14 +268,11 @@ export async function deleteRoleAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "delete:roles"
     )
     
@@ -319,15 +310,12 @@ export async function getUserPermissionsAction(
 ): Promise<{ roles: Role[]; permissions: Permission[] } | null> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission (can view own permissions or has admin permission)
-    const isOwnUser = session.user.id === userId
+    const isOwnUser = user.id === userId
     const canManageUsers = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -349,12 +337,9 @@ export async function getCurrentUserPermissionsAction(): Promise<{
 } | null> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
-    return await getUserPermissions(session.user.id)
+    return await getUserPermissions(user.id)
   } catch (error) {
     console.error(`Error fetching current user permissions:`, error)
     return null
@@ -368,14 +353,11 @@ export async function assignRolesToUserAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -414,14 +396,11 @@ export async function setUserPermissionAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -459,14 +438,11 @@ export async function removeUserPermissionAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return { success: false, error: "Not authenticated" }
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -503,12 +479,9 @@ export async function checkCurrentUserPermissionAction(
 ): Promise<boolean> {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      return false
-    }
+    const user = await getCurrentUser()
     
-    return await checkUserPermission(session.user.id, permissionName)
+    return await checkUserPermission(user.id, permissionName)
   } catch (error) {
     console.error(`Error checking permission ${permissionName}:`, error)
     return false

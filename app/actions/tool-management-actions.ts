@@ -1,7 +1,6 @@
 "use server"
 
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
@@ -32,26 +31,29 @@ const toolSchema = z.object({
  * Check if the user is authorized to manage AI tools
  */
 async function checkToolAuthorization() {
-  const session = await getServerSession(authOptions)
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
   
-  if (!session) {
+  if (error || !user) {
     throw new Error("Authentication required")
   }
   
+  // Get user role from metadata
+  const userRole = user.user_metadata?.role || user.app_metadata?.role
+  
   // Check if user is admin (for backward compatibility)
-  if (session.user.role === "admin") {
-    return { authorized: true, userId: parseInt(session.user.id) }
+  if (userRole === "admin") {
+    return { authorized: true, userId: user.id }
   }
   
-  // Check permissions
-  const userId = parseInt(session.user.id)
-  const hasPermission = await checkUserPermission(userId, "manage_tools")
+  // Check permissions - for now assume we store user ID as string in Supabase
+  const hasPermission = await checkUserPermission(user.id, "manage_tools")
   
   if (!hasPermission) {
     throw new Error("You don't have permission to manage AI tools")
   }
 
-  return { authorized: true, userId }
+  return { authorized: true, userId: user.id }
 }
 
 /**
@@ -59,7 +61,8 @@ async function checkToolAuthorization() {
  */
 export async function getAllToolsAction(filter?: AiToolFilter) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
     
     // If filter includes inactive tools, check permissions
     if (filter?.isActive === false) {
@@ -226,17 +229,16 @@ export async function getToolCategoriesAction() {
  */
 export async function getRecommendedToolsAction(assessmentId?: number) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
     
-    if (!session) {
-      // If no session, just return general recommendations
+    if (!user) {
+      // If no user, just return general recommendations
       return await getRecommendedTools()
     }
     
-    const userId = parseInt(session.user.id)
-    
     // Get personalized recommendations
-    return await getRecommendedTools(userId, assessmentId)
+    return await getRecommendedTools(user.id, assessmentId)
   } catch (error) {
     console.error("Error in getRecommendedToolsAction:", error)
     throw new Error(`Failed to fetch recommended AI tools: ${error instanceof Error ? error.message : "Unknown error"}`)

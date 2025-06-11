@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { auth } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { checkUserPermission } from "@/lib/db-permissions"
 import { 
   getAllUsers,
@@ -16,6 +16,18 @@ import {
   UserFilter,
   UserFormData
 } from "@/lib/db-users"
+
+// Helper function to get current user
+async function getCurrentUser() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  if (error || !user) {
+    throw new Error("Not authenticated")
+  }
+  
+  return user
+}
 
 // Schema validation for user data
 const userSchema = z.object({
@@ -31,14 +43,11 @@ const userSchema = z.object({
 export async function getAllUsersAction(filter?: UserFilter) {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:users"
     )
     
@@ -57,15 +66,12 @@ export async function getAllUsersAction(filter?: UserFilter) {
 export async function getUserByIdAction(userId: number) {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission (can view own profile or has admin permission)
-    const isOwnUser = session.user.id === userId
+    const isOwnUser = user.id === userId
     const canManageUsers = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -93,7 +99,7 @@ export async function createUserAction(
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "create:users"
     )
     
@@ -150,9 +156,9 @@ export async function updateUserAction(
     }
     
     // Check permission (can update own profile or has admin permission)
-    const isOwnUser = session.user.id === userId
+    const isOwnUser = user.id === userId
     const canManageUsers = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -232,7 +238,7 @@ export async function deleteUserAction(
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "delete:users"
     )
     
@@ -241,7 +247,7 @@ export async function deleteUserAction(
     }
     
     // Cannot delete self
-    if (session.user.id === userId) {
+    if (user.id === userId) {
       return { success: false, error: "Cannot delete your own account" }
     }
     
@@ -279,9 +285,9 @@ export async function resetUserPasswordAction(
     }
     
     // Check permission (can reset own password or has admin permission)
-    const isOwnUser = session.user.id === userId
+    const isOwnUser = user.id === userId
     const canManageUsers = await checkUserPermission(
-      session.user.id,
+      user.id,
       "manage:users"
     )
     
@@ -322,7 +328,7 @@ export async function getUserRolesAction(): Promise<string[]> {
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:users"
     )
     

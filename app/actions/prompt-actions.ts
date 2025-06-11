@@ -1,7 +1,6 @@
 "use server"
 
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
@@ -35,26 +34,29 @@ const promptSchema = z.object({
  * Check if the user is authorized to manage prompts
  */
 async function checkPromptAuthorization(permissionName = "manage_prompts") {
-  const session = await getServerSession(authOptions)
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
   
-  if (!session) {
+  if (error || !user) {
     throw new Error("Authentication required")
   }
   
+  // Get user role from metadata
+  const userRole = user.user_metadata?.role || user.app_metadata?.role
+  
   // Check if user is admin (for backward compatibility)
-  if (session.user.role === "admin") {
-    return { authorized: true, userId: parseInt(session.user.id) }
+  if (userRole === "admin") {
+    return { authorized: true, userId: user.id }
   }
   
   // Check permissions
-  const userId = parseInt(session.user.id)
-  const hasPermission = await checkUserPermission(userId, permissionName)
+  const hasPermission = await checkUserPermission(user.id, permissionName)
   
   if (!hasPermission) {
     throw new Error(`You don't have permission to ${permissionName.replace('_', ' ')}`)
   }
 
-  return { authorized: true, userId }
+  return { authorized: true, userId: user.id }
 }
 
 /**
@@ -62,15 +64,19 @@ async function checkPromptAuthorization(permissionName = "manage_prompts") {
  */
 export async function getPromptsAction(filter?: PromptFilter) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
     
     // If filter includes isPublic=false, check permissions
     if (filter?.isPublic === false) {
       await checkPromptAuthorization()
     }
     
+    // Get user role from metadata
+    const userRole = user?.user_metadata?.role || user?.app_metadata?.role
+    
     // If not filtering by authorId and not admin, only get public prompts
-    if (!filter?.authorId && (!session || session.user.role !== "admin")) {
+    if (!filter?.authorId && (!user || userRole !== "admin")) {
       filter = { ...filter, isPublic: true }
     }
     
@@ -91,19 +97,20 @@ export async function getPromptByIdAction(id: number) {
     
     // If prompt is not public, check permissions
     if (prompt && !prompt.isPublic) {
-      const session = await getServerSession(authOptions)
+      const supabase = await createServerSupabaseClient()
+      const { data: { user } } = await supabase.auth.getUser()
       
       // Only allow access if:
       // 1. User is the author, OR
       // 2. User has manage_prompts permission
-      if (!session) {
+      if (!user) {
         throw new Error("Authentication required to access non-public prompts")
       }
       
-      const userId = parseInt(session.user.id)
+      const userRole = user.user_metadata?.role || user.app_metadata?.role
       
-      if (prompt.authorId !== userId && session.user.role !== "admin") {
-        const hasPermission = await checkUserPermission(userId, "manage_prompts")
+      if (prompt.authorId !== user.id && userRole !== "admin") {
+        const hasPermission = await checkUserPermission(user.id, "manage_prompts")
         
         if (!hasPermission) {
           throw new Error("You don't have permission to access this prompt")
@@ -271,14 +278,14 @@ export async function getPromptCategoriesAction() {
  */
 export async function savePromptForUserAction(promptId: number) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
     
-    if (!session) {
+    if (error || !user) {
       throw new Error("Authentication required")
     }
     
-    const userId = parseInt(session.user.id)
-    const success = await savePromptForUser(promptId, userId)
+    const success = await savePromptForUser(promptId, user.id)
     
     // Revalidate the user's saved prompts page
     revalidatePath("/prompts/saved")
@@ -298,14 +305,14 @@ export async function savePromptForUserAction(promptId: number) {
  */
 export async function removeSavedPromptAction(promptId: number) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
     
-    if (!session) {
+    if (error || !user) {
       throw new Error("Authentication required")
     }
     
-    const userId = parseInt(session.user.id)
-    const success = await removeSavedPrompt(promptId, userId)
+    const success = await removeSavedPrompt(promptId, user.id)
     
     // Revalidate the user's saved prompts page
     revalidatePath("/prompts/saved")
@@ -325,14 +332,14 @@ export async function removeSavedPromptAction(promptId: number) {
  */
 export async function getUserSavedPromptsAction() {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
     
-    if (!session) {
+    if (error || !user) {
       throw new Error("Authentication required")
     }
     
-    const userId = parseInt(session.user.id)
-    return await getUserSavedPrompts(userId)
+    return await getUserSavedPrompts(user.id)
   } catch (error) {
     console.error("Error in getUserSavedPromptsAction:", error)
     throw new Error(`Failed to fetch saved prompts: ${error instanceof Error ? error.message : "Unknown error"}`)

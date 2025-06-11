@@ -5,7 +5,7 @@ import type React from "react"
 import { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { signIn, useSession } from "next-auth/react"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 function SignInContent() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const supabase = createClientComponentClient()
   const searchParams = useSearchParams()
   const registered = searchParams?.get("registered") === "true"
   const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
@@ -26,14 +26,20 @@ function SignInContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const [user, setUser] = useState(null)
 
-  // Redirect if already authenticated
+  // Check if already authenticated
   useEffect(() => {
-    if (status === "authenticated") {
-      console.log("User already authenticated, redirecting to:", callbackUrl)
-      router.push(callbackUrl)
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        console.log("User already authenticated, redirecting to:", callbackUrl)
+        router.push(callbackUrl)
+      }
+      setUser(user)
     }
-  }, [status, router, callbackUrl])
+    checkUser()
+  }, [supabase, router, callbackUrl])
 
   useEffect(() => {
     if (registered) {
@@ -47,22 +53,21 @@ function SignInContent() {
     setError("")
 
     try {
-      console.log("Attempting login with NextAuth...")
-      const result = await signIn("credentials", {
+      console.log("Attempting login with Supabase...")
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        redirect: false,
       })
 
-      console.log("Login result:", result)
+      console.log("Login result:", { data, error })
 
-      if (result?.error) {
-        setError(`Login failed: ${result.error}`)
+      if (error) {
+        setError(`Login failed: ${error.message}`)
       } else {
         // Show success message briefly before redirect
         setSuccessMessage("Login successful, redirecting...")
         
-        // Force a session refresh
+        // Force a page refresh to update auth state
         console.log("Login successful, redirecting to:", callbackUrl)
         router.push(callbackUrl)
         router.refresh()
@@ -76,7 +81,7 @@ function SignInContent() {
   }
 
   // If already logged in, don't show the login form
-  if (status === "authenticated") {
+  if (user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />

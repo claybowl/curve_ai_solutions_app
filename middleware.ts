@@ -1,191 +1,67 @@
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
-  // Create a response to modify
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req: request, res })
 
-  // Create a Supabase client configured to use cookies
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: any) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: any) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
+  // Refresh session if expired - required for Server Components
+  const { data: { session } } = await supabase.auth.getSession()
+
+  // Admin routes protection
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (!session) {
+      // Not authenticated, redirect to sign in
+      const redirectUrl = new URL('/auth/signin', request.url)
+      redirectUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
+      return NextResponse.redirect(redirectUrl)
     }
+
+    // Check if user has admin role
+    const userRole = session.user?.user_metadata?.role || session.user?.app_metadata?.role
+    if (userRole !== 'admin') {
+      // User is authenticated but not admin, redirect to dashboard
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+  }
+
+  // Protected routes that require authentication
+  const protectedRoutes = ['/dashboard', '/profile', '/assessments']
+  const isProtectedRoute = protectedRoutes.some(route => 
+    request.nextUrl.pathname.startsWith(route)
   )
-  
-  // Get the pathname of the request
-  const path = request.nextUrl.pathname
-  
-  // Add a unique request ID for debugging
-  const requestId = Math.random().toString(36).substring(2, 10)
-  console.log(`[${requestId}] Middleware processing path: ${path}`)
-  
-  // Handle redirects for deprecated auth routes
-  if (path.startsWith("/auth/signin") || path === "/auth/login") {
-    console.log("Middleware: Redirecting deprecated auth route:", path)
-    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl")
-    const url = new URL("/login", request.url)
-    if (callbackUrl) {
-      url.searchParams.set("callbackUrl", callbackUrl)
-    }
-    return NextResponse.redirect(url)
-  }
-  
-  // Skip middleware if path starts with /api/auth
-  if (path.startsWith("/api/auth")) {
-    return NextResponse.next()
+
+  if (isProtectedRoute && !session) {
+    // Not authenticated, redirect to sign in
+    const redirectUrl = new URL('/auth/signin', request.url)
+    redirectUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
   }
 
-  // Refresh session if available
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
-    if (sessionError) {
-      console.error(`[${requestId}] Session error in middleware:`, sessionError.message)
-      // Continue with no session
-    }
-    
-    // Log session status
-    if (session) {
-      console.log(`[${requestId}] Authenticated user:`, session.user.id)
-    } else {
-      console.log(`[${requestId}] No active session found`)
-    }
-  } catch (error) {
-    console.error(`[${requestId}] Error retrieving session:`, error)
-    // Continue with no session
+  // Redirect authenticated users away from auth pages
+  const authRoutes = ['/auth/signin', '/auth/signup', '/login']
+  const isAuthRoute = authRoutes.some(route => 
+    request.nextUrl.pathname.startsWith(route)
+  )
+
+  if (isAuthRoute && session) {
+    // Already authenticated, redirect to dashboard
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // Handle admin routes
-  if (path.startsWith("/admin")) {
-    try {
-      console.log(`[${requestId}] Checking admin access for`, path)
-      
-      // Get session with a fresh request to ensure we have the latest data
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      // Check if user is authenticated and is an admin
-      if (!session) {
-        console.log(`[${requestId}] Redirecting to login from admin route - Not authenticated`)
-        const url = new URL("/login", request.url)
-        url.searchParams.set("callbackUrl", encodeURI(request.url))
-        return NextResponse.redirect(url)
-      }
-      
-      // Check user's role from profiles table
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .single()
-
-      if (!profile || profile.role !== "admin") {
-        console.log(`[${requestId}] User authenticated but not admin:`, session.user.email)
-        console.log(`[${requestId}] User role:`, profile?.role || 'none')
-        const url = new URL("/login", request.url)
-        url.searchParams.set("callbackUrl", encodeURI(request.url))
-        url.searchParams.set("error", "You do not have admin access")
-        return NextResponse.redirect(url)
-      }
-      
-      console.log(`[${requestId}] Admin access granted for:`, session.user.email)
-    } catch (error) {
-      console.error(`[${requestId}] Error in middleware (admin route):`, error)
-      // If there's an error, redirect to login as a fallback
-      const url = new URL("/login", request.url)
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // Handle dashboard routes
-  if (path === "/dashboard") {
-    try {
-      console.log(`[${requestId}] Checking auth for dashboard`)
-      
-      // Get session with a fresh request to ensure we have the latest data
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      console.log(`[${requestId}] Session exists:`, !!session)
-      if (session) {
-        console.log(`[${requestId}] User ID:`, session.user.id)
-        console.log(`[${requestId}] User email:`, session.user.email)
-        console.log(`[${requestId}] User role:`, session.user.user_metadata?.role || 'none')
-      }
-      
-      // Check if user is authenticated
-      if (!session) {
-        console.log(`[${requestId}] Redirecting to login from dashboard - Not authenticated`)
-        const url = new URL("/login", request.url)
-        url.searchParams.set("callbackUrl", encodeURI(request.url))
-        console.log(`[${requestId}] Redirect URL:`, url.toString())
-        return NextResponse.redirect(url)
-      }
-      
-      console.log(`[${requestId}] Dashboard access granted for:`, session.user.email)
-    } catch (error) {
-      console.error(`[${requestId}] Error in middleware (dashboard):`, error)
-      // If there's an error, redirect to login as a fallback
-      const url = new URL("/login", request.url)
-      return NextResponse.redirect(url)
-    }
-  }
-
-  return response
+  return res
 }
 
-// Configure the middleware matcher
 export const config = {
   matcher: [
-    "/admin/:path*", 
-    "/dashboard", 
-    "/api/:path*", 
-    "/auth/signin", 
-    "/auth/login",
-    "/profile",
-    "/auth/callback"
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

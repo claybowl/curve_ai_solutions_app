@@ -1,7 +1,6 @@
 "use server"
 
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
@@ -32,26 +31,29 @@ const blogPostSchema = z.object({
  * Check if the user is authorized to manage blog posts
  */
 async function checkBlogAuthorization() {
-  const session = await getServerSession(authOptions)
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
   
-  if (!session) {
+  if (error || !user) {
     throw new Error("Authentication required")
   }
   
+  // Get user role from metadata
+  const userRole = user.user_metadata?.role || user.app_metadata?.role
+  
   // Check if user is admin (for backward compatibility)
-  if (session.user.role === "admin") {
-    return { authorized: true, userId: parseInt(session.user.id) }
+  if (userRole === "admin") {
+    return { authorized: true, userId: user.id }
   }
   
   // Check permissions
-  const userId = parseInt(session.user.id)
-  const hasPermission = await checkUserPermission(userId, "manage_blog")
+  const hasPermission = await checkUserPermission(user.id, "manage_blog")
   
   if (!hasPermission) {
     throw new Error("You don't have permission to manage blog posts")
   }
 
-  return { authorized: true, userId }
+  return { authorized: true, userId: user.id }
 }
 
 /**
@@ -59,7 +61,8 @@ async function checkBlogAuthorization() {
  */
 export async function getBlogPostsAction(filter?: BlogPostFilter) {
   try {
-    const session = await getServerSession(authOptions)
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
     
     // If filter includes published=false, check permissions
     if (filter?.published === false) {

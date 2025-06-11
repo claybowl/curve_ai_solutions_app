@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,18 +11,37 @@ import { Label } from "@/components/ui/label"
 import { AlertCircle, CheckCircle } from "lucide-react"
 
 export function UserProfile() {
-  const { data: session } = useSession()
+  const supabase = createClientComponentClient()
+  const [user, setUser] = useState(null)
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: session?.user?.email || "",
-    companyName: session?.user?.company || "",
+    email: "",
+    companyName: "",
   })
 
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  // Get user on component mount
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        setFormData({
+          firstName: user.user_metadata?.firstName || user.user_metadata?.first_name || "",
+          lastName: user.user_metadata?.lastName || user.user_metadata?.last_name || "",
+          email: user.email || "",
+          companyName: user.user_metadata?.company || "",
+        })
+      }
+    }
+    getUser()
+  }, [supabase])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -36,19 +55,29 @@ export function UserProfile() {
     setSuccess("")
 
     try {
-      // In a real app, you would update the user profile here
-      // For now, we'll just simulate a successful update
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Update user metadata in Supabase
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          company: formData.companyName,
+        }
+      })
+
+      if (error) {
+        throw error
+      }
 
       setSuccess("Profile updated successfully")
-      setIsLoading(false)
     } catch (error) {
       setError("Failed to update profile")
+      console.error("Error updating profile:", error)
+    } finally {
       setIsLoading(false)
     }
   }
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex justify-center items-center h-64">
         <p>Please sign in to view your profile</p>
@@ -90,7 +119,7 @@ export function UserProfile() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                placeholder={session.user?.name?.split(" ")[0] || ""}
+                placeholder={user.user_metadata?.firstName || user.user_metadata?.first_name || ""}
               />
             </div>
             <div className="space-y-2">
@@ -100,7 +129,7 @@ export function UserProfile() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                placeholder={session.user?.name?.split(" ")[1] || ""}
+                placeholder={user.user_metadata?.lastName || user.user_metadata?.last_name || ""}
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { checkUserPermission } from "@/lib/db-permissions"
 import { 
   getAdminDashboardStats,
@@ -10,20 +10,29 @@ import {
   getToolUsageData
 } from "@/lib/db-stats"
 
+// Helper function to get current user
+async function getCurrentUser() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  if (error || !user) {
+    throw new Error("Not authenticated")
+  }
+  
+  return user
+}
+
 /**
  * Get overall dashboard statistics
  */
 export async function getDashboardStatsAction() {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:analytics"
     )
     
@@ -44,14 +53,11 @@ export async function getDashboardStatsAction() {
 export async function getUserGrowthDataAction() {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:analytics"
     )
     
@@ -80,14 +86,11 @@ export async function getUserGrowthDataAction() {
 export async function getRecentActivityDataAction() {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:analytics"
     )
     
@@ -114,14 +117,11 @@ export async function getRecentActivityDataAction() {
 export async function getAssessmentCategoryBreakdownAction() {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:analytics"
     )
     
@@ -148,14 +148,11 @@ export async function getAssessmentCategoryBreakdownAction() {
 export async function getToolUsageDataAction() {
   try {
     // Check authorization
-    const session = await auth()
-    if (!session?.user) {
-      throw new Error("Not authenticated")
-    }
+    const user = await getCurrentUser()
     
     // Check permission
     const hasPermission = await checkUserPermission(
-      session.user.id,
+      user.id,
       "view:analytics"
     )
     

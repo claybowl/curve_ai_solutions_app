@@ -1,20 +1,28 @@
 import { redirect } from "next/navigation"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { DashboardStats } from "@/components/admin/dashboard-stats"
 import { RecentAssessments } from "@/components/admin/recent-assessments"
 import { PendingConsultations } from "@/components/admin/pending-consultations"
 
 export default async function AdminDashboardPage() {
-  const session = await getServerSession(authOptions)
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
 
   // Verify user is authenticated and has admin role
-  if (!session || session.user.role !== "admin") {
-    redirect("/login?callbackUrl=/admin-dashboard")
+  if (error || !user) {
+    redirect("/auth/signin?callbackUrl=/admin-dashboard")
+  }
+
+  // Get user role from metadata
+  const userRole = user.user_metadata?.role || user.app_metadata?.role
+  
+  if (userRole !== "admin") {
+    redirect("/auth/signin?callbackUrl=/admin-dashboard")
   }
 
   // User is authenticated as admin
-  const { firstName, lastName } = session.user
+  const firstName = user.user_metadata?.firstName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Admin'
+  const lastName = user.user_metadata?.lastName || user.user_metadata?.last_name || ''
 
   return (
     <div className="p-6 space-y-6">
