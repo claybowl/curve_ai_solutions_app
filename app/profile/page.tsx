@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
-import { supabase, getCurrentUser, updateUserMetadata } from "@/lib/supabase"
+import { supabase, getCurrentUser, updateUserMetadata } from "@/lib/supabase-client"
 
 export default function ProfilePage() {
   const router = useRouter()

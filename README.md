@@ -17,7 +17,7 @@ Curve AI Solutions is a platform that helps businesses integrate AI capabilities
 
 ## Features
 
-- **Authentication System**: NextAuth.js with JWT and role-based permissions
+- **Authentication System**: Supabase Auth with profile-based role management
 - **Database Layer**: PostgreSQL with Neon serverless driver
 - **Blog System**: Notion-powered blog with local caching
 - **Server Actions**: Secure, server-side operations for all admin features
@@ -56,13 +56,9 @@ pnpm dev
 Required environment variables:
 
 ```
-# Database connection 
-DATABASE_URL=postgres://username:password@hostname/database?sslmode=require
-DATABASE_URL_UNPOOLED=postgresql://username:password@hostname/database?sslmode=require
-
-# NextAuth
-NEXTAUTH_SECRET=your-secret-key
-NEXTAUTH_URL=http://localhost:3000
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 Optional for blog functionality:
@@ -71,6 +67,12 @@ Optional for blog functionality:
 NOTION_TOKEN=your-notion-integration-token
 NOTION_BLOG_DATABASE_ID=your-notion-database-id
 ```
+
+### Database Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run the SQL from `supabase-profiles-schema.sql` in your Supabase SQL Editor
+3. Create your first admin user following instructions in `create-admin-user.md`
 # Project Management
 
 This section organizes the work being done on this project using Claude Code.

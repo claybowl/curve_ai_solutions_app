@@ -60,7 +60,6 @@
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
-    "next-auth": "latest",
     "next-themes": "latest",
     "nodemailer": "latest",
     "notion-client": "^6.16.0",
@@ -90,13 +89,5 @@
     "onlyBuiltDependencies": [
       "sharp"
     ]
-  },
-  "imports": {
-    "next-auth/react": {
-      "default": "./lib/next-auth-shim/react.ts"
-    },
-    "next-auth/next": {
-      "default": "./lib/next-auth-shim/next.ts"
-    }
   }
 }

@@ -4,17 +4,15 @@ import React, { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { SupabaseLoginForm } from "@/components/auth/supabase-login-form"
 import { SupabaseAuthUI } from "@/components/auth/supabase-auth-ui"
 import { Loader2 } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase-client"
 
 function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
+  const callbackUrlFromParams = searchParams?.get("callbackUrl")
   const errorMessage = searchParams?.get("error")
-  const [useCustomUI, setUseCustomUI] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [debugInfo, setDebugInfo] = useState<string>("")
   const [error, setError] = useState<string | null>(errorMessage)
@@ -42,20 +40,29 @@ function LoginContent() {
         }
         
         if (data?.session) {
-          const userInfo = `User ID: ${data.session.user.id}, Email: ${data.session.user.email}, Role: ${data.session.user.user_metadata?.role || 'none'}`
+          // Check user role from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('user_id', data.session.user.id)
+            .single()
+          
+          const isAdmin = profile?.role === 'admin';
+          const finalRedirectUrl = isAdmin ? '/admin' : (callbackUrlFromParams || "/dashboard");
+          const userInfo = `User ID: ${data.session.user.id}, Email: ${data.session.user.email}, Role: ${profile?.role || 'none'}, IsAdmin: ${isAdmin}`
           console.log("User already authenticated", userInfo)
           setDebugInfo(prev => prev + "\nUser authenticated: " + userInfo)
-          console.log("Redirecting to:", callbackUrl)
+          console.log("Redirecting to:", finalRedirectUrl)
           
           try {
             // Force a refresh to ensure we have the latest session data
             await supabase.auth.refreshSession()
-            setDebugInfo(prev => prev + "\nSession refreshed, redirecting to: " + callbackUrl)
+            setDebugInfo(prev => prev + "\nSession refreshed, redirecting to: " + finalRedirectUrl)
             
             // Redirect with short delay to ensure cookies are set
             setTimeout(() => {
               if (mounted) {
-                router.push(callbackUrl)
+                router.push(finalRedirectUrl)
                 router.refresh()
               }
             }, 300)
@@ -98,10 +105,21 @@ function LoginContent() {
       setDebugInfo(prev => prev + "\nAuth event: " + event)
       
       if (event === 'SIGNED_IN' && session) {
-        console.log("Signed in, redirecting to dashboard")
-        setDebugInfo(prev => prev + "\nSigned in, redirecting to: " + callbackUrl)
-        router.push(callbackUrl)
-        router.refresh()
+        // Check user role from profiles table
+        supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single()
+          .then(({ data: profile }) => {
+            const isAdmin = profile?.role === 'admin';
+            const finalRedirectUrl = isAdmin ? '/admin' : (callbackUrlFromParams || "/dashboard");
+            console.log(`Signed in, admin: ${isAdmin}, redirecting to ${finalRedirectUrl}`)
+            setDebugInfo(prev => prev + `\nSigned in, admin: ${isAdmin}, redirecting to: ${finalRedirectUrl}`)
+            
+            router.push(finalRedirectUrl)
+            router.refresh()
+          })
       }
     })
     
@@ -110,13 +128,13 @@ function LoginContent() {
       subscription.unsubscribe();
       clearTimeout(loadingTimeout);
     }
-  }, [router, callbackUrl, errorMessage, isLoading])
+  }, [router, callbackUrlFromParams, isLoading])
 
   // Function to reset the login process
   const resetLogin = () => {
     setIsLoading(false)
     setError(null)
-    setDebugInfo("")
+    setDebugInfo("Login cancelled by user. Ready to try again.")
   }
 
   // If checking auth state or already logged in, show loading
@@ -152,7 +170,7 @@ function LoginContent() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Sign in to your account</CardTitle>
           <CardDescription>
-            Enter your email and password to sign in to your account
+            Enter your email and password or use a social provider to sign in.
           </CardDescription>
           {error && (
             <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded">
@@ -161,21 +179,9 @@ function LoginContent() {
           )}
         </CardHeader>
         <CardContent>
-          {useCustomUI ? (
-            <SupabaseLoginForm />
-          ) : (
-            <SupabaseAuthUI />
-          )}
+          <SupabaseAuthUI />
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <button 
-            onClick={() => setUseCustomUI(!useCustomUI)}
-            className="w-full py-2 px-4 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            {useCustomUI 
-              ? "Use Social Login (Google/GitHub)" 
-              : "Use Email/Password Login"}
-          </button>
           <div className="text-sm text-center">
             Don't have an account?{" "}
             <Link href="/auth/signup" className="text-blue-500 hover:underline">

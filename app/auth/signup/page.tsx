@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { SupabaseSignupForm } from "@/components/auth/supabase-signup-form"
 import { SupabaseAuthUI } from "@/components/auth/supabase-auth-ui"
 import { Loader2 } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase-client"
 
 function SignUpContent() {
   const router = useRouter()
@@ -21,8 +21,18 @@ function SignUpContent() {
         const { data } = await supabase.auth.getSession()
         
         if (data.session) {
-          console.log("User already authenticated, redirecting to dashboard")
-          router.push("/dashboard")
+          // Check user role from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('user_id', data.session.user.id)
+            .single()
+          
+          const isAdmin = profile?.role === 'admin'
+          const redirectUrl = isAdmin ? '/admin' : '/dashboard'
+          
+          console.log("User already authenticated, redirecting to", redirectUrl)
+          router.push(redirectUrl)
         }
       } catch (error) {
         console.error("Error checking session:", error)

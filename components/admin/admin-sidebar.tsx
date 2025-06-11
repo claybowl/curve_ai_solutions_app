@@ -9,7 +9,7 @@ import {
   UserCog, Lock, LogOut, BookText, Lightbulb, BarChart3, 
   Library, Bot, Shield, MessageSquare, Menu, RefreshCw
 } from "lucide-react"
-import { signOut, getCurrentUser } from "@/lib/supabase"
+import { signOut, getCurrentUser } from "@/lib/supabase-client"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 

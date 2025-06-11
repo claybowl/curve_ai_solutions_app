@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signUpWithEmail } from "@/lib/supabase"
+import { signUpWithEmail } from "@/lib/supabase-client"
 
 export function SupabaseSignupForm() {
   const [email, setEmail] = useState("")

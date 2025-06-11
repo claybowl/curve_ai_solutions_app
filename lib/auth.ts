@@ -1,61 +1,151 @@
 /**
- * Auth compatibility layer for NextAuth to Supabase migration
- * 
- * This file provides backward compatibility for components that
- * still import from the old NextAuth-based authentication system
+ * Clean Supabase Authentication System
+ * All authentication is handled through Supabase Auth
  */
 
-import { getCurrentUser, isUserAdmin } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { redirect } from 'next/navigation'
+import type { User } from '@supabase/supabase-js'
 
-// Re-export types and functions from existing auth system
-export type { User, UserRole } from '@/lib/supabase'
+export type UserRole = 'admin' | 'client'
 
-// Compatibility function for checking if user is authenticated
-export async function isAuthenticated() {
-  const { user, error } = await getCurrentUser()
-  return !!user && !error
+export interface UserProfile {
+  id: string
+  user_id: string
+  email: string
+  first_name: string
+  last_name: string
+  company_name?: string
+  role: UserRole
+  created_at: string
+  updated_at: string
 }
 
-// Compatibility function for checking admin role
-export async function isAdmin() {
-  return await isUserAdmin()
+/**
+ * Get the current authenticated user from Supabase
+ */
+export async function getCurrentUser(): Promise<{ user: User | null; error: any }> {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  return { user, error }
 }
 
-// Temporary compatibility functions to prevent import errors
-export const getUserById = async () => null
-export const getUserByEmail = async () => null
-export const createUser = async () => null
-export const updateUser = async () => null
-export const deleteUser = async () => null
-export const getUserRoles = async () => ['admin', 'client']
-export const checkEmailExists = async () => false
-export const resetUserPassword = async () => false
-
-// Auth options compatibility
-export const authOptions = {
-  providers: [],
-  callbacks: {
-    async session() {
-      return { user: null, expires: '' }
-    },
-    async jwt() {
-      return { token: {} }
-    }
+/**
+ * Get the current user's profile data
+ */
+export async function getCurrentUserProfile(): Promise<{ profile: UserProfile | null; error: any }> {
+  const { user, error: userError } = await getCurrentUser()
+  if (userError || !user) {
+    return { profile: null, error: userError }
   }
+
+  const supabase = await createServerSupabaseClient()
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
+
+  return { profile, error }
 }
 
-// NextAuth session getter compatibility 
-export async function getSession() {
+/**
+ * Check if the current user has admin role
+ */
+export async function isUserAdmin(): Promise<boolean> {
+  const { profile } = await getCurrentUserProfile()
+  return profile?.role === 'admin'
+}
+
+/**
+ * Check if user is authenticated
+ */
+export async function isAuthenticated(): Promise<boolean> {
   const { user } = await getCurrentUser()
-  if (!user) return null
-  
-  return {
-    user: {
-      id: user.id,
-      email: user.email,
-      name: `${user.user_metadata?.firstName || ''} ${user.user_metadata?.lastName || ''}`.trim(),
-      role: user.user_metadata?.role || 'client'
-    },
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  return !!user
+}
+
+/**
+ * Require authentication - redirect to login if not authenticated
+ */
+export async function requireAuth(): Promise<User> {
+  const { user } = await getCurrentUser()
+  if (!user) {
+    redirect('/login')
   }
+  return user
+}
+
+/**
+ * Require admin role - redirect if not admin
+ */
+export async function requireAdmin(): Promise<UserProfile> {
+  const { profile } = await getCurrentUserProfile()
+  if (!profile || profile.role !== 'admin') {
+    redirect('/login')
+  }
+  return profile
+}
+
+/**
+ * Create user profile after signup
+ */
+export async function createUserProfile(userData: {
+  userId: string
+  email: string
+  firstName: string
+  lastName: string
+  companyName?: string
+  role?: UserRole
+}): Promise<{ profile: UserProfile | null; error: any }> {
+  const supabase = await createServerSupabaseClient()
+  
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .insert({
+      user_id: userData.userId,
+      email: userData.email,
+      first_name: userData.firstName,
+      last_name: userData.lastName,
+      company_name: userData.companyName,
+      role: userData.role || 'client'
+    })
+    .select()
+    .single()
+
+  return { profile, error }
+}
+
+/**
+ * Update user profile
+ */
+export async function updateUserProfile(
+  userId: string, 
+  updates: Partial<Omit<UserProfile, 'id' | 'user_id' | 'created_at'>>
+): Promise<{ profile: UserProfile | null; error: any }> {
+  const supabase = await createServerSupabaseClient()
+  
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .select()
+    .single()
+
+  return { profile, error }
+}
+
+/**
+ * Get user profile by ID
+ */
+export async function getUserProfile(userId: string): Promise<{ profile: UserProfile | null; error: any }> {
+  const supabase = await createServerSupabaseClient()
+  
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single()
+
+  return { profile, error }
 }

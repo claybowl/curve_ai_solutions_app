@@ -9,7 +9,7 @@ import { AdminStats } from "@/components/admin/admin-stats"
 import { Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { getCurrentUser } from "@/lib/supabase"
+import { getCurrentUser } from "@/lib/supabase-client"
 
 export default function AdminDashboardPage() {
   const router = useRouter()

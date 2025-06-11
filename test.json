@@ -1,0 +1,810 @@
+{
+    "name": "Project Manager Agent Workflow",
+    "nodes": [
+      {
+        "parameters": {
+          "triggerTimes": {
+            "item": [
+              {
+                "hour": 9,
+                "minute": 0
+              }
+            ]
+          }
+        },
+        "id": "d6279e3f-c0d7-4b5a-889e-77d5a1ab5a5a",
+        "name": "Daily Status Update",
+        "type": "n8n-nodes-base.cron",
+        "typeVersion": 1,
+        "position": [
+          100,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "path": "project-manager-agent",
+          "options": {}
+        },
+        "id": "f4a22a72-2c3f-4391-b243-b75e5e3cc40a",
+        "name": "Agent Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          100,
+          500
+        ],
+        "webhookId": "pm-agent-webhook"
+      },
+      {
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "projectName",
+                "value": "LLM Deployment Project"
+              },
+              {
+                "name": "projectId",
+                "value": "llm-deployment-2023"
+              },
+              {
+                "name": "clientName",
+                "value": "AI Innovations Inc."
+              },
+              {
+                "name": "projectMethodology",
+                "value": "Agile"
+              },
+              {
+                "name": "projectDuration",
+                "value": "8 weeks"
+              },
+              {
+                "name": "linearTeamId",
+                "value": "TEAM_ID"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9b80ed7b-d3b0-4a5d-82dc-cc459b49ab3a",
+        "name": "Project Configuration",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 1,
+        "position": [
+          300,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "issue",
+          "operation": "getAll",
+          "teamId": "={{ $json.linearTeamId }}",
+          "projectId": "={{ $json.projectId }}",
+          "returnAll": true,
+          "additionalFields": {}
+        },
+        "id": "13e2b3e0-1a94-44e1-8d52-f0e6c111ed09",
+        "name": "Fetch Project Tasks",
+        "type": "n8n-nodes-base.linear",
+        "typeVersion": 1,
+        "position": [
+          500,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "team",
+          "operation": "getMembers",
+          "teamId": "={{ $json.linearTeamId }}",
+          "returnAll": true
+        },
+        "id": "fe83a6f9-0a78-4c1e-ba54-1a5bde5b3a40",
+        "name": "Fetch Team Resources",
+        "type": "n8n-nodes-base.linear",
+        "typeVersion": 1,
+        "position": [
+          500,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combinationMode": "multiplex",
+          "options": {}
+        },
+        "id": "9d9a9f69-5c75-49dc-91fe-a1b2af24a7c9",
+        "name": "Combine Project Data",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2,
+        "position": [
+          700,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"model\": \"gpt-4\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI Project Manager specialized in AI consulting and LLM deployment projects. Your task is to analyze project data and generate insights, recommendations, and next steps.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Project: {{$json.projectName}}\\nMethodology: {{$json.projectMethodology}}\\nClient: {{$json.clientName}}\\nDuration: {{$json.projectDuration}}\\n\\nCurrent Issues: {{$json.nodes}}\\nTeam Resources: {{$json.users}}\\n\\nAnalyze the current project status, identify risks, and recommend next steps.\"\n    }\n  ],\n  \"temperature\": 0.2,\n  \"max_tokens\": 1000\n}",
+          "options": {}
+        },
+        "id": "a734e5d9-8cc5-45c5-a9ae-5bec41c6e2bf",
+        "name": "Generate Project Insights",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 3,
+        "position": [
+          900,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Parse the OpenAI response\nconst response = $input.first().json;\nconst insights = response.choices[0].message.content;\n\n// Extract key sections with regex\nconst statusMatch = insights.match(/Status:[^\\n]*(\\n[^\\n#]+)*/i);\nconst risksMatch = insights.match(/Risks:[^\\n]*(\\n[^\\n#]+)*/i);\nconst recommendationsMatch = insights.match(/Recommendations:[^\\n]*(\\n[^\\n#]+)*/i);\n\n// Format the data\nreturn {\n  json: {\n    projectName: $json.projectName,\n    clientName: $json.clientName,\n    status: statusMatch ? statusMatch[0].replace(/Status:/i, '').trim() : 'Status analysis not available',\n    risks: risksMatch ? risksMatch[0].replace(/Risks:/i, '').trim() : 'Risk analysis not available',\n    recommendations: recommendationsMatch ? recommendationsMatch[0].replace(/Recommendations:/i, '').trim() : 'Recommendations not available',\n    fullInsights: insights,\n    generatedDate: new Date().toISOString(),\n    projectId: $json.projectId,\n    linearTeamId: $json.linearTeamId\n  }\n};"
+        },
+        "id": "e9a5d98e-4a11-4cdc-8bf0-72fc0f24f323",
+        "name": "Process Insights",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [
+          1100,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "boolean": [
+              {
+                "value1": "={{$json.risks.includes('High') || $json.risks.includes('Critical')}}",
+                "value2": true
+              }
+            ]
+          }
+        },
+        "id": "c8d872bb-e5e7-415d-8d85-f7fd20afbd74",
+        "name": "Risk Assessment",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          1300,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $json.riskNotificationChannel }}",
+          "text": "=🚨 **RISK ALERT: {{$json.projectName}}**\n\nThe following high or critical risks have been identified:\n\n{{$json.risks}}\n\n**Recommended Actions:**\n{{$json.recommendations}}",
+          "additionalFields": {}
+        },
+        "id": "842ff107-0e7a-4ba0-93d2-36ead04f1ca0",
+        "name": "Send Risk Alert",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          1500,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "channel": "pm-daily-updates",
+          "text": "=📊 *Project Status Update: {{$json.projectName}}*\n\nClient: {{$json.clientName}}\n\n*Current Status:*\n{{$json.status}}\n\n*Key Recommendations:*\n{{$json.recommendations}}",
+          "otherOptions": {
+            "thread_ts": "={{ $json.slackThreadTs }}",
+            "unfurl_links": false
+          },
+          "attachments": []
+        },
+        "id": "b3658dea-8dca-4d3a-b51a-43c6c9f4dcdd",
+        "name": "Send Status Update",
+        "type": "n8n-nodes-base.slack",
+        "typeVersion": 1,
+        "position": [
+          1500,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "documentId": "={{ $json.googleDocsReportId }}",
+          "paragraphs": [
+            {
+              "text": "=# {{$json.projectName}} - Project Update {{$today.format('YYYY-MM-DD')}}\n\n## Project Status\n{{$json.status}}\n\n## Identified Risks\n{{$json.risks}}\n\n## Recommendations\n{{$json.recommendations}}\n\n---\nGenerated by AI Project Manager | {{$now.format('YYYY-MM-DD HH:mm')}}"
+            }
+          ],
+          "options": {}
+        },
+        "id": "1f4aab90-7c6b-4fa1-afae-0a3e0a23b3a9",
+        "name": "Update Project Document",
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 1,
+        "position": [
+          1700,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "issue",
+          "operation": "create",
+          "teamId": "={{ $json.linearTeamId }}",
+          "title": "=AI Recommendation: {{ $json.recommendations.split('\\n')[0] }}",
+          "description": "={{ $json.recommendations }}",
+          "additionalFields": {
+            "projectId": "={{ $json.projectId }}",
+            "priority": 2
+          }
+        },
+        "id": "9b5ea30e-d6a2-4f3d-be93-c551cb5bca91",
+        "name": "Create Task From Recommendation",
+        "type": "n8n-nodes-base.linear",
+        "typeVersion": 1,
+        "position": [
+          1900,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "path": "project-request",
+          "options": {}
+        },
+        "id": "78a9db25-89cd-44a0-a62c-aece9e8c47f9",
+        "name": "Project Request Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          100,
+          700
+        ],
+        "webhookId": "project-request-webhook"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"model\": \"gpt-4\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI Project Manager specialized in AI consulting and LLM deployment. Parse the user's project request and extract structured information about the project requirements, timeline, and deliverables.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{$json.body.request}}\"\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 1000,\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+          "options": {}
+        },
+        "id": "6ff83a91-c6d1-48c5-b99c-daef4e2b15cb",
+        "name": "Parse Project Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 3,
+        "position": [
+          300,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Parse the OpenAI response to extract project details\nconst response = $input.first().json;\nlet projectInfo;\n\ntry {\n  const content = response.choices[0].message.content;\n  projectInfo = JSON.parse(content);\n} catch (error) {\n  // Fallback if parsing fails\n  projectInfo = {\n    projectName: \"New Project Request\",\n    clientName: $json.body.clientName || \"Unknown Client\",\n    description: \"Failed to parse project details\",\n    timeline: \"Unknown\",\n    methodology: \"Unknown\",\n    requester: $json.body.requesterEmail || \"unknown@example.com\"\n  };\n}\n\nreturn {\n  json: {\n    ...projectInfo,\n    requestId: $json.body.requestId || Date.now().toString(),\n    requestDate: new Date().toISOString(),\n    status: \"New\",\n    linearTeamId: $env.LINEAR_TEAM_ID\n  }\n};"
+        },
+        "id": "0e1b9f5e-2f17-4384-9dec-ee0cc5af270f",
+        "name": "Extract Project Details",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [
+          500,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"model\": \"gpt-4\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI Project Manager specialized in AI consulting and LLM deployment. Generate a project plan with tasks, timelines, and resource requirements based on the project details provided.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Project Name: {{$json.projectName}}\\nClient: {{$json.clientName}}\\nDescription: {{$json.description}}\\nTimeline: {{$json.timeline}}\\nMethodology: {{$json.methodology}}\\n\\nGenerate a detailed project plan with tasks, milestones, resource requirements, and risk assessment.\"\n    }\n  ],\n  \"temperature\": 0.2,\n  \"max_tokens\": 2000\n}",
+          "options": {}
+        },
+        "id": "5fefdc09-3cb2-4a44-b60e-c8134232a9cf",
+        "name": "Generate Project Plan",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 3,
+        "position": [
+          700,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Parse the OpenAI response to extract project plan\nconst response = $input.first().json;\nconst planContent = response.choices[0].message.content;\n\n// Extract key sections\nconst tasksMatch = planContent.match(/Tasks:[^\\n]*(\\n[^\\n#]+)*/i);\nconst milestonesMatch = planContent.match(/Milestones:[^\\n]*(\\n[^\\n#]+)*/i);\nconst resourcesMatch = planContent.match(/Resource Requirements:[^\\n]*(\\n[^\\n#]+)*/i);\nconst risksMatch = planContent.match(/Risk Assessment:[^\\n]*(\\n[^\\n#]+)*/i);\n\n// Extract tasks into array format for Linear\nconst tasksText = tasksMatch ? tasksMatch[0].replace(/Tasks:/i, '').trim() : '';\nconst taskLines = tasksText.split('\\n').filter(line => line.trim() !== '');\n\nconst tasks = taskLines.map((line, index) => {\n  // Try to extract task details from text\n  const taskName = line.replace(/^[\\d\\s.-]*/, '').split(':')[0].trim();\n  \n  return {\n    title: taskName || `Task ${index + 1}`,\n    description: line.includes(':') ? line.split(':')[1].trim() : line,\n    priority: index < 3 ? 2 : 3, // Higher priority for first tasks\n    position: index + 1\n  };\n});\n\nreturn {\n  json: {\n    ...($json),\n    projectPlan: {\n      tasks: tasks,\n      milestones: milestonesMatch ? milestonesMatch[0].replace(/Milestones:/i, '').trim() : 'No milestones defined',\n      resourceRequirements: resourcesMatch ? resourcesMatch[0].replace(/Resource Requirements:/i, '').trim() : 'No resource requirements defined',\n      riskAssessment: risksMatch ? risksMatch[0].replace(/Risk Assessment:/i, '').trim() : 'No risk assessment defined'\n    },\n    fullPlan: planContent,\n    generatedDate: new Date().toISOString()\n  }\n};"
+        },
+        "id": "0ac22e4f-f097-4fc4-9fab-b7a371c24ff4",
+        "name": "Process Project Plan",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [
+          900,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "to": "={{ $json.requester }}",
+          "subject": "=Project Plan: {{ $json.projectName }}",
+          "text": "=Dear Stakeholder,\n\nThank you for your project request. I've analyzed your requirements and prepared a project plan for \"{{ $json.projectName }}\".\n\n## Project Overview\n{{ $json.description }}\n\n## Key Milestones\n{{ $json.projectPlan.milestones }}\n\n## Resource Requirements\n{{ $json.projectPlan.resourceRequirements }}\n\n## Risk Assessment\n{{ $json.projectPlan.riskAssessment }}\n\nPlease review the attached detailed project plan and let me know if you have any questions or require adjustments.\n\nBest regards,\nAI Project Manager",
+          "options": {
+            "attachments": "=data:text/plain;base64,{{ Buffer.from($json.fullPlan).toString('base64') }}"
+          }
+        },
+        "id": "8d5d38ee-4a2d-485a-b30b-7fdf3c1a6c24",
+        "name": "Send Project Plan",
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 1,
+        "position": [
+          1100,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "project",
+          "operation": "create",
+          "teamId": "={{ $json.linearTeamId }}",
+          "name": "={{ $json.projectName }}",
+          "description": "=Client: {{ $json.clientName }}\nMethodology: {{ $json.methodology }}\nTimeline: {{ $json.timeline }}\n\n{{ $json.description }}",
+          "additionalFields": {
+            "icon": "🚀"
+          }
+        },
+        "id": "972e4d7b-a8fc-44b0-8b3e-6dea8be1845a",
+        "name": "Create Project in Linear",
+        "type": "n8n-nodes-base.linear",
+        "typeVersion": 1,
+        "position": [
+          1300,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// After project creation, extract the project ID\nconst projectId = $input.first().json.id;\n\n// Prepare tasks for batch creation\nconst tasks = $json.projectPlan.tasks.map(task => ({\n  title: task.title,\n  description: task.description,\n  priority: task.priority,\n  teamId: $json.linearTeamId,\n  projectId: projectId\n}));\n\nreturn {\n  json: {\n    ...$json,\n    linearProjectId: projectId,\n    tasks: tasks\n  }\n};"
+        },
+        "id": "3ad2be3a-bf60-4faf-8e5a-8b7fd9b31b75",
+        "name": "Prepare Tasks",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [
+          1500,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "batchSize": 5,
+          "continueOnFail": true,
+          "options": {}
+        },
+        "id": "a4c7b2f2-3ef3-4c88-ae3e-a1a42a0f1bd8",
+        "name": "Batch Tasks",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 1,
+        "position": [
+          1700,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "issue",
+          "operation": "create",
+          "teamId": "={{ $json.teamId }}",
+          "title": "={{ $json.title }}",
+          "description": "={{ $json.description }}",
+          "additionalFields": {
+            "projectId": "={{ $json.projectId }}",
+            "priority": "={{ $json.priority || 0 }}"
+          }
+        },
+        "id": "89e0e8fb-2ac3-4c48-8efd-3cda9d0b87bc",
+        "name": "Create Task in Linear",
+        "type": "n8n-nodes-base.linear",
+        "typeVersion": 1,
+        "position": [
+          1900,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "message",
+                "value": "=# Team Weekly Check-in\n\n## Agenda\n1. Project status update\n2. Task review\n3. Blockers discussion\n4. Next week planning\n\n## Project: {{$json.projectName}}\nClient: {{$json.clientName}}"
+              },
+              {
+                "name": "meetingId",
+                "value": "={{ \"meeting-\" + Date.now() }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "18f4d5a9-f15f-493c-aeab-04e88d01731e",
+        "name": "Weekly Meeting Preparation",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 1,
+        "position": [
+          300,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $json.teamChatId }}",
+          "text": "={{ $json.message }}",
+          "additionalFields": {
+            "disable_notification": false
+          }
+        },
+        "id": "f6fe32d7-1b04-4fea-9bd8-e13c3cc44fb0",
+        "name": "Schedule Team Meeting",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          500,
+          900
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Project Manager Agent Workflow\n\nThis workflow implements an AI-powered Project Manager agent that automates routine project management tasks, provides insights, and enhances team collaboration.",
+          "height": 200,
+          "width": 1000
+        },
+        "id": "d8c372a5-edb0-4e7d-9b2e-e0fde15f5f02",
+        "name": "Workflow Overview",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          800,
+          40
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Daily Status Tracking\n\nThese nodes handle daily project status monitoring, analysis, and reporting.",
+          "height": 540,
+          "width": 620
+        },
+        "id": "28a07da2-1e91-4e85-80b1-ce0e9a9af4a9",
+        "name": "Status Tracking Section",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          60,
+          220
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Project Request Handling\n\nThese nodes process new project requests, generate project plans, and set up the project in Linear.",
+          "height": 740,
+          "width": 1900
+        },
+        "id": "11e7e91f-f1a9-4cb3-9b55-85a5d97863eb",
+        "name": "Project Request Section",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          60,
+          620
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## AI Analysis & Insights\n\nThese nodes leverage AI to analyze project data, generate insights, and create recommendations.",
+          "height": 340,
+          "width": 1220
+        },
+        "id": "ec68ffcc-2afe-4649-9aea-afa0e61a4abb",
+        "name": "AI Analysis Section",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          680,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Communication & Reporting\n\nThese nodes handle notifications, alerts, and status updates to team members and stakeholders.",
+          "height": 360,
+          "width": 680
+        },
+        "id": "a9bd8e3c-ca25-4a9c-9dc1-f56d04b1a86b",
+        "name": "Communication Section",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1460,
+          220
+        ]
+      }
+    ],
+    "connections": {
+      "Daily Status Update": {
+        "main": [
+          [
+            {
+              "node": "Project Configuration",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agent Webhook": {
+        "main": [
+          [
+            {
+              "node": "Project Configuration",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Project Configuration": {
+        "main": [
+          [
+            {
+              "node": "Fetch Project Tasks",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Fetch Team Resources",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Project Tasks": {
+        "main": [
+          [
+            {
+              "node": "Combine Project Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Team Resources": {
+        "main": [
+          [
+            {
+              "node": "Combine Project Data",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Combine Project Data": {
+        "main": [
+          [
+            {
+              "node": "Generate Project Insights",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Project Insights": {
+        "main": [
+          [
+            {
+              "node": "Process Insights",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Process Insights": {
+        "main": [
+          [
+            {
+              "node": "Risk Assessment",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Risk Assessment": {
+        "main": [
+          [
+            {
+              "node": "Send Risk Alert",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Status Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Risk Alert": {
+        "main": [
+          [
+            {
+              "node": "Update Project Document",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Status Update": {
+        "main": [
+          [
+            {
+              "node": "Update Project Document",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Project Document": {
+        "main": [
+          [
+            {
+              "node": "Create Task From Recommendation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Project Request Webhook": {
+        "main": [
+          [
+            {
+              "node": "Parse Project Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Project Request": {
+        "main": [
+          [
+            {
+              "node": "Extract Project Details",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Project Details": {
+        "main": [
+          [
+            {
+              "node": "Generate Project Plan",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Project Plan": {
+        "main": [
+          [
+            {
+              "node": "Process Project Plan",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Process Project Plan": {
+        "main": [
+          [
+            {
+              "node": "Send Project Plan",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Project Plan": {
+        "main": [
+          [
+            {
+              "node": "Create Project in Linear",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Project in Linear": {
+        "main": [
+          [
+            {
+              "node": "Prepare Tasks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Tasks": {
+        "main": [
+          [
+            {
+              "node": "Batch Tasks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Batch Tasks": {
+        "main": [
+          [
+            {
+              "node": "Create Task in Linear",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Weekly Meeting Preparation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Weekly Meeting Preparation": {
+        "main": [
+          [
+            {
+              "node": "Schedule Team Meeting",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "versionId": ""
+}

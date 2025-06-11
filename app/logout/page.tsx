@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
-import { signOut } from "@/lib/supabase"
+import { signOut } from "@/lib/supabase-client"
 
 export default function LogoutPage() {
   const router = useRouter()

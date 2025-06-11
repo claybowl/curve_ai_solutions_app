@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { getCurrentUser } from "@/lib/supabase"
+import { getCurrentUser } from "@/lib/supabase-client"
 
 interface DashboardLayoutProps {
   children: ReactNode

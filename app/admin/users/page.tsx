@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { AlertCircle } from "lucide-react"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { SupabaseUserList } from "@/components/admin/supabase-user-list"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase-client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 

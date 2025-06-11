@@ -104,11 +104,19 @@ The application is deployed on Vercel. Key deployment requirements:
 ---------------------------------------------------------------------------
 ---------------------------------------------------------------------------
 
-# Project Management
+# Project Management 
 
 This section organizes the work being done on this project using Claude Code.
 
 ## To Do
+
+  ☒ Explore the Curve AI Solutions app structure to understand its capabilities
+  ☒ Identify potential integration points between your web app and Curve AI Solutions
+  ☒ Research existing AI features in the app that could be leveraged
+  ☐ Design a custom AI agent using n8n for business process automation
+  ☐ Develop a prompt engineering tool that integrates with the prompt library
+  ☐ Create an AI assessment tool integration for evaluating business processes
+          
 
 - [x] Switch Authentication System to Supabase Auth:
   - Current System Overview:

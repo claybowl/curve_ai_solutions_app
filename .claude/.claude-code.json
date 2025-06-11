@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "linear": {
+      "command": "npx",
+      "args": [
+        "@ibraheem4/linear-mcp"
+      ],
+      "env": {
+        "LINEAR_API_KEY": "lin_api_CBeo1p5M2hDOaNnX0GrHL0KUjEJfwufZfiZTMbdp"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  },
+  "production": {
+    "mcpServerUrl": "https://your-mcp-server-domain.com"
+  }
+}

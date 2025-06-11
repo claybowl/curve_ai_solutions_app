@@ -1,5 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -13,11 +12,8 @@ export async function GET(request: NextRequest) {
   console.log(`[${requestId}] Code exists:`, !!code)
 
   if (code) {
-    // Create a new cookies object and enable browser use
-    const cookieStore = cookies()
-    
     // Create a Supabase client configured with the cookies
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    const supabase = await createServerSupabaseClient()
     
     try {
       console.log('Auth callback: Exchanging code for session')
@@ -51,8 +47,19 @@ export async function GET(request: NextRequest) {
       console.log(`[${requestId}] User email:`, session.user.email)
       console.log(`[${requestId}] Session expires:`, new Date(session.expires_at! * 1000).toISOString())
       
-      // Create the response with the redirect
-      const redirectTo = requestUrl.searchParams.get('redirectTo') || '/dashboard'
+      // Check user role from profiles table to determine redirect
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single()
+      
+      const isAdmin = profile?.role === 'admin'
+      const defaultRedirect = isAdmin ? '/admin' : '/dashboard'
+      const redirectTo = requestUrl.searchParams.get('redirectTo') || defaultRedirect
+      
+      console.log(`[${requestId}] User role:`, profile?.role || 'none')
+      console.log(`[${requestId}] Is admin:`, isAdmin)
       console.log(`[${requestId}] Redirecting to:`, redirectTo)
       
       // Create a response with the correct redirect

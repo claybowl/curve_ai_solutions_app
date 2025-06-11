@@ -2,8 +2,8 @@
  * Utility functions for authentication - compatibility layer for Supabase Auth
  */
 import { loadSession, isUserAdmin, clearSession } from "./session-storage"
-import { signOut } from "@/lib/supabase"
-import type { UserMetadata } from "@/lib/supabase"
+import { signOut } from "@/lib/supabase-client"
+import type { UserMetadata } from "@/lib/supabase-client"
 
 // CLIENT-SIDE AUTHENTICATION UTILITIES
 

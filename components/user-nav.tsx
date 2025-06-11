@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession, signOut } from "next-auth/react"
+import { useAuth } from "@/providers/auth-provider"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,37 +12,46 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { User, Settings, LogOut } from "lucide-react"
+import { User, Settings, LogOut, Shield } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function UserNav() {
-  const { data: session, status } = useSession()
+  const { user, profile, loading, signOut } = useAuth()
+  const router = useRouter()
 
-  if (status === "loading") {
+  if (loading) {
     return <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse"></div>
   }
 
-  if (status === "unauthenticated") {
+  if (!user) {
     return (
       <div className="flex items-center gap-4">
         <Button variant="ghost" asChild>
           <Link href="/login">Sign In</Link>
         </Button>
         <Button className="bg-[#0076FF] hover:bg-[#0076FF]/90" asChild>
-          <Link href="/login">Sign In</Link>
+          <Link href="/auth/signup">Sign Up</Link>
         </Button>
       </div>
     )
   }
 
-  // Get initials from name
+  // Get initials from profile name
   const getInitials = () => {
-    if (!session?.user?.name) return "U"
-    return session.user.name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
+    if (profile?.first_name && profile?.last_name) {
+      return `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase()
+    }
+    return user.email?.[0]?.toUpperCase() || "U"
   }
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/")
+  }
+
+  const displayName = profile?.first_name && profile?.last_name 
+    ? `${profile.first_name} ${profile.last_name}`
+    : user.email
 
   return (
     <DropdownMenu>
@@ -56,8 +65,13 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{session.user?.name}</p>
-            <p className="text-xs leading-none text-gray-500">{session.user?.email}</p>
+            <p className="text-sm font-medium leading-none">{displayName}</p>
+            <p className="text-xs leading-none text-gray-500">{user.email}</p>
+            {profile?.role && (
+              <p className="text-xs leading-none text-blue-500 capitalize">
+                {profile.role}
+              </p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -67,6 +81,14 @@ export function UserNav() {
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
+        {profile?.role === 'admin' && (
+          <DropdownMenuItem asChild>
+            <Link href="/admin">
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Admin Panel</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link href="/profile">
             <Settings className="mr-2 h-4 w-4" />
@@ -74,7 +96,7 @@ export function UserNav() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="text-red-600 cursor-pointer">
+        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
