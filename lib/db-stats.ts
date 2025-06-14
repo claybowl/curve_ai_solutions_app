@@ -170,7 +170,7 @@ export async function getRecentActivityData(): Promise<ActivityDataPoint[]> {
       { category: 'New Users', count: 0 },
       { category: 'Assessments', count: 0 },
       { category: 'Consultations', count: 0 },
-      { category: 'Blog Views', count: 0 }
+      { category: 'Tool Usage', count: 0 }
     ];
 
     // Get new users in the last 7 days
@@ -212,17 +212,17 @@ export async function getRecentActivityData(): Promise<ActivityDataPoint[]> {
       console.error('Error fetching recent consultations:', err);
     }
 
-    // Get blog views in the last 7 days
+    // Get tool usage in the last 7 days (replaced blog views)
     try {
-      const blogViewsQuery = `
-        SELECT SUM(view_count) as count
-        FROM blog_posts
-        WHERE updated_at >= NOW() - INTERVAL '7 day'
+      const toolUsageQuery = `
+        SELECT COUNT(*) as count
+        FROM ai_tools
+        WHERE created_at >= NOW() - INTERVAL '7 day'
       `;
-      const blogViewsResult = await sql.query(blogViewsQuery);
-      activityData[3].count = parseInt(blogViewsResult[0].count) || 0;
+      const toolUsageResult = await sql.query(toolUsageQuery);
+      activityData[3].count = parseInt(toolUsageResult[0].count) || 0;
     } catch (err) {
-      console.error('Error fetching recent blog views:', err);
+      console.error('Error fetching recent tool usage:', err);
     }
 
     return activityData;

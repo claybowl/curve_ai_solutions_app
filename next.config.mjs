@@ -10,10 +10,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Optimize dev server performance
-  experimental: {
-    webpackBuildWorker: true,
-  },
+  output: 'standalone',
+  // Disable static optimization temporarily
+  trailingSlash: true,
+  // Disabled experimental features for build stability
+  // experimental: {
+  //   webpackBuildWorker: true,
+  // },
   webpack: (config, { dev, isServer }) => {
     if (dev) {
       // Optimize webpack for dev mode

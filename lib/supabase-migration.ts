@@ -1,10 +1,14 @@
 /**
  * Functions for migrating from NextAuth users to Supabase Auth users
  */
-import { supabase } from './supabase';
-import { supabaseAdmin } from './supabase-admin';
 import { sql } from './db';
-import { UserMetadata } from './supabase';
+
+interface UserMetadata {
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  role?: string;
+}
 
 interface MigrationUser {
   id: number;
@@ -101,8 +105,12 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
   try {
     console.log(`Migrating user ${user.email} to Supabase`);
 
+    // Get supabase admin client using dynamic import
+    const { supabaseAdmin } = await import('./supabase-admin');
+    const adminClient = supabaseAdmin();
+
     // Check if user already exists in Supabase
-    const { data: existingUsers } = await supabaseAdmin().auth.admin.listUsers({
+    const { data: existingUsers } = await adminClient.auth.admin.listUsers({
       filter: {
         email: user.email
       }
@@ -112,7 +120,7 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
       console.log(`User ${user.email} already exists in Supabase with ID ${existingUsers.users[0].id}`);
       
       // Update user metadata if needed
-      await supabaseAdmin().auth.admin.updateUserById(
+      await adminClient.auth.admin.updateUserById(
         existingUsers.users[0].id,
         {
           user_metadata: {
@@ -131,7 +139,7 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
     }
 
     // Create new user in Supabase
-    const { data, error } = await supabaseAdmin().auth.admin.createUser({
+    const { data, error } = await adminClient.auth.admin.createUser({
       email: user.email,
       password,
       email_confirm: true,

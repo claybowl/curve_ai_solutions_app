@@ -106,7 +106,7 @@ export async function getRecentActivityDataAction() {
       { category: 'New Users', count: 12 },
       { category: 'Assessments', count: 25 },
       { category: 'Consultations', count: 18 },
-      { category: 'Blog Views', count: 45 }
+      { category: 'Tool Usage', count: 45 }
     ];
   }
 }
