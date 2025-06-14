@@ -18,7 +18,15 @@
       "Bash(npx tsc:*)",
       "Bash(pnpm dev:*)",
       "Bash(cp:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(node:*)",
+      "Bash(NODE_ENV=development npm run dev)",
+      "Bash(npx next:*)"
     ],
     "deny": []
   },

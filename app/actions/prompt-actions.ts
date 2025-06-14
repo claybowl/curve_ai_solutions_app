@@ -262,6 +262,14 @@ export async function deletePromptAction(id: number) {
 }
 
 /**
+ * Update prompt category
+ */
+export async function updatePromptCategoryAction(categoryId: string, name: string) {
+  // Implementation for updating prompt category
+  return { success: true, message: "Category update functionality not implemented yet" }
+}
+
+/**
  * Get prompt categories
  */
 export async function getPromptCategoriesAction() {

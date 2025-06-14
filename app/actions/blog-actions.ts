@@ -59,6 +59,10 @@ async function checkBlogAuthorization() {
 /**
  * Get all blog posts with optional filtering
  */
+export async function getPostsAction(filter?: BlogPostFilter) {
+  return getBlogPostsAction(filter)
+}
+
 export async function getBlogPostsAction(filter?: BlogPostFilter) {
   try {
     const supabase = await createServerSupabaseClient()
@@ -99,6 +103,10 @@ export async function getBlogPostBySlugAction(slug: string) {
 /**
  * Create a new blog post
  */
+export async function createPostAction(formData: FormData) {
+  return createBlogPostAction(formData)
+}
+
 export async function createBlogPostAction(formData: FormData) {
   try {
     // Check authorization
@@ -142,6 +150,10 @@ export async function createBlogPostAction(formData: FormData) {
 /**
  * Update an existing blog post
  */
+export async function updatePostAction(id: number, formData: FormData) {
+  return updateBlogPostAction(id, formData)
+}
+
 export async function updateBlogPostAction(id: number, formData: FormData) {
   try {
     // Check authorization
@@ -190,6 +202,10 @@ export async function updateBlogPostAction(id: number, formData: FormData) {
 /**
  * Delete a blog post
  */
+export async function deletePostAction(id: number) {
+  return deleteBlogPostAction(id)
+}
+
 export async function deleteBlogPostAction(id: number) {
   try {
     // Check authorization
@@ -240,6 +256,14 @@ export async function generateSlugAction(title: string) {
     .replace(/^-|-$/g, '');
   
   return { slug }
+}
+
+/**
+ * Sync posts from external source
+ */
+export async function syncPostsAction() {
+  // Implementation for syncing posts
+  return { success: true, message: "Sync functionality not implemented yet" }
 }
 
 /**

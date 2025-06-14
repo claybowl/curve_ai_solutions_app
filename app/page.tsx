@@ -26,16 +26,19 @@ export default function Home() {
                 operations and intelligent decision-making processes.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white">
-                  Request a conversation
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white" asChild>
+                  <Link href="/consultation">
+                    Request a conversation
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                  asChild
                 >
-                  Explore Solutions
+                  <Link href="/solutions">Explore Solutions</Link>
                 </Button>
               </div>
             </div>
@@ -132,8 +135,8 @@ export default function Home() {
                     A comprehensive report with actionable insights and a clear path forward for AI integration in your
                     business.
                   </p>
-                  <Button className="w-full bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white">
-                    Start Your Assessment
+                  <Button className="w-full bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white" asChild>
+                    <Link href="/login">Start Your Assessment</Link>
                   </Button>
                 </div>
               </div>
@@ -549,12 +552,14 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col gap-4 min-[400px]:flex-row">
-              <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white">
-                Start Your Assessment
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white" asChild>
+                <Link href="/login">
+                  Start Your Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 text-white hover:bg-white/20 border-white/20">
-                Contact Us
+              <Button size="lg" variant="outline" className="bg-white/10 text-white hover:bg-white/20 border-white/20" asChild>
+                <Link href="/consultation">Contact Us</Link>
               </Button>
             </div>
           </div>

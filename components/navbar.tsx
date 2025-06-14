@@ -8,23 +8,47 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { supabase } from "@/lib/supabase-client"
 
-// Replace the existing useAuth function with this updated version
+// Updated useAuth function to use Supabase
 function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userRole, setUserRole] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    // Check if there's an auth token in localStorage
-    const token = localStorage.getItem("admin-token")
-    if (token) {
-      const [userId, role] = token.split(":")
-      setIsLoggedIn(true)
-      setUserRole(role)
+    // Check current session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (session?.user) {
+        setIsLoggedIn(true)
+        setUser(session.user)
+        setUserRole(session.user.user_metadata?.role || 'client')
+      }
     }
+
+    checkSession()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setIsLoggedIn(true)
+          setUser(session.user)
+          setUserRole(session.user.user_metadata?.role || 'client')
+        } else {
+          setIsLoggedIn(false)
+          setUser(null)
+          setUserRole(null)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  return { isLoggedIn, userRole }
+  return { isLoggedIn, userRole, user }
 }
 
 // Update the Navbar component to include the UserProfileDropdown
@@ -32,7 +56,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { isLoggedIn, userRole } = useAuth()
+  const { isLoggedIn, userRole, user } = useAuth()
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -42,16 +66,14 @@ export function Navbar() {
     { name: "Consultation", href: "/consultation" },
   ]
 
-  // Add a logout handler
-  const handleLogout = () => {
-    localStorage.removeItem("admin-token")
-
-    // Call the logout API to clear cookies
-    fetch("/api/logout", { method: "POST" })
-      .catch((err) => console.error("Error during logout:", err))
-      .finally(() => {
-        router.push("/auth/signin")
-      })
+  // Updated logout handler for Supabase
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push("/")
+    } catch (error) {
+      console.error("Error during logout:", error)
+    }
   }
 
   return (
@@ -87,10 +109,10 @@ export function Navbar() {
               ) : (
                 <>
                   <Button asChild className="bg-[#0076FF] hover:bg-[#0076FF]/90 text-white">
-                    <Link href="/assessments/new">Get Started</Link>
+                    <Link href="/login">Get Started</Link>
                   </Button>
                   <Link
-                    href="/auth/signin"
+                    href="/login"
                     className="px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
                   >
                     Sign In
@@ -143,14 +165,14 @@ export function Navbar() {
               <>
                 <div className="pt-2">
                   <Button asChild className="w-full bg-[#0076FF] hover:bg-[#0076FF]/90 text-white">
-                    <Link href="/assessments/new" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                       Get Started
                     </Link>
                   </Button>
                 </div>
                 <div className="pt-2">
                   <Link
-                    href="/auth/signin"
+                    href="/login"
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
                     onClick={() => setIsMenuOpen(false)}
                   >

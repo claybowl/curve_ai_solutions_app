@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { UserMetadata } from './supabase'
 
 // Create a Supabase client with admin privileges for server-side operations
-const supabaseAdmin = createClient(
+export const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!, // This is a secret admin key, only used on the server
   {

@@ -13,7 +13,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
-    storageKey: 'supabase.auth.token',
     autoRefreshToken: true,
     detectSessionInUrl: true,
     flowType: 'pkce'
@@ -107,4 +106,22 @@ export async function getUserProfile(userId?: string) {
     .single()
 
   return { profile, error }
+}
+
+// Update user metadata
+export async function updateUserMetadata(metadata: any) {
+  const { data, error } = await supabase.auth.updateUser({
+    data: metadata
+  })
+  
+  return { data, error }
+}
+
+// Check if user is admin
+export async function isUserAdmin() {
+  const { user } = await getCurrentUser()
+  if (!user) return false
+  
+  const userRole = user.user_metadata?.role || user.app_metadata?.role
+  return userRole === 'admin'
 }
