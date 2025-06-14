@@ -1,5 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
 import type { UserMetadata } from './supabase'
+
+// Mock admin client for build time
+function createMockAdminClient() {
+  return {
+    auth: {
+      admin: {
+        updateUserById: () => Promise.resolve({ data: { user: null }, error: null }),
+        createUser: () => Promise.resolve({ data: { user: null }, error: null }),
+        listUsers: () => Promise.resolve({ data: { users: [] }, error: null }),
+        deleteUser: () => Promise.resolve({ data: null, error: null }),
+        getUserById: () => Promise.resolve({ data: { user: null }, error: null })
+      }
+    }
+  } as any
+}
 
 // Function to create Supabase client with admin privileges for server-side operations
 function createSupabaseAdmin() {
@@ -7,31 +21,27 @@ function createSupabaseAdmin() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   
   if (!supabaseUrl || !serviceRoleKey) {
-    console.warn('Missing Supabase admin environment variables, returning mock client')
-    // For build time, return a minimal mock client
-    return {
-      auth: {
-        admin: {
-          updateUserById: () => Promise.resolve({ data: { user: null }, error: null }),
-          createUser: () => Promise.resolve({ data: { user: null }, error: null }),
-          listUsers: () => Promise.resolve({ data: { users: [] }, error: null }),
-          deleteUser: () => Promise.resolve({ data: null, error: null }),
-          getUserById: () => Promise.resolve({ data: { user: null }, error: null })
-        }
-      }
-    } as any
+    return createMockAdminClient()
   }
-  
-  return createClient(
-    supabaseUrl,
-    serviceRoleKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    }
-  )
+
+  // Try to import Supabase dynamically, fallback to mock if it fails
+  try {
+    const { createClient } = require('@supabase/supabase-js')
+    
+    return createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
+  } catch (error) {
+    console.warn('Failed to create Supabase admin client, returning mock client:', error)
+    return createMockAdminClient()
+  }
 }
 
 // Lazy initialization

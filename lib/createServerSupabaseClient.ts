@@ -1,6 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import type { CookieOptions } from '@supabase/ssr'
 
 /**
  * Creates a Supabase client for server-side operations
@@ -11,6 +9,7 @@ export function createServerSupabaseClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Missing Supabase environment variables in createServerSupabaseClient')
     // For build time, return a minimal mock client
     return {
       auth: {
@@ -32,6 +31,10 @@ export function createServerSupabaseClient() {
       })
     } as any
   }
+
+  // Dynamic import to avoid build-time issues
+  const { createServerClient } = require('@supabase/ssr')
+  const { CookieOptions } = require('@supabase/ssr')
 
   const cookieStore = cookies()
   

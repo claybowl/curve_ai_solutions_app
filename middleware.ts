@@ -1,4 +1,3 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
@@ -13,6 +12,9 @@ export async function middleware(request: NextRequest) {
     console.warn('Missing Supabase environment variables in middleware')
     return response
   }
+
+  // Dynamic import to avoid build-time issues
+  const { createServerClient } = await import('@supabase/ssr')
 
   const supabase = createServerClient(
     supabaseUrl,

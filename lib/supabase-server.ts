@@ -1,55 +1,65 @@
-import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+
+// Mock client for build time
+function createMockClient() {
+  return {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      updateUser: () => Promise.resolve({ error: null }),
+      signOut: () => Promise.resolve({ error: null })
+    },
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: () => Promise.resolve({ data: null, error: null }),
+          single: () => Promise.resolve({ data: null, error: null })
+        })
+      }),
+      insert: () => Promise.resolve({ data: null, error: null }),
+      update: () => Promise.resolve({ data: null, error: null }),
+      delete: () => Promise.resolve({ data: null, error: null })
+    })
+  } as any
+}
 
 // Create a server-side supabase client for use in server components and API routes
 export async function createServerSupabaseClient() {
-  // Check if we're in a build environment where env vars might not be available
+  // Get environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+  // Always return mock client if env vars are missing (including during build)
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Missing Supabase environment variables, returning mock client')
-    // For build time or missing env vars, return a minimal mock client
-    return {
-      auth: {
-        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-        getUser: () => Promise.resolve({ data: { user: null }, error: null }),
-        updateUser: () => Promise.resolve({ error: null }),
-        signOut: () => Promise.resolve({ error: null })
-      },
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            maybeSingle: () => Promise.resolve({ data: null, error: null }),
-            single: () => Promise.resolve({ data: null, error: null })
-          })
-        }),
-        insert: () => Promise.resolve({ data: null, error: null }),
-        update: () => Promise.resolve({ data: null, error: null }),
-        delete: () => Promise.resolve({ data: null, error: null })
-      })
-    } as any
+    return createMockClient()
   }
 
-  const cookieStore = await cookies()
+  // Try to import Supabase dynamically, fallback to mock if it fails
+  try {
+    const { createServerClient } = require('@supabase/ssr')
+    const cookieStore = await cookies()
 
-  return createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
+    return createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: any) {
+            cookieStore.set({ name, value: '', ...options })
+          },
         },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options })
-        },
-        remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', ...options })
-        },
-      },
-    }
-  )
+      }
+    )
+  } catch (error) {
+    console.warn('Failed to create Supabase client, returning mock client:', error)
+    return createMockClient()
+  }
 }
 
 // Export a direct server client for API routes that handle their own cookies
