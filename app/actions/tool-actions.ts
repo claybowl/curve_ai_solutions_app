@@ -74,7 +74,7 @@ export async function getToolsByCategory() {
       {
         id: "anti-gravity",
         name: "Anti-Gravity Framework Components",
-        description: "Business process optimization and acceleration through automation-first thinking, featuring prototypes like Notion Syncer, Meeting Flow Accelerator, Momentum Pulse dashboard, AutoDoc Agent, and Slack Assistant for SOPs, all designed as modular tools that integrate with your existing productivity stack.",
+        description: "Business process optimization and acceleration through automation-first thinking, featuring prototypes like Meeting Flow Accelerator, Momentum Pulse dashboard, AutoDoc Agent, and Slack Assistant for SOPs, all designed as modular tools that integrate with your existing productivity stack.",
         pattern: ["Friction", "Orchestrator", "Gravity", "Accelerator"],
         color: "bg-red-500",
         icon: "Zap",

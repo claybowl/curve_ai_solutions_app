@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { 
   LayoutDashboard, Users, FileText, Calendar, Settings, Wrench, 
-  UserCog, Lock, LogOut, BookText, Lightbulb, BarChart3, 
+  UserCog, Lock, LogOut, Lightbulb, BarChart3, 
   Library, Bot, Shield, MessageSquare, Menu, RefreshCw
 } from "lucide-react"
 import { signOut, getCurrentUser } from "@/lib/supabase-client"
@@ -57,11 +57,6 @@ const navItems = [
   {
     heading: "Content Management",
     items: [
-      {
-        name: "Blog Posts",
-        href: "/admin/blog",
-        icon: BookText,
-      },
       {
         name: "Prompt Library",
         href: "/admin/prompts",

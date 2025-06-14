@@ -3,11 +3,9 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   // Check environment variables
   const envStatus = {
-    NOTION_TOKEN: !!process.env.NOTION_TOKEN,
-    NOTION_BLOG_DATABASE_ID: !!process.env.NOTION_BLOG_DATABASE_ID,
-    // Don't expose the actual values for security reasons
-    tokenLength: process.env.NOTION_TOKEN ? process.env.NOTION_TOKEN.length : 0,
-    databaseIdLength: process.env.NOTION_BLOG_DATABASE_ID ? process.env.NOTION_BLOG_DATABASE_ID.length : 0,
+    SUPABASE_URL: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_ANON_KEY: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    DATABASE_URL: !!process.env.DATABASE_URL,
   }
 
   return NextResponse.json({

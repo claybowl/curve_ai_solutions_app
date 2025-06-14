@@ -10,15 +10,6 @@ export default function ServerActionsExamplesPage() {
       </p>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="p-6 border rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-3">Blog Management Actions</h2>
-          <p className="text-gray-600 mb-4">
-            Examples of server actions for managing blog posts including creating, updating, deleting, and publishing functionality.
-          </p>
-          <Link href="/examples/blog-actions-example">
-            <Button>View Blog Actions</Button>
-          </Link>
-        </div>
 
         <div className="p-6 border rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-3">Prompt Library Actions</h2>

@@ -11,7 +11,6 @@ interface AdminDashboardStats {
   toolCount: number;
   activeToolCount: number;
   roleCount: number;
-  blogPostCount: number;
   promptCount: number;
   consultationCount: number;
   pendingConsultations: number;
@@ -47,7 +46,6 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
       toolCount: 0,
       activeToolCount: 0,
       roleCount: 0,
-      blogPostCount: 0,
       promptCount: 0,
       consultationCount: 0,
       pendingConsultations: 0
@@ -104,13 +102,6 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
       console.error('Error fetching role count:', err);
     }
 
-    // Get blog post count
-    try {
-      const blogResult = await sql.query('SELECT COUNT(*) as count FROM blog_posts');
-      stats.blogPostCount = parseInt(blogResult[0].count) || 0;
-    } catch (err) {
-      console.error('Error fetching blog post count:', err);
-    }
 
     // Get prompt count
     try {

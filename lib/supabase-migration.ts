@@ -53,12 +53,6 @@ async function updateForeignKeyReferences(dbUserId: number, supabaseUserId: stri
       WHERE created_by = ${dbUserId}
     `;
 
-    // Update blog_posts
-    await sql`
-      UPDATE blog_posts 
-      SET author_uuid = ${supabaseUserId}
-      WHERE author_id = ${dbUserId}
-    `;
 
     // Update prompts
     await sql`
@@ -215,9 +209,6 @@ export async function addUuidColumns() {
       ALTER TABLE ai_tools 
       ADD COLUMN IF NOT EXISTS created_by_uuid UUID;
       
-      -- blog_posts
-      ALTER TABLE blog_posts 
-      ADD COLUMN IF NOT EXISTS author_uuid UUID;
       
       -- prompts
       ALTER TABLE prompts 
@@ -248,8 +239,6 @@ export async function addUuidColumns() {
       CREATE INDEX IF NOT EXISTS ai_tools_created_by_uuid_idx 
       ON ai_tools(created_by_uuid);
       
-      CREATE INDEX IF NOT EXISTS blog_posts_author_uuid_idx 
-      ON blog_posts(author_uuid);
       
       CREATE INDEX IF NOT EXISTS prompts_author_uuid_idx 
       ON prompts(author_uuid);
