@@ -26,7 +26,8 @@
       "Bash(pnpm lint:*)",
       "Bash(node:*)",
       "Bash(NODE_ENV=development npm run dev)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(NODE_ENV=production npm run build --verbose 2 >& 1)"
     ],
     "deny": []
   },
