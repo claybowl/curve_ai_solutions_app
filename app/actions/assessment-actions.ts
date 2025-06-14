@@ -6,13 +6,24 @@ import { redirect } from "next/navigation"
 
 // Get all assessment questions
 export async function getAssessmentQuestions() {
-  const questions = await sql`
-    SELECT * FROM assessment_questions 
-    WHERE active = true 
-    ORDER BY category, id
-  `
+  try {
+    // Skip database calls during build if no DATABASE_URL
+    if (!process.env.DATABASE_URL) {
+      console.log("No DATABASE_URL found, returning empty questions array")
+      return []
+    }
+    
+    const questions = await sql`
+      SELECT * FROM assessment_questions 
+      WHERE active = true 
+      ORDER BY category, id
+    `
 
-  return questions
+    return questions
+  } catch (error) {
+    console.error("Error fetching assessment questions:", error)
+    return []
+  }
 }
 
 // Submit a new assessment

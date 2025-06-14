@@ -5,6 +5,12 @@ import { hash } from "bcryptjs" // Changed from bcrypt to bcryptjs
 
 export async function seedSampleUser() {
   try {
+    // Skip database calls during build if no DATABASE_URL
+    if (!process.env.DATABASE_URL) {
+      console.log("No DATABASE_URL found, returning mock user ID")
+      return { success: true, message: "Mock user for build", userId: 1 }
+    }
+    
     // Check if the user already exists
     const existingUser = await sql.query(`SELECT * FROM users WHERE email = $1`, ["demo@curveai.com"])
 

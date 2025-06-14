@@ -5,6 +5,12 @@ import { sql } from "@/lib/db"
 // Get all AI tools
 export async function getAllTools() {
   try {
+    // Skip database calls during build if no DATABASE_URL
+    if (!process.env.DATABASE_URL) {
+      console.log("No DATABASE_URL found, returning empty tools array")
+      return []
+    }
+    
     // Use tagged template literal syntax
     const tools = await sql`
       SELECT * FROM ai_tools 
