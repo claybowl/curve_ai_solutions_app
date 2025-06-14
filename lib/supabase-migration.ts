@@ -108,7 +108,7 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
     console.log(`Migrating user ${user.email} to Supabase`);
 
     // Check if user already exists in Supabase
-    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers({
+    const { data: existingUsers } = await supabaseAdmin().auth.admin.listUsers({
       filter: {
         email: user.email
       }
@@ -118,7 +118,7 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
       console.log(`User ${user.email} already exists in Supabase with ID ${existingUsers.users[0].id}`);
       
       // Update user metadata if needed
-      await supabaseAdmin.auth.admin.updateUserById(
+      await supabaseAdmin().auth.admin.updateUserById(
         existingUsers.users[0].id,
         {
           user_metadata: {
@@ -137,7 +137,7 @@ export async function migrateUserToSupabase(user: MigrationUser, password: strin
     }
 
     // Create new user in Supabase
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    const { data, error } = await supabaseAdmin().auth.admin.createUser({
       email: user.email,
       password,
       email_confirm: true,

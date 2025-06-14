@@ -1,17 +1,36 @@
 import { createClient } from '@supabase/supabase-js'
 import type { UserMetadata } from './supabase'
 
-// Create a Supabase client with admin privileges for server-side operations
-export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // This is a secret admin key, only used on the server
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
+// Function to create Supabase client with admin privileges for server-side operations
+function createSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Missing Supabase environment variables for admin client')
   }
-)
+  
+  return createClient(
+    supabaseUrl,
+    serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+}
+
+// Lazy initialization
+let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
+
+export const supabaseAdmin = () => {
+  if (!supabaseAdminInstance) {
+    supabaseAdminInstance = createSupabaseAdmin()
+  }
+  return supabaseAdminInstance
+}
 
 // Functions for admin operations
 
@@ -19,7 +38,7 @@ export const supabaseAdmin = createClient(
  * Updates a user's role to admin
  */
 export async function setUserAsAdmin(userId: string) {
-  const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
+  const { data, error } = await supabaseAdmin().auth.admin.updateUserById(
     userId,
     { user_metadata: { role: 'admin' } }
   )
@@ -42,7 +61,7 @@ export async function createAdminUser({
   lastName: string
 }) {
   // Create the user with admin role
-  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+  const { data, error } = await supabaseAdmin().auth.admin.createUser({
     email,
     password,
     email_confirm: true,
@@ -60,7 +79,7 @@ export async function createAdminUser({
  * Lists all users with pagination
  */
 export async function listUsers(page = 0, perPage = 100) {
-  const { data, error } = await supabaseAdmin.auth.admin.listUsers({
+  const { data, error } = await supabaseAdmin().auth.admin.listUsers({
     page,
     perPage,
   })
@@ -72,7 +91,7 @@ export async function listUsers(page = 0, perPage = 100) {
  * Deletes a user by ID
  */
 export async function deleteUser(userId: string) {
-  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId)
+  const { data, error } = await supabaseAdmin().auth.admin.deleteUser(userId)
   return { data, error }
 }
 
@@ -80,7 +99,7 @@ export async function deleteUser(userId: string) {
  * Updates a user's metadata
  */
 export async function updateUserMetadata(userId: string, metadata: UserMetadata) {
-  const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
+  const { data, error } = await supabaseAdmin().auth.admin.updateUserById(
     userId,
     { user_metadata: metadata }
   )

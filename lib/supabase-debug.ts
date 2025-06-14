@@ -1,17 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Get Supabase URL and anon key from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
 /**
  * Create a diagnostic Supabase client with enhanced logging
  */
 export const createDiagnosticClient = () => {
+  // Get Supabase URL and anon key from environment variables
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
   console.log('Creating diagnostic Supabase client with the following configuration:')
   console.log('URL:', supabaseUrl)
   console.log('Auth config:', {
