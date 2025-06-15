@@ -1,25 +1,27 @@
 "use server"
 
-import { sql } from "@/lib/db"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 // Get all assessment questions
 export async function getAssessmentQuestions() {
   try {
-    // Skip database calls during build if no DATABASE_URL
-    if (!process.env.DATABASE_URL) {
-      console.log("No DATABASE_URL found, returning empty questions array")
+    const supabase = await createServerSupabaseClient()
+    
+    const { data: questions, error } = await supabase
+      .from('assessment_questions')
+      .select('*')
+      .eq('active', true)
+      .order('category')
+      .order('id')
+
+    if (error) {
+      console.error("Error fetching assessment questions:", error)
       return []
     }
-    
-    const questions = await sql`
-      SELECT * FROM assessment_questions 
-      WHERE active = true 
-      ORDER BY category, id
-    `
 
-    return questions
+    return questions || []
   } catch (error) {
     console.error("Error fetching assessment questions:", error)
     return []
@@ -28,51 +30,70 @@ export async function getAssessmentQuestions() {
 
 // Submit a new assessment
 export async function submitAssessment(formData: FormData) {
-  const userId = Number.parseInt(formData.get("userId") as string)
+  try {
+    const supabase = await createServerSupabaseClient()
+    const userId = formData.get("userId") as string
 
-  // Create a new assessment
-  const assessmentResult = await sql.query(
-    `
-    INSERT INTO ai_assessments (user_id, status)
-    VALUES ($1, 'pending')
-    RETURNING id
-  `,
-    [userId],
-  )
+    // Create a new assessment
+    const { data: assessmentData, error: assessmentError } = await supabase
+      .from('ai_assessments')
+      .insert({
+        user_id: userId,
+        status: 'pending'
+      })
+      .select('id')
+      .single()
 
-  const assessmentId = assessmentResult[0].id
+    if (assessmentError || !assessmentData) {
+      console.error("Error creating assessment:", assessmentError)
+      throw new Error("Failed to create assessment")
+    }
 
-  // Process each question response
-  const questions = await getAssessmentQuestions()
-  let totalScore = 0
+    const assessmentId = assessmentData.id
 
-  for (const question of questions) {
-    const response = formData.get(`question_${question.id}`) as string
-    const score = calculateQuestionScore(response, question)
-    totalScore += score
+    // Process each question response
+    const questions = await getAssessmentQuestions()
+    let totalScore = 0
 
-    // Save the response
-    await sql.query(
-      `
-      INSERT INTO assessment_responses (assessment_id, question_id, response, score)
-      VALUES ($1, $2, $3, $4)
-    `,
-      [assessmentId, question.id, response, score],
-    )
+    for (const question of questions) {
+      const response = formData.get(`question_${question.id}`) as string
+      const score = calculateQuestionScore(response, question)
+      totalScore += score
+
+      // Save the response
+      const { error: responseError } = await supabase
+        .from('assessment_responses')
+        .insert({
+          assessment_id: assessmentId,
+          question_id: question.id,
+          response,
+          score
+        })
+
+      if (responseError) {
+        console.error("Error saving assessment response:", responseError)
+      }
+    }
+
+    // Update the assessment with the total score
+    const { error: updateError } = await supabase
+      .from('ai_assessments')
+      .update({
+        score: totalScore,
+        status: 'completed'
+      })
+      .eq('id', assessmentId)
+
+    if (updateError) {
+      console.error("Error updating assessment score:", updateError)
+    }
+
+    revalidatePath("/assessments")
+    redirect(`/assessments/${assessmentId}/results`)
+  } catch (error) {
+    console.error("Error submitting assessment:", error)
+    throw error
   }
-
-  // Update the assessment with the total score
-  await sql.query(
-    `
-    UPDATE ai_assessments
-    SET score = $1, status = 'completed'
-    WHERE id = $2
-  `,
-    [totalScore, assessmentId],
-  )
-
-  revalidatePath("/assessments")
-  redirect(`/assessments/${assessmentId}/results`)
 }
 
 // Helper function to calculate score based on response
@@ -104,64 +125,103 @@ function calculateQuestionScore(response: string, question: any): number {
 
 // Get assessment by ID with responses
 export async function getAssessmentById(id: number) {
-  const assessment = await sql.query(
-    `
-    SELECT a.*, u.first_name, u.last_name, u.company_name
-    FROM ai_assessments a
-    JOIN users u ON a.user_id = u.id
-    WHERE a.id = $1
-  `,
-    [id],
-  )
+  try {
+    const supabase = await createServerSupabaseClient()
 
-  if (!assessment || assessment.length === 0) {
+    // Get assessment with user info
+    const { data: assessment, error: assessmentError } = await supabase
+      .from('ai_assessments')
+      .select(`
+        *,
+        users!ai_assessments_user_id_fkey(
+          first_name,
+          last_name,
+          company_name
+        )
+      `)
+      .eq('id', id)
+      .single()
+
+    if (assessmentError || !assessment) {
+      console.error("Error fetching assessment:", assessmentError)
+      return null
+    }
+
+    // Get responses with question details
+    const { data: responses, error: responsesError } = await supabase
+      .from('assessment_responses')
+      .select(`
+        *,
+        assessment_questions!assessment_responses_question_id_fkey(
+          question_text,
+          category
+        )
+      `)
+      .eq('assessment_id', id)
+
+    if (responsesError) {
+      console.error("Error fetching assessment responses:", responsesError)
+    }
+
+    return {
+      ...assessment,
+      responses: responses || [],
+    }
+  } catch (error) {
+    console.error("Error getting assessment by ID:", error)
     return null
-  }
-
-  const responses = await sql.query(
-    `
-    SELECT r.*, q.question_text, q.category
-    FROM assessment_responses r
-    JOIN assessment_questions q ON r.question_id = q.id
-    WHERE r.assessment_id = $1
-  `,
-    [id],
-  )
-
-  return {
-    ...assessment[0],
-    responses,
   }
 }
 
 // Get all assessments for a user
-export async function getUserAssessments(userId: number) {
-  return sql.query(
-    `
-    SELECT * FROM ai_assessments
-    WHERE user_id = $1
-    ORDER BY created_at DESC
-  `,
-    [userId],
-  )
+export async function getUserAssessments(userId: string) {
+  try {
+    const supabase = await createServerSupabaseClient()
+    
+    const { data: assessments, error } = await supabase
+      .from('ai_assessments')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error("Error fetching user assessments:", error)
+      return []
+    }
+
+    return assessments || []
+  } catch (error) {
+    console.error("Error getting user assessments:", error)
+    return []
+  }
 }
 
 // Generate assessment report
 export async function generateAssessmentReport(assessmentId: number) {
-  // In a real implementation, this would call an AI service to generate a report
-  // For now, we'll just update the report URL
+  try {
+    const supabase = await createServerSupabaseClient()
+    
+    // In a real implementation, this would call an AI service to generate a report
+    // For now, we'll just update the report URL
+    const reportUrl = `/reports/assessment-${assessmentId}.pdf`
 
-  const reportUrl = `/reports/assessment-${assessmentId}.pdf`
+    const { error } = await supabase
+      .from('ai_assessments')
+      .update({
+        report_url: reportUrl,
+        status: 'reviewed'
+      })
+      .eq('id', assessmentId)
 
-  await sql.query(
-    `
-    UPDATE ai_assessments
-    SET report_url = $1, status = 'reviewed'
-    WHERE id = $2
-  `,
-    [reportUrl, assessmentId],
-  )
+    if (error) {
+      console.error("Error updating assessment report:", error)
+      throw new Error("Failed to generate report")
+    }
 
-  revalidatePath(`/assessments/${assessmentId}/results`)
-  return reportUrl
+    revalidatePath(`/assessments/${assessmentId}/results`)
+    return reportUrl
+  } catch (error) {
+    console.error("Error generating assessment report:", error)
+    throw error
+  }
 }

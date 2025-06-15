@@ -150,6 +150,16 @@ export async function isUserAdmin() {
   const { user } = await getCurrentUser()
   if (!user) return false
   
+  // Check metadata first (faster)
   const userRole = user.user_metadata?.role || user.app_metadata?.role
-  return userRole === 'admin'
+  if (userRole === 'admin') return true
+  
+  // If not found in metadata, check profiles table
+  try {
+    const { profile } = await getUserProfile(user.id)
+    return profile?.role === 'admin'
+  } catch (error) {
+    console.error('Error checking profile role:', error)
+    return false
+  }
 }

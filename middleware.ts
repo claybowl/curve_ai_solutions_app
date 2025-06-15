@@ -88,6 +88,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Debug cookie information
+  const cookies = request.cookies.getAll()
+  console.log(`[${requestId}] Available cookies:`, cookies.map(c => c.name).join(', '))
+  
   // Refresh session if available
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
@@ -100,6 +104,7 @@ export async function middleware(request: NextRequest) {
     // Log session status
     if (session) {
       console.log(`[${requestId}] Authenticated user:`, session.user.id)
+      console.log(`[${requestId}] Session expires at:`, session.expires_at)
     } else {
       console.log(`[${requestId}] No active session found`)
     }

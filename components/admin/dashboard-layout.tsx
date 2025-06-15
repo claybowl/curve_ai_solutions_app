@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { getCurrentUser } from "@/lib/supabase-client"
+import { getCurrentUser, isUserAdmin } from "@/lib/supabase-client"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -40,11 +40,11 @@ const DashboardLayout = ({
           return
         }
 
-        // Check if user is an admin
-        const isUserAdmin = user.user_metadata?.role === "admin"
-        setIsAdmin(isUserAdmin)
+        // Check if user is an admin using the proper function
+        const adminStatus = await isUserAdmin()
+        setIsAdmin(adminStatus)
         
-        if (!isUserAdmin) {
+        if (!adminStatus) {
           router.push("/dashboard")
         }
       } catch (err) {
