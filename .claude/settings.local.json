@@ -30,7 +30,9 @@
       "Bash(NODE_ENV=production npm run build --verbose 2 >& 1)",
       "Bash(NEXT_PUBLIC_SUPABASE_URL=\"\" SUPABASE_SERVICE_ROLE_KEY=\"\" npm run build 2 >& 1)",
       "Bash(rg:*)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(echo:*)",
+      "Bash(source:*)"
     ],
     "deny": []
   },

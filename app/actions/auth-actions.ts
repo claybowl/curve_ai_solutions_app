@@ -1,37 +1,33 @@
 "use server"
 
-import { cookies } from "next/headers"
+/**
+ * Auth actions for Supabase authentication
+ * This file is kept for any server-side auth helpers if needed
+ * Main authentication is handled through lib/auth.ts and Supabase client
+ */
 
-// This function runs only on the server and can safely use the sensitive key
-export async function authenticateWithStack(credentials: { email: string; password: string }) {
-  try {
-    const response = await fetch("https://api.stack.com/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.STACK_PUBLISHABLE_CLIENT_KEY}`,
-      },
-      body: JSON.stringify(credentials),
-    })
+import { createServerSupabaseClient } from "@/lib/supabase-server"
+import { redirect } from "next/navigation"
 
-    const data = await response.json()
+/**
+ * Server action to sign out user
+ */
+export async function signOutAction() {
+  const supabase = await createServerSupabaseClient()
+  await supabase.auth.signOut()
+  redirect('/login')
+}
 
-    if (!response.ok) {
-      return { success: false, error: data.message || "Authentication failed" }
-    }
-
-    // Set auth cookies securely
-    if (data.token) {
-      cookies().set("auth-token", data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      })
-    }
-
-    return { success: true, userId: data.userId }
-  } catch (error) {
-    console.error("Auth error:", error)
-    return { success: false, error: "Authentication service unavailable" }
+/**
+ * Server action to check if user is authenticated
+ */
+export async function checkAuthAction() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  return {
+    isAuthenticated: !!user && !error,
+    user: user,
+    error: error?.message
   }
 }

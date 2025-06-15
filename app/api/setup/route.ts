@@ -1,137 +1,143 @@
 import { NextResponse } from "next/server"
-import { neon } from "@neondatabase/serverless"
-import bcrypt from "bcryptjs"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 
 export async function GET() {
   try {
-    // Test database connection first
-    const sql = neon(process.env.DATABASE_URL!)
+    const adminEmail = "admin@curveai.com"
+    const adminPassword = "admin123"
 
+    console.log("Setting up admin user with Supabase...")
+
+    // Check if admin user already exists
     try {
-      // Simple query to test connection
-      const testConnection = await sql`SELECT 1 as test`
-      console.log("Database connection test:", testConnection)
-    } catch (dbError) {
-      console.error("Database connection error:", dbError)
-      return NextResponse.json(
-        {
-          error: "Database connection failed",
-          details: String(dbError),
-          databaseUrl: process.env.DATABASE_URL ? "Database URL is set" : "Database URL is missing",
-        },
-        { status: 500 },
-      )
-    }
-
-    // Check if users table exists
-    try {
-      const tableCheck = await sql`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'users'
-        ) as exists
-      `
-
-      if (!tableCheck[0].exists) {
+      const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers()
+      
+      if (listError) {
+        console.error("Error listing users:", listError)
         return NextResponse.json(
           {
-            error: "Users table does not exist",
-            solution: "Please run the database schema setup SQL first",
+            error: "Failed to check existing users",
+            details: listError.message,
           },
-          { status: 404 },
+          { status: 500 }
         )
       }
-    } catch (tableError) {
-      console.error("Table check error:", tableError)
-      return NextResponse.json(
-        {
-          error: "Failed to check if users table exists",
-          details: String(tableError),
-        },
-        { status: 500 },
-      )
-    }
 
-    // Check if admin user exists
-    try {
-      const adminUsers = await sql`
-        SELECT id FROM users WHERE email = 'admin@curveai.com'
-      `
+      const existingAdmin = existingUsers.users.find(user => user.email === adminEmail)
+      
+      if (existingAdmin) {
+        // Check if admin has a profile
+        const { data: profile, error: profileError } = await supabaseAdmin
+          .from('profiles')
+          .select('*')
+          .eq('user_id', existingAdmin.id)
+          .single()
 
-      if (adminUsers.length > 0) {
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error("Error checking profile:", profileError)
+        }
+
         return NextResponse.json({
           message: "Admin user already exists",
-          userId: adminUsers[0].id,
+          userId: existingAdmin.id,
+          email: existingAdmin.email,
+          hasProfile: !!profile,
+          profile: profile || null
         })
       }
-    } catch (userCheckError) {
-      console.error("User check error:", userCheckError)
+    } catch (checkError) {
+      console.error("Error checking existing admin:", checkError)
       return NextResponse.json(
         {
           error: "Failed to check if admin user exists",
-          details: String(userCheckError),
+          details: String(checkError),
         },
-        { status: 500 },
+        { status: 500 }
       )
     }
 
     // Create admin user
     try {
-      // Test bcrypt
-      const testHash = await bcrypt.hash("test", 10)
-      console.log("Bcrypt test successful:", testHash.substring(0, 10) + "...")
+      console.log("Creating new admin user...")
+      const { data: authUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+        email: adminEmail,
+        password: adminPassword,
+        email_confirm: true,
+        user_metadata: {
+          firstName: "Admin",
+          lastName: "User",
+          companyName: "Curve AI Solutions", 
+          role: "admin"
+        }
+      })
 
-      const hashedPassword = await bcrypt.hash("admin123", 10)
-      console.log("Admin password hash generated:", hashedPassword.substring(0, 10) + "...")
-
-      // Check users table structure
-      const columns = await sql`
-        SELECT column_name, data_type 
-        FROM information_schema.columns 
-        WHERE table_name = 'users' AND table_schema = 'public'
-      `
-
-      console.log("Users table columns:", columns)
-
-      // Get column names for the INSERT statement
-      const columnNames = columns.map((col) => col.column_name)
-      console.log("Column names:", columnNames)
-
-      // Dynamically build the INSERT statement based on available columns
-      let insertQuery = `
-        INSERT INTO users (email, password_hash, first_name, last_name
-      `
-
-      if (columnNames.includes("company_name")) {
-        insertQuery += `, company_name`
+      if (createError) {
+        console.error("Error creating auth user:", createError)
+        return NextResponse.json(
+          {
+            error: "Failed to create admin user in auth",
+            details: createError.message,
+          },
+          { status: 500 }
+        )
       }
 
-      if (columnNames.includes("role")) {
-        insertQuery += `, role`
+      console.log("Auth user created:", authUser.user.id)
+
+      // Create profile (should be handled by trigger, but let's verify)
+      await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for trigger
+
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .select('*')
+        .eq('user_id', authUser.user.id)
+        .single()
+
+      if (profileError) {
+        console.log("Profile not found, creating manually...")
+        // Create profile manually if trigger didn't work
+        const { data: newProfile, error: insertError } = await supabaseAdmin
+          .from('profiles')
+          .insert({
+            user_id: authUser.user.id,
+            email: adminEmail,
+            first_name: "Admin",
+            last_name: "User",
+            company_name: "Curve AI Solutions",
+            role: "admin"
+          })
+          .select()
+          .single()
+
+        if (insertError) {
+          console.error("Error creating profile:", insertError)
+          return NextResponse.json(
+            {
+              error: "User created but failed to create profile",
+              details: insertError.message,
+              userId: authUser.user.id
+            },
+            { status: 500 }
+          )
+        }
+
+        return NextResponse.json({
+          message: "Admin user and profile created successfully",
+          userId: authUser.user.id,
+          email: adminEmail,
+          profile: newProfile,
+          password: "admin123"
+        })
       }
-
-      insertQuery += `) VALUES ('admin@curveai.com', '${hashedPassword}', 'Admin', 'User'`
-
-      if (columnNames.includes("company_name")) {
-        insertQuery += `, 'Curve AI Solutions'`
-      }
-
-      if (columnNames.includes("role")) {
-        insertQuery += `, 'admin'`
-      }
-
-      insertQuery += `) RETURNING id`
-
-      console.log("Insert query:", insertQuery)
-
-      const result = await sql.unsafe(insertQuery)
 
       return NextResponse.json({
         message: "Admin user created successfully",
-        userId: result[0].id,
-        passwordHash: hashedPassword.substring(0, 10) + "...",
+        userId: authUser.user.id,
+        email: adminEmail,
+        profile: profile,
+        password: "admin123"
       })
+
     } catch (createError) {
       console.error("User creation error:", createError)
       return NextResponse.json(
@@ -139,7 +145,7 @@ export async function GET() {
           error: "Failed to create admin user",
           details: String(createError),
         },
-        { status: 500 },
+        { status: 500 }
       )
     }
   } catch (error) {
@@ -150,7 +156,7 @@ export async function GET() {
         details: String(error),
         stack: error instanceof Error ? error.stack : undefined,
       },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
