@@ -1,4 +1,5 @@
 import type { UserMetadata } from './supabase'
+import { createClient } from '@supabase/supabase-js'
 
 // Mock admin client for build time
 function createMockAdminClient() {
@@ -24,10 +25,8 @@ function createSupabaseAdmin() {
     return createMockAdminClient()
   }
 
-  // Try to import Supabase dynamically, fallback to mock if it fails
+  // Create Supabase client with service role key
   try {
-    const { createClient } = require('@supabase/supabase-js')
-    
     return createClient(
       supabaseUrl,
       serviceRoleKey,
@@ -45,7 +44,7 @@ function createSupabaseAdmin() {
 }
 
 // Lazy initialization
-let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
+let supabaseAdminInstance: any = null
 
 export const supabaseAdmin = () => {
   if (!supabaseAdminInstance) {

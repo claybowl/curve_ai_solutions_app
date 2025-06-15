@@ -7,33 +7,40 @@ import { Menu, X, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export function MainNav() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const pathname = usePathname()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    // Check if user is logged in by looking for auth token
-    const token = localStorage.getItem("admin-token")
-    setIsLoggedIn(!!token)
-  }, [])
+    // Check Supabase auth session
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      setIsLoggedIn(!!session)
+    }
+    
+    checkAuth()
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session)
+    })
 
-  const handleLogout = () => {
-    // Clear authentication data
-    localStorage.removeItem("admin-token")
-    sessionStorage.removeItem("user-data")
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
 
-    // Call the logout API to clear cookies
-    fetch("/api/logout", { method: "POST" })
-      .catch((err) => console.error("Error during logout:", err))
-      .finally(() => {
-        // Redirect to home page
-        router.push("/")
-        // Force reload to ensure all state is cleared
-        window.location.href = "/"
-      })
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push("/")
+    } catch (error) {
+      console.error("Error during logout:", error)
+      router.push("/")
+    }
   }
 
   const navigation = [
@@ -42,6 +49,7 @@ export function MainNav() {
     { name: "Assessments", href: "/assessments" },
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
+    { name: "AiGency Platform", href: "/aigency-platform" },
     { name: "AI Models", href: "/curve-ai-chat" },
     { name: "Fundraising", href: "/fundraising" },
     { name: "About", href: "/about" },

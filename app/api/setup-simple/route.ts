@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { supabaseAdmin } from "@/lib/supabase-admin"
+import { createClient } from '@supabase/supabase-js'
 
 export async function GET() {
   try {
@@ -8,9 +8,41 @@ export async function GET() {
 
     console.log("Setting up admin user with Supabase...")
 
+    // Get environment variables
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        {
+          error: "Missing Supabase environment variables",
+          details: {
+            supabaseUrl: supabaseUrl ? "SET" : "MISSING",
+            serviceRoleKey: serviceRoleKey ? "SET" : "MISSING"
+          }
+        },
+        { status: 500 }
+      )
+    }
+
+    // Create admin client directly
+    const supabaseAdmin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
+
+    console.log("Supabase admin client created successfully")
+
     // Check if admin user already exists
     try {
-      const { data: existingUsers, error: listError } = await supabaseAdmin().auth.admin.listUsers()
+      console.log("Checking for existing admin user...")
+      const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers()
       
       if (listError) {
         console.error("Error listing users:", listError)
@@ -23,11 +55,14 @@ export async function GET() {
         )
       }
 
+      console.log(`Found ${existingUsers.users.length} existing users`)
       const existingAdmin = existingUsers.users.find(user => user.email === adminEmail)
       
       if (existingAdmin) {
+        console.log("Admin user already exists:", existingAdmin.id)
+        
         // Check if admin has a profile
-        const { data: profile, error: profileError } = await supabaseAdmin()
+        const { data: profile, error: profileError } = await supabaseAdmin
           .from('profiles')
           .select('*')
           .eq('user_id', existingAdmin.id)
@@ -59,7 +94,7 @@ export async function GET() {
     // Create admin user
     try {
       console.log("Creating new admin user...")
-      const { data: authUser, error: createError } = await supabaseAdmin().auth.admin.createUser({
+      const { data: authUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: adminEmail,
         password: adminPassword,
         email_confirm: true,
@@ -87,7 +122,7 @@ export async function GET() {
       // Create profile (should be handled by trigger, but let's verify)
       await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for trigger
 
-      const { data: profile, error: profileError } = await supabaseAdmin()
+      const { data: profile, error: profileError } = await supabaseAdmin
         .from('profiles')
         .select('*')
         .eq('user_id', authUser.user.id)
@@ -96,7 +131,7 @@ export async function GET() {
       if (profileError) {
         console.log("Profile not found, creating manually...")
         // Create profile manually if trigger didn't work
-        const { data: newProfile, error: insertError } = await supabaseAdmin()
+        const { data: newProfile, error: insertError } = await supabaseAdmin
           .from('profiles')
           .insert({
             user_id: authUser.user.id,

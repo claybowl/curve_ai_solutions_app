@@ -108,8 +108,8 @@ export async function middleware(request: NextRequest) {
     // Continue with no session
   }
 
-  // Handle admin routes
-  if (path.startsWith("/admin")) {
+  // Handle admin routes and AiGency Platform
+  if (path.startsWith("/admin") || path.startsWith("/aigency-platform")) {
     try {
       console.log(`[${requestId}] Checking admin access for`, path)
       
@@ -189,6 +189,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/admin/:path*", 
+    "/aigency-platform",
     "/dashboard", 
     "/api/:path*", 
     "/auth/signin", 

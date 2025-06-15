@@ -16,7 +16,7 @@ export default function CreateAdminPage() {
     setMessage("Creating admin user...")
 
     try {
-      const res = await fetch("/api/setup")
+      const res = await fetch("/api/setup-simple")
       const data = await res.json()
 
       if (res.ok) {
@@ -80,10 +80,6 @@ export default function CreateAdminPage() {
 
           {status === "success" && (
             <div className="space-y-2">
-              <Button variant="outline" onClick={() => (window.location.href = "/admin-reset")} className="w-full">
-                Reset Admin Password
-              </Button>
-
               <Button variant="outline" onClick={() => (window.location.href = "/login")} className="w-full">
                 Go to Login Page
               </Button>

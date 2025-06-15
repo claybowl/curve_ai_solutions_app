@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { loadSession, clearSession, hasValidSession } from "@/lib/session-storage"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   FileText,
   PlusCircle,
@@ -25,34 +25,45 @@ export default function LocalStorageDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    // Check for valid session
-    if (!hasValidSession()) {
-      console.log("No valid session found, redirecting to login")
-      router.push('/login-local')
-      return
+    const getSession = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError) {
+          console.error("Session error:", sessionError)
+          setError("Failed to load session. Please log in again.")
+          setLoading(false)
+          return
+        }
+        
+        if (!session) {
+          console.log("No session found, redirecting to login")
+          router.push('/login')
+          return
+        }
+        
+        setUser(session.user)
+        setLoading(false)
+      } catch (err) {
+        console.error("Error loading session:", err)
+        setError("An error occurred while loading your session.")
+        setLoading(false)
+      }
     }
     
-    // Load the session data
-    const session = loadSession()
-    if (!session || !session.user) {
-      setError("Session data is incomplete. Please log in again.")
-      setLoading(false)
-      return
-    }
-    
-    // Set user data from session
-    setUser(session.user)
-    setLoading(false)
-  }, [router])
+    getSession()
+  }, [router, supabase.auth])
 
-  const handleLogout = () => {
-    // Clear the session from localStorage
-    clearSession()
-    
-    // Redirect to login page
-    router.push('/login-local')
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push('/login')
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
   }
 
   if (loading) {
@@ -76,7 +87,7 @@ export default function LocalStorageDashboardPage() {
             <p>{error}</p>
             <div className="mt-4 flex gap-4">
               <Button asChild>
-                <Link href="/login-local">Return to Login</Link>
+                <Link href="/login">Return to Login</Link>
               </Button>
               <Button onClick={() => window.location.href = "/last-resort"} variant="outline">
                 Try Last Resort Page
