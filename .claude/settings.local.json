@@ -34,7 +34,9 @@
       "Bash(echo:*)",
       "Bash(source:*)",
       "mcp__postgres__query",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(npx supabase:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   },

@@ -1,23 +1,25 @@
 import { NextResponse } from "next/server"
-import { createServerSupabaseClient, verifyAdminRole } from '@/lib/createServerSupabaseClient'
-import { listUsers } from "@/lib/supabase-admin"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
+import { getCurrentSupabaseUser, isUserAdmin } from "@/lib/db-v2"
+import { getAllUsersAction } from "@/app/actions/user-actions"
 
 export async function GET() {
   try {
-    // Check if the current user is an admin
-    if (!await verifyAdminRole()) {
+    // Check if the current user is an admin using V2 schema
+    const user = await getCurrentSupabaseUser()
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+
+    const userIsAdmin = await isUserAdmin(user.id)
+    if (!userIsAdmin) {
       return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 })
     }
 
-    // Get the users from Supabase
-    const { data, error } = await listUsers()
+    // Get the users using V2 server actions
+    const users = await getAllUsersAction()
     
-    if (error) {
-      console.error("Error fetching users:", error)
-      return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 })
-    }
-
-    return NextResponse.json({ users: data.users })
+    return NextResponse.json({ users })
   } catch (error: any) {
     console.error("Error fetching users:", error)
     return NextResponse.json({ 
@@ -28,10 +30,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    // Check if the current user is an admin
-    const supabase = createServerSupabaseClient()
-    
-    if (!await verifyAdminRole()) {
+    // Check if the current user is an admin using V2 schema
+    const user = await getCurrentSupabaseUser()
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+
+    const userIsAdmin = await isUserAdmin(user.id)
+    if (!userIsAdmin) {
       return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 })
     }
 
@@ -42,24 +48,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // Create the user with Supabase Admin API
-    const { data, error } = await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
-        firstName,
-        lastName,
-        role,
-      }
-    })
+    // Create form data for the server action
+    const formData = new FormData()
+    formData.append('email', email)
+    formData.append('password', password)
+    formData.append('firstName', firstName)
+    formData.append('lastName', lastName)
+    formData.append('role', role)
 
-    if (error) {
-      console.error("Error creating user:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    // Use the V2 server action to create the user
+    const { createUserAction } = await import("@/app/actions/user-actions")
+    const result = await createUserAction(formData)
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 500 })
     }
 
-    return NextResponse.json({ user: data.user }, { status: 201 })
+    return NextResponse.json({ success: true, userId: result.userId }, { status: 201 })
   } catch (error: any) {
     console.error("Error creating user:", error)
     return NextResponse.json({ 

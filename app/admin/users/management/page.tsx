@@ -53,13 +53,13 @@ export default function UserManagementPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [users, setUsers] = useState<User[]>([])
-  const [availableRoles, setAvailableRoles] = useState<string[]>([])
+  const [availableRoles, setAvailableRoles] = useState<{ label: string; value: string }[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [activeTab, setActiveTab] = useState("all")
   
   // Filter and sort state
-  const [filterRole, setFilterRole] = useState<string | undefined>(undefined)
+  const [filterRole, setFilterRole] = useState<string | undefined>("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [sortColumn, setSortColumn] = useState<string>("createdAt")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
@@ -143,8 +143,8 @@ export default function UserManagementPage() {
     loadUsers()
   }
 
-  const handleRoleFilter = (role: string | undefined) => {
-    setFilterRole(role)
+  const handleRoleFilter = (role: string) => {
+    setFilterRole(role === "all" ? undefined : role)
   }
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
@@ -391,9 +391,9 @@ export default function UserManagementPage() {
                     <SelectValue placeholder="All Roles" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={undefined}>All Roles</SelectItem>
+                    <SelectItem value="all">All Roles</SelectItem>
                     {availableRoles.map(role => (
-                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                      <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -636,7 +636,7 @@ export default function UserManagementPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {availableRoles.map(role => (
-                        <SelectItem key={role} value={role}>{role}</SelectItem>
+                        <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -741,7 +741,7 @@ export default function UserManagementPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {availableRoles.map(role => (
-                        <SelectItem key={role} value={role}>{role}</SelectItem>
+                        <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

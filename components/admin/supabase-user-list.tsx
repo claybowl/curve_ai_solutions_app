@@ -50,14 +50,27 @@ export function SupabaseUserList() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/admin/users')
+      console.log('Fetching users from /api/admin/users...')
+      
+      const response = await fetch('/api/admin/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important: include cookies for authentication
+      })
+      
+      console.log('Response status:', response.status)
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
       
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to fetch users')
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error('API Error:', errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch users`)
       }
       
       const data = await response.json()
+      console.log('Users data:', data)
       setUsers(data.users || [])
     } catch (err: any) {
       console.error('Error fetching users:', err)

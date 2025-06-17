@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useEffect, useState } from "react"
+import React, { ReactNode, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -94,18 +94,14 @@ const DashboardLayout = ({
           <Breadcrumb className="mb-4">
             <BreadcrumbList>
               {breadcrumbs.map((crumb, index) => (
-                <BreadcrumbItem key={index}>
-                  {index < breadcrumbs.length - 1 ? (
-                    <>
-                      <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
-                      <BreadcrumbSeparator />
-                    </>
-                  ) : (
-                    <BreadcrumbLink href={crumb.href} className="font-semibold">
+                <React.Fragment key={index}>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={crumb.href} className={index === breadcrumbs.length - 1 ? "font-semibold" : ""}>
                       {crumb.label}
                     </BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
+                  </BreadcrumbItem>
+                  {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                </React.Fragment>
               ))}
             </BreadcrumbList>
           </Breadcrumb>

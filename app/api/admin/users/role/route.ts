@@ -1,21 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { updateUserMetadata, setUserAsAdmin } from '@/lib/supabase-admin'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getCurrentSupabaseUser, isUserAdmin } from "@/lib/db-v2"
+import { updateUserRoleAction } from "@/app/actions/user-actions"
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if the current user is an admin
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session || session.user.user_metadata?.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Unauthorized. Admin access required' },
-        { status: 403 }
-      )
+    // Check if the current user is an admin using V2 schema
+    const user = await getCurrentSupabaseUser()
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+
+    const userIsAdmin = await isUserAdmin(user.id)
+    if (!userIsAdmin) {
+      return NextResponse.json({ error: "Unauthorized. Admin access required" }, { status: 403 })
     }
     
     // Get the userId and role from the request body
@@ -28,32 +25,19 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    if (!role || (role !== 'admin' && role !== 'client')) {
+    if (!role || !['admin', 'client', 'consultant'].includes(role)) {
       return NextResponse.json(
-        { error: 'Invalid role. Must be "admin" or "client"' },
+        { error: 'Invalid role. Must be "admin", "client", or "consultant"' },
         { status: 400 }
       )
     }
     
-    // Update the user's role
-    let result;
+    // Update the user's role using V2 server action
+    const result = await updateUserRoleAction(userId, role)
     
-    if (role === 'admin') {
-      result = await setUserAsAdmin(userId)
-    } else {
-      // Get current user metadata to preserve other fields
-      const { data: userData } = await supabase.auth.admin.getUserById(userId)
-      
-      result = await updateUserMetadata(userId, { 
-        ...userData?.user?.user_metadata,
-        role: 'client'
-      })
-    }
-    
-    if (result.error) {
-      console.error('Error updating user role:', result.error)
+    if (!result.success) {
       return NextResponse.json(
-        { error: result.error.message },
+        { error: result.error },
         { status: 500 }
       )
     }
@@ -61,8 +45,7 @@ export async function POST(request: NextRequest) {
     // Return success
     return NextResponse.json({ 
       success: true,
-      message: `User role set to ${role}`,
-      user: result.data.user
+      message: `User role updated to ${role}`
     })
   } catch (error: any) {
     console.error('Error in admin/users/role API route:', error)
