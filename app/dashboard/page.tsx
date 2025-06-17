@@ -23,246 +23,58 @@ export default function DashboardPage() {
   const [session, setSession] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [checkingAuth, setCheckingAuth] = useState(true)
-  const [debugInfo, setDebugInfo] = useState("")
-
-  // Add debug information with timestamp
-  const addDebugInfo = (message: string) => {
-    const timestamp = new Date().toLocaleTimeString()
-    setDebugInfo(prev => `${prev}[${timestamp}] ${message}\n`)
-  }
 
   useEffect(() => {
-    let mounted = true
-    
-    async function initialSessionCheck() {
+    async function checkSession() {
       try {
-        addDebugInfo("Initial session check...")
         const { data, error } = await supabase.auth.getSession()
         
         if (error) {
-          addDebugInfo(`Session error: ${error.message}`)
-          if (mounted) setError(error.message)
-          return false
+          console.error("Session error:", error.message)
+          window.location.href = "/login"
+          return
         }
         
         if (data?.session) {
-          addDebugInfo(`Session found: ${data.session.user.id}`)
-          if (mounted) setSession(data.session)
-          return true
+          setSession(data.session)
         } else {
-          addDebugInfo("No session found in initial check")
-          return false
+          // No session, redirect to login
+          window.location.href = "/login"
+          return
         }
       } catch (err) {
-        addDebugInfo(`Error in initial check: ${(err as Error).message}`)
-        return false
+        console.error("Error checking session:", err)
+        window.location.href = "/login"
+        return
       } finally {
-        if (mounted) setCheckingAuth(false)
+        setLoading(false)
       }
     }
     
-    async function trySessionRefresh() {
-      try {
-        addDebugInfo("Attempting session refresh...")
-        const { data, error } = await supabase.auth.refreshSession()
-        
-        if (error) {
-          addDebugInfo(`Refresh error: ${error.message}`)
-          return false
-        }
-        
-        if (data?.session) {
-          addDebugInfo(`Session refreshed: ${data.session.user.id}`)
-          if (mounted) setSession(data.session)
-          return true
-        } else {
-          addDebugInfo("No session after refresh")
-          return false
-        }
-      } catch (err) {
-        addDebugInfo(`Error refreshing: ${(err as Error).message}`)
-        return false
-      }
-    }
-    
-    // Initial checks
-    initialSessionCheck().then(async (hasSession) => {
-      if (!hasSession) {
-        // Try a refresh if no session found
-        await trySessionRefresh()
-      }
-      
-      // Regardless of result, we've done what we can
-      if (mounted) setLoading(false)
-    })
-    
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
-        addDebugInfo(`Auth state event: ${event}`)
-        
-        if (event === 'SIGNED_OUT') {
-          if (mounted) {
-            setSession(null)
-            window.location.href = "/login"
-          }
-        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          if (mounted && newSession) {
-            setSession(newSession)
-          }
-        }
-      }
-    )
-    
-    return () => {
-      mounted = false
-      subscription.unsubscribe()
-    }
+    checkSession()
   }, [])
 
-  const handleRetry = async () => {
-    setLoading(true)
-    setError("")
-    setDebugInfo("")
-    
-    try {
-      addDebugInfo("Manual retry - checking session")
-      const { data, error } = await supabase.auth.getSession()
-      
-      if (error) {
-        addDebugInfo(`Session error: ${error.message}`)
-        setError(error.message)
-        return
-      }
-      
-      if (data?.session) {
-        addDebugInfo(`Session found: ${data.session.user.id}`)
-        setSession(data.session)
-      } else {
-        addDebugInfo("No session found, attempting refresh")
-        
-        // Try refresh
-        const refreshResult = await supabase.auth.refreshSession()
-        
-        if (refreshResult.error) {
-          addDebugInfo(`Refresh error: ${refreshResult.error.message}`)
-          setError("Failed to refresh session. Please log in again.")
-        } else if (refreshResult.data.session) {
-          addDebugInfo(`Session refreshed: ${refreshResult.data.session.user.id}`)
-          setSession(refreshResult.data.session)
-        } else {
-          addDebugInfo("No session after refresh")
-          setError("No active session. Please log in again.")
-        }
-      }
-    } catch (err) {
-      const errorMessage = (err as Error).message
-      addDebugInfo(`Unexpected error: ${errorMessage}`)
-      setError(`An unexpected error occurred: ${errorMessage}`)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleLogout = async () => {
-    addDebugInfo("Logging out...")
     try {
       await supabase.auth.signOut()
       window.location.href = "/"
     } catch (error) {
       console.error("Error signing out:", error)
-      setError("Error signing out. Please try again.")
     }
   }
 
-  // If waiting for initial auth check
-  if (checkingAuth) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF] mb-4" />
-        <p>Checking authentication...</p>
-      </div>
-    )
-  }
-
-  // If still loading after auth check
+  // Simple loading check - no complex screens
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF] mb-4" />
-        <p>Loading dashboard...</p>
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
       </div>
     )
   }
 
-  // If there's an error
-  if (error) {
-    return (
-      <div className="container py-8">
-        <Card className="border-red-200 mb-8">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-red-600 mb-4">
-              <AlertCircle className="h-5 w-5" />
-              <h2 className="text-lg font-bold">Error Loading Dashboard</h2>
-            </div>
-            <p>{error}</p>
-            
-            {debugInfo && (
-              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
-                <p className="font-medium mb-1">Debug Information:</p>
-                <pre className="whitespace-pre-wrap">{debugInfo}</pre>
-              </div>
-            )}
-            
-            <div className="mt-4 flex gap-4">
-              <Button onClick={handleRetry}>
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Retry
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/direct-login">Try Direct Login</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-  
-  // If not authenticated
+  // If no session, redirect will happen automatically
   if (!session) {
-    return (
-      <div className="container py-8">
-        <Card className="border-yellow-200 mb-8">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-yellow-600 mb-4">
-              <AlertCircle className="h-5 w-5" />
-              <h2 className="text-lg font-bold">Authentication Required</h2>
-            </div>
-            <p>You need to be logged in to view this page. Please log in to continue.</p>
-            
-            {debugInfo && (
-              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
-                <p className="font-medium mb-1">Debug Information:</p>
-                <pre className="whitespace-pre-wrap">{debugInfo}</pre>
-              </div>
-            )}
-            
-            <div className="mt-4 flex gap-4">
-              <Button asChild>
-                <Link href="/direct-login">
-                  Try Direct Login
-                </Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/">Return to Home</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return null
   }
 
   // User is authenticated, show the dashboard
@@ -309,77 +121,7 @@ export default function DashboardPage() {
             for your business.
           </p>
           
-          {/* Role info and fix */}
-          {!user?.user_metadata?.role && (
-            <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md border border-yellow-200 dark:border-yellow-800">
-              <h3 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2">User Role Missing</h3>
-              <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
-                Your account doesn't have a role assigned, which may affect your access to features.
-              </p>
-              <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  onClick={async () => {
-                    try {
-                      const response = await fetch('/api/auth/set-role', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ role: 'client' })
-                      });
-                      
-                      if (response.ok) {
-                        alert('Role set successfully! Please refresh the page.');
-                        window.location.reload();
-                      } else {
-                        const data = await response.json();
-                        alert('Error: ' + (data.error || 'Failed to set role'));
-                      }
-                    } catch (error) {
-                      console.error('Error setting role:', error);
-                      alert('An unexpected error occurred');
-                    }
-                  }}
-                >
-                  Set as Client
-                </Button>
-                <Button 
-                  size="sm"
-                  variant="outline"
-                  onClick={async () => {
-                    try {
-                      const response = await fetch('/api/auth/set-role', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ role: 'admin' })
-                      });
-                      
-                      if (response.ok) {
-                        alert('Admin role set successfully! Please refresh the page.');
-                        window.location.reload();
-                      } else {
-                        const data = await response.json();
-                        alert('Error: ' + (data.error || 'Failed to set role'));
-                      }
-                    } catch (error) {
-                      console.error('Error setting role:', error);
-                      alert('An unexpected error occurred');
-                    }
-                  }}
-                >
-                  Set as Admin
-                </Button>
-              </div>
-            </div>
-          )}
-          
-          {debugInfo && (
-            <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
-              <details>
-                <summary className="font-medium mb-1 cursor-pointer">Debug Information</summary>
-                <pre className="whitespace-pre-wrap mt-2">{debugInfo}</pre>
-              </details>
-            </div>
-          )}
+          {/* Role info handled by admin user management */}
         </CardContent>
       </Card>
 

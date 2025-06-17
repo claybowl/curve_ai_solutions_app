@@ -1,9 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,24 +14,21 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-function LoginContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrlFromParams = searchParams?.get("callbackUrl")
-  const errorMessage = searchParams?.get("error")
+export default function DirectLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(errorMessage)
-  // Simplified - no pre-checking session, just show login form
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setSuccess(null)
 
     try {
-      console.log("Login attempt for:", email)
+      console.log("Direct login attempt for:", email)
       
       // Simple sign in
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -57,36 +52,20 @@ function LoginContent() {
       console.log("✓ Login successful!")
       console.log("User ID:", data.user.id)
       console.log("Email:", data.user.email)
+      console.log("Session:", !!data.session)
       
-      // Check user role and redirect
-      try {
-        // Check user metadata first (faster)
-        const userRole = data.user.user_metadata?.role || data.user.app_metadata?.role
-        let isAdmin = userRole === 'admin'
-        
-        // If not found in metadata, check profiles table
-        if (!isAdmin) {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('user_id', data.user.id)
-            .single()
-          
-          if (!profileError && profile) {
-            isAdmin = profile.role === 'admin'
-          }
-        }
-        
-        const finalRedirectUrl = isAdmin ? '/admin' : (callbackUrlFromParams || "/dashboard");
-        console.log(`Signed in, admin: ${isAdmin}, redirecting to ${finalRedirectUrl}`)
-        
-        router.push(finalRedirectUrl)
-        
-      } catch (roleError) {
-        console.error("Error checking user role:", roleError)
-        // Default to dashboard if role check fails
-        router.push(callbackUrlFromParams || "/dashboard")
+      setSuccess("Login successful! You are now authenticated.")
+      
+      // Show user info for debugging
+      const userInfo = {
+        id: data.user.id,
+        email: data.user.email,
+        metadata: data.user.user_metadata,
+        appMetadata: data.user.app_metadata,
+        sessionExpires: data.session.expires_at
       }
+      
+      console.log("User info:", userInfo)
       
       setLoading(false)
       
@@ -97,19 +76,47 @@ function LoginContent() {
     }
   }
 
-  // No loading screen, just show login form directly
+  const checkSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        setError("Session check error: " + error.message)
+        return
+      }
+      
+      if (data.session) {
+        setSuccess("Session found! User: " + data.session.user.email)
+        console.log("Current session:", data.session)
+      } else {
+        setError("No active session found")
+      }
+    } catch (err) {
+      setError("Session check failed: " + String(err))
+    }
+  }
+
+  const testRedirect = (destination: string) => {
+    console.log("Redirecting to:", destination)
+    window.location.href = destination
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Sign in to your account</CardTitle>
+          <CardTitle className="text-2xl font-bold">Direct Login Test</CardTitle>
           <CardDescription>
-            Enter your email and password or use a social provider to sign in.
+            Direct Supabase authentication without middleware interference.
           </CardDescription>
           {error && (
             <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded">
               {error}
+            </div>
+          )}
+          {success && (
+            <div className="mt-2 p-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm rounded">
+              {success}
             </div>
           )}
         </CardHeader>
@@ -150,24 +157,41 @@ function LoginContent() {
               )}
             </Button>
           </form>
+          
+          <div className="mt-4 space-y-2">
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={checkSession}
+            >
+              Check Current Session
+            </Button>
+            
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => testRedirect("/simple-admin")}
+              >
+                → Admin
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => testRedirect("/simple-dashboard")}
+              >
+                → Dashboard
+              </Button>
+            </div>
+          </div>
+          
+          <div className="mt-4 text-sm text-center text-gray-500">
+            <p><strong>Test Accounts:</strong></p>
+            <p>Admin: curveai.solutions@gmail.com</p>
+            <p>User: claybowlbooks@gmail.com</p>
+          </div>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-sm text-center">
-            Don't have an account?{" "}
-            <Link href="/auth/signup" className="text-blue-500 hover:underline">
-              Sign up
-            </Link>
-          </div>
-          <div className="mt-2 text-sm text-center text-gray-500">
-            <p>Admin users will be redirected to the admin dashboard.</p>
-            <p>Regular users will access client features.</p>
-          </div>
-        </CardFooter>
       </Card>
     </div>
   )
-}
-
-export default function LoginPage() {
-  return <LoginContent />
 }

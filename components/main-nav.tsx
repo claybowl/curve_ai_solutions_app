@@ -120,13 +120,13 @@ export function MainNav() {
             ) : (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/auth/signin">Sign In</Link>
+                  <Link href="/login">Sign In</Link>
                 </Button>
                 <Button
                   className="bg-[#0076FF] hover:bg-[#0076FF]/90 dark:bg-[#3b82f6] dark:hover:bg-[#3b82f6]/90"
                   asChild
                 >
-                  <Link href="/auth/signup">Sign Up</Link>
+                  <Link href="/login">Sign Up</Link>
                 </Button>
               </>
             )}
@@ -193,14 +193,14 @@ export function MainNav() {
               ) : (
                 <>
                   <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/auth/signin">Sign In</Link>
+                    <Link href="/login">Sign In</Link>
                   </Button>
                   <Button
                     className="bg-[#0076FF] hover:bg-[#0076FF]/90 dark:bg-[#3b82f6] dark:hover:bg-[#3b82f6]/90"
                     asChild
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Link href="/auth/signup">Sign Up</Link>
+                    <Link href="/login">Sign Up</Link>
                   </Button>
                 </>
               )}

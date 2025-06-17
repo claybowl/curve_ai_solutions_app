@@ -32,7 +32,8 @@
       "Bash(rg:*)",
       "Bash(pnpm build:*)",
       "Bash(echo:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "mcp__postgres__query"
     ],
     "deny": []
   },

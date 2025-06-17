@@ -9,7 +9,7 @@ import { AdminStats } from "@/components/admin/admin-stats"
 import { Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { getCurrentUser } from "@/lib/supabase-client"
+import { getCurrentUser, supabase } from "@/lib/supabase-client"
 
 export default function AdminDashboardPage() {
   const router = useRouter()
@@ -29,8 +29,29 @@ export default function AdminDashboardPage() {
           return
         }
 
-        // Check if user is an admin
-        if (currentUser.user_metadata?.role !== "admin") {
+        // Check if user is an admin (check both metadata and profiles table)
+        const userRole = currentUser.user_metadata?.role || currentUser.app_metadata?.role
+        let isAdmin = userRole === 'admin'
+        
+        // If not found in metadata, check profiles table as fallback
+        if (!isAdmin) {
+          try {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('role')
+              .eq('user_id', currentUser.id)
+              .single()
+            
+            if (!profileError && profile) {
+              isAdmin = profile.role === 'admin'
+            }
+          } catch (profileErr) {
+            console.error("Error checking profile role:", profileErr)
+          }
+        }
+        
+        if (!isAdmin) {
+          console.log("User is not admin, redirecting to dashboard")
           router.push("/dashboard")
           return
         }
@@ -78,7 +99,7 @@ export default function AdminDashboardPage() {
   }
 
   // Only render if we've confirmed this is an admin
-  if (!user || user.user_metadata?.role !== "admin") {
+  if (!user) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
