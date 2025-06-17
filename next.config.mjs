@@ -10,8 +10,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Restore standalone for Vercel deployment
   output: 'standalone',
-  // Disable static optimization temporarily
   trailingSlash: true,
   // Disabled experimental features for build stability
   // experimental: {

@@ -33,7 +33,8 @@
       "Bash(pnpm build:*)",
       "Bash(echo:*)",
       "Bash(source:*)",
-      "mcp__postgres__query"
+      "mcp__postgres__query",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   },

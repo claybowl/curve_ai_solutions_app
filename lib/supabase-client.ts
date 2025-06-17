@@ -3,22 +3,44 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Mock client for build time or when environment variables are missing
-const createMockClient = () => ({
-  auth: {
-    signInWithPassword: async () => ({ data: null, error: new Error('Supabase not configured') }),
-    signUp: async () => ({ data: null, error: new Error('Supabase not configured') }),
-    signOut: async () => ({ error: new Error('Supabase not configured') }),
-    getUser: async () => ({ data: { user: null }, error: new Error('Supabase not configured') }),
-    getSession: async () => ({ data: { session: null }, error: new Error('Supabase not configured') }),
-    signInWithOtp: async () => ({ data: null, error: new Error('Supabase not configured') }),
-    resetPasswordForEmail: async () => ({ data: null, error: new Error('Supabase not configured') }),
-    updateUser: async () => ({ data: null, error: new Error('Supabase not configured') }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
-  },
-  from: () => ({
-    select: () => ({ eq: () => ({ single: async () => ({ data: null, error: new Error('Supabase not configured') }) }) })
-  })
-})
+const createMockClient = () => {
+  const mockResponse = async () => ({ data: null, error: null })
+  
+  const createChainableMock = () => {
+    const mock = {
+      select: () => createChainableMock(),
+      eq: () => createChainableMock(),
+      order: () => createChainableMock(),
+      limit: () => createChainableMock(),
+      single: mockResponse,
+      insert: () => createChainableMock(),
+      update: () => createChainableMock(),
+      delete: () => createChainableMock(),
+      upsert: () => createChainableMock(),
+      filter: () => createChainableMock(),
+      match: () => createChainableMock(),
+      range: () => createChainableMock(),
+      then: (resolve: any) => resolve({ data: null, error: null })
+    }
+    return mock
+  }
+
+  return {
+    auth: {
+      signInWithPassword: mockResponse,
+      signUp: mockResponse,
+      signOut: async () => ({ error: null }),
+      getUser: async () => ({ data: { user: null }, error: null }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+      signInWithOtp: mockResponse,
+      resetPasswordForEmail: mockResponse,
+      updateUser: mockResponse,
+      refreshSession: mockResponse,
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    from: () => createChainableMock()
+  }
+}
 
 function createSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

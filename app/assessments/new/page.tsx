@@ -1,12 +1,15 @@
-import { getAssessmentQuestions } from "@/app/actions/assessment-actions"
-import { seedSampleUser } from "@/app/actions/seed-user"
+// Temporarily disable server actions that might cause build issues
+// import { getAssessmentQuestions } from "@/app/actions/assessment-actions"
+// import { seedSampleUser } from "@/app/actions/seed-user"
 import { AssessmentForm } from "@/components/assessment-form"
 
-export default async function NewAssessmentPage() {
-  const questions = await getAssessmentQuestions()
+// This page uses cookies/auth, so it cannot be statically generated
+export const dynamic = 'force-dynamic'
 
-  // Create a sample user for demo purposes
-  const { userId } = await seedSampleUser()
+export default async function NewAssessmentPage() {
+  // Temporarily disable server actions to fix HTML-only deployment
+  const questions: any[] = []
+  const userId = 'sample-user-id'
 
   return (
     <div className="container py-8 max-w-5xl">

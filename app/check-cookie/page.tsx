@@ -1,5 +1,8 @@
 import { cookies } from "next/headers"
 
+// This page uses cookies, so it cannot be statically generated
+export const dynamic = 'force-dynamic'
+
 export default function CheckCookiePage() {
   const cookieStore = cookies()
   const authCookie = cookieStore.get("simple-admin-auth")
