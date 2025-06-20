@@ -81,14 +81,19 @@ export async function testSupabaseConnection() {
  * Get current user from Supabase auth
  */
 export async function getCurrentSupabaseUser() {
-  const client = await getSupabaseClient()
-  const { data: { user }, error } = await client.auth.getUser()
-  
-  if (error || !user) {
+  try {
+    const client = await getSupabaseClient()
+    const { data: { user }, error } = await client.auth.getUser()
+    
+    if (error || !user) {
+      return null
+    }
+    
+    return user
+  } catch (error) {
+    console.error('[getCurrentSupabaseUser] Exception:', error)
     return null
   }
-  
-  return user
 }
 
 /**

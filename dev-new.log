@@ -5,3 +5,158 @@
 🚀 Starting optimized dev server...
 ✅ Next.js app prepared
 🎉 Ready on http://localhost:3000
+(node:2859) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ○ Compiling /api/debug-auth-tools ...
+ ✓ Compiled /api/debug-auth-tools in 7.3s (864 modules)
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[getCurrentSupabaseUser] Client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[getCurrentSupabaseUser] Auth response: {
+  hasUser: false,
+  userId: undefined,
+  userEmail: undefined,
+  error: 'Auth session missing!'
+}
+[getCurrentSupabaseUser] Auth error: [Error [AuthSessionMissingError]: Auth session missing!] {
+  __isAuthError: true,
+  status: 400,
+  code: undefined
+}
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+ GET /api/debug-auth-tools/ 200 in 8752ms
+ ○ Compiling /api/debug-create-tool ...
+ ✓ Compiled /api/debug-create-tool in 1514ms (901 modules)
+[checkToolAuthorization] Starting authorization check
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[getCurrentSupabaseUser] Client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[getCurrentSupabaseUser] Auth response: {
+  hasUser: false,
+  userId: undefined,
+  userEmail: undefined,
+  error: 'Auth session missing!'
+}
+[getCurrentSupabaseUser] Auth error: [Error [AuthSessionMissingError]: Auth session missing!] {
+  __isAuthError: true,
+  status: 400,
+  code: undefined
+}
+[checkToolAuthorization] User check result: { hasUser: false, userId: null }
+[checkToolAuthorization] No user found - throwing authentication error
+Error in createAiTool: Error: Authentication required
+    at checkToolAuthorization (webpack-internal:///(rsc)/./app/actions/tool-actions.ts:88:15)
+    at async createAiTool (webpack-internal:///(rsc)/./app/actions/tool-actions.ts:262:46)
+    at async POST (webpack-internal:///(rsc)/./app/api/debug-create-tool/route.ts:13:24)
+    at async Server.<anonymous> (dev-server.js:30:7)
+Debug create tool error: Error: Authentication required
+    at checkToolAuthorization (webpack-internal:///(rsc)/./app/actions/tool-actions.ts:88:15)
+    at async createAiTool (webpack-internal:///(rsc)/./app/actions/tool-actions.ts:262:46)
+    at async POST (webpack-internal:///(rsc)/./app/api/debug-create-tool/route.ts:13:24)
+    at async Server.<anonymous> (dev-server.js:30:7)
+ POST /api/debug-create-tool/ 500 in 2222ms
+ ✓ Compiled /api/setup in 420ms (504 modules)
+ POST /api/setup/ 405 in 1742ms
+Setting up admin user with Supabase...
+ GET /api/setup/ 200 in 473ms
+ ○ Compiling /api/debug-create-tool ...
+ ✓ Compiled /api/debug-create-tool in 633ms (623 modules)
+[debug-create-tool] Received request, attempting with service role
+[createAiToolWithServiceRole] Starting tool creation with service role
+[checkToolAuthorization] Starting authorization check
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[getCurrentSupabaseUser] Client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[getCurrentSupabaseUser] Auth response: {
+  hasUser: false,
+  userId: undefined,
+  userEmail: undefined,
+  error: 'Auth session missing!'
+}
+[getCurrentSupabaseUser] Auth error: [Error [AuthSessionMissingError]: Auth session missing!] {
+  __isAuthError: true,
+  status: 400,
+  code: undefined
+}
+[checkToolAuthorization] User check result: { hasUser: false, userId: null }
+[checkToolAuthorization] No browser session, checking service role access
+[checkToolAuthorization] Service role authorization successful: {
+  userId: 'e45567ab-9234-4312-9f63-c3a6869ce1a4',
+  role: 'admin',
+  email: 'claydonjon@proton.me'
+}
+[createAiToolWithServiceRole] Authorization successful, creating tool
+[createAiToolWithServiceRole] Parsed tool data: {
+  name: 'Test Tool with Service Role',
+  tool_type: 'chatbot',
+  status: 'active'
+}
+[createAiToolWithServiceRole] Validation passed, inserting into database
+[createAiToolWithServiceRole] Tool created successfully: 8b66c33b-e540-4e74-8f71-7c2a418215fd
+ POST /api/debug-create-tool/ 200 in 2720ms
+ ✓ Compiled /api/debug-auth-tools in 238ms (625 modules)
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[getCurrentSupabaseUser] Client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[getCurrentSupabaseUser] Auth response: {
+  hasUser: false,
+  userId: undefined,
+  userEmail: undefined,
+  error: 'Auth session missing!'
+}
+[getCurrentSupabaseUser] Auth error: [Error [AuthSessionMissingError]: Auth session missing!] {
+  __isAuthError: true,
+  status: 400,
+  code: undefined
+}
+[createServerSupabaseClient] Environment check: { hasUrl: true, hasKey: true, url: 'https://jlrgsfwpngib...' }
+[createServerSupabaseClient] Creating real Supabase client
+[createServerSupabaseClient] Real Supabase client created successfully
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token = missing
+[createServerSupabaseClient] Cookie get: sb-jlrgsfwpngibeumtjuco-auth-token.0 = missing
+ GET /api/debug-auth-tools/ 200 in 781ms
+ ✓ Compiled in 668ms (625 modules)
+ ✓ Compiled in 333ms
+ ELIFECYCLE  Command failed.

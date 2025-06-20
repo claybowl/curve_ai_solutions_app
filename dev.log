@@ -1,12 +1,85 @@
+   ▲ Next.js 15.3.3
+   - Local:        http://localhost:3001
+   - Network:      http://10.255.255.254:3001
+   - Environments: .env.development.local, .env.local
 
-> my-v0-project@0.1.0 dev /mnt/c/Users/clayb/Desktop/CurveAI/curve_ai_solutions_app
-> node dev-server.js
-
-🚀 Starting optimized dev server...
-   Downloading swc package @next/swc-linux-x64-gnu... to /home/clayb/.cache/next-swc
-   Downloading swc package @next/swc-linux-x64-musl... to /home/clayb/.cache/next-swc
-✅ Next.js app prepared
-🎉 Ready on http://localhost:3000
-(node:17587) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
-(Use `node --trace-deprecation ...` to show where the warning was created)
- ELIFECYCLE  Command failed.
+ ✓ Starting...
+ ✓ Ready in 26.7s
+ ○ Compiling / ...
+ ✓ Compiled / in 24.1s (1343 modules)
+ GET / 200 in 26223ms
+ ✓ Compiled in 3.8s (571 modules)
+ ✓ Compiled in 2.4s (571 modules)
+ ✓ Compiled in 1570ms (571 modules)
+ ✓ Compiled in 1619ms (571 modules)
+ ✓ Compiled in 1826ms (571 modules)
+ ✓ Compiled in 1554ms (571 modules)
+ ✓ Compiled in 1611ms (571 modules)
+ ✓ Compiled in 1579ms (571 modules)
+ ✓ Compiled in 1679ms (571 modules)
+ ✓ Compiled in 1525ms (571 modules)
+ ✓ Compiled in 1585ms (571 modules)
+ ✓ Compiled in 1453ms (571 modules)
+ ✓ Compiled in 1447ms (571 modules)
+ ✓ Compiled in 1429ms (571 modules)
+ ✓ Compiled in 1550ms (571 modules)
+ ✓ Compiled in 1526ms (571 modules)
+ ✓ Compiled in 1706ms (571 modules)
+ ✓ Compiled in 1481ms (571 modules)
+ ✓ Compiled in 1642ms (571 modules)
+ ✓ Compiled in 1581ms (571 modules)
+ ✓ Compiled in 1548ms (571 modules)
+ ✓ Compiled in 1604ms (571 modules)
+ ✓ Compiled in 1666ms (571 modules)
+ ✓ Compiled in 1415ms (571 modules)
+ ✓ Compiled in 1547ms (571 modules)
+ ✓ Compiled in 1736ms (571 modules)
+ ✓ Compiled in 1788ms (571 modules)
+ ✓ Compiled in 2.2s (571 modules)
+ ✓ Compiled in 1937ms (571 modules)
+ ✓ Compiled in 1823ms (571 modules)
+ ✓ Compiled in 1884ms (571 modules)
+ ✓ Compiled in 1721ms (571 modules)
+ ✓ Compiled in 1475ms (571 modules)
+ ✓ Compiled in 1653ms (571 modules)
+ ✓ Compiled in 1647ms (571 modules)
+ ✓ Compiled in 1458ms (571 modules)
+ ✓ Compiled in 1643ms (571 modules)
+ ✓ Compiled in 1562ms (571 modules)
+ ✓ Compiled in 1482ms (571 modules)
+ ✓ Compiled in 1505ms (571 modules)
+ ✓ Compiled in 1553ms (571 modules)
+ ✓ Compiled in 1410ms (571 modules)
+ ✓ Compiled in 1596ms (571 modules)
+ ✓ Compiled in 1599ms (571 modules)
+ ✓ Compiled in 1515ms (571 modules)
+ ✓ Compiled in 1554ms (571 modules)
+ ✓ Compiled in 1571ms (571 modules)
+ ✓ Compiled in 1488ms (571 modules)
+ ✓ Compiled in 1505ms (571 modules)
+ ✓ Compiled in 1782ms (571 modules)
+ ✓ Compiled in 1484ms (571 modules)
+ ✓ Compiled in 1573ms (571 modules)
+ ✓ Compiled in 1429ms (571 modules)
+ ✓ Compiled in 1526ms (571 modules)
+ ✓ Compiled in 1576ms (571 modules)
+ ✓ Compiled in 1692ms (571 modules)
+ ✓ Compiled in 1635ms (571 modules)
+ ✓ Compiled in 1807ms (571 modules)
+ ✓ Compiled in 1659ms (571 modules)
+ ✓ Compiled in 1583ms (571 modules)
+ ✓ Compiled in 1672ms (571 modules)
+ ✓ Compiled in 1617ms (571 modules)
+ ✓ Compiled in 1700ms (571 modules)
+ ✓ Compiled in 1622ms (571 modules)
+ ✓ Compiled in 1598ms (571 modules)
+ ✓ Compiled in 2.7s (571 modules)
+ ✓ Compiled in 1723ms (571 modules)
+ ✓ Compiled in 1659ms (571 modules)
+ ✓ Compiled in 1620ms (571 modules)
+ ✓ Compiled in 1595ms (571 modules)
+ ✓ Compiled in 1487ms (571 modules)
+ ✓ Compiled in 1585ms (571 modules)
+ ✓ Compiled in 1660ms (571 modules)
+ ✓ Compiled in 1588ms (571 modules)
+ ✓ Compiled in 1562ms (571 modules)

@@ -67,11 +67,6 @@ const navItems = [
         href: "/admin/tools",
         icon: Wrench,
       },
-      {
-        name: "Solutions",
-        href: "/admin/solutions",
-        icon: Bot,
-      },
     ],
   },
   {

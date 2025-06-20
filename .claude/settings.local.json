@@ -43,7 +43,11 @@
       "Bash(timeout:*)",
       "Bash(DEBUG=*)",
       "Bash(madge:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://jlrgsfwpngibeumtjuco.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpscmdzZndwbmdpYmV1bXRqdWNvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTYzNzM0MSwiZXhwIjoyMDY1MjEzMzQxfQ.aYrzWcBViz2oc4cgpZ2NG-aKE2CcSjbcL2yqx0icBOc\" node check-tables.js)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://jlrgsfwpngibeumtjuco.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpscmdzZndwbmdpYmV1bXRqdWNvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTYzNzM0MSwiZXhwIjoyMDY1MjEzMzQxfQ.aYrzWcBViz2oc4cgpZ2NG-aKE2CcSjbcL2yqx0icBOc\" node test-policy-fix.js)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://jlrgsfwpngibeumtjuco.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpscmdzZndwbmdpYmV1bXRqdWNvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTYzNzM0MSwiZXhwIjoyMDY1MjEzMzQxfQ.aYrzWcBViz2oc4cgpZ2NG-aKE2CcSjbcL2yqx0icBOc\" node test-tool-creation.js)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   },
