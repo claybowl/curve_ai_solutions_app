@@ -29,26 +29,26 @@ import {
   Search, ChevronDown, ExternalLink, Settings, Server
 } from "lucide-react"
 import { format } from "date-fns"
-import { 
-  getAllTools,
-  getToolById,
-  createTool,
-  updateTool,
-  deleteTool,
+import {
+  getAiTools,
+  getAiToolById,
+  createAiTool,
+  updateAiTool,
+  deleteAiTool,
   getToolCategories
-} from "@/lib/db-tools"
+} from "@/app/actions/tool-actions"
 import type { 
   AiTool,
   AiToolSummary,
   AiToolFormData,
   AiToolFilter,
-  AiToolCategory
+  ToolCategorySummary
 } from "@/types/tools"
 
 export default function ToolsManagementPage() {
   const router = useRouter()
-  const [tools, setTools] = useState<AiToolSummary[]>([])
-  const [categories, setCategories] = useState<AiToolCategory[]>([])
+  const [tools, setTools] = useState<AiTool[]>([])
+  const [categories, setCategories] = useState<ToolCategorySummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
   const [activeTab, setActiveTab] = useState("all")
@@ -57,70 +57,58 @@ export default function ToolsManagementPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [currentSettings, setCurrentSettings] = useState<AiToolSummary | null>(null)
+  const [currentTool, setCurrentTool] = useState<AiTool | null>(null)
   const [formData, setFormData] = useState<AiToolFormData>({
     name: "",
     description: "",
-    apiEndpoint: "",
-    iconName: "",
-    category: "",
-    isActive: true
+    detailed_description: "",
+    category_id: "",
+    version: "1.0.0",
+    tool_type: "custom",
+    complexity_level: "beginner",
+    api_endpoint: "",
+    pricing_model: "free",
+    status: "active",
+    is_featured: false,
+    is_public: true,
+    tags: [],
+    keywords: []
   })
   const [sortColumn, setSortColumn] = useState<string>("name")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
 
   useEffect(() => {
-    loadSettingss()
+    loadTools()
     loadCategories()
   }, [activeTab, sortColumn, sortDirection, selectedCategory])
 
-  const loadSettingss = async () => {
+  const loadTools = async () => {
     setIsLoading(true)
     try {
       // Determine filter based on active tab and selected category
       const filter: AiToolFilter = {}
       
       if (activeTab === "active") {
-        filter.isActive = true
+        filter.status = "active"
       } else if (activeTab === "inactive") {
-        filter.isActive = false
+        filter.status = "deprecated"
       }
       
       if (selectedCategory) {
-        filter.category = selectedCategory
+        filter.category_id = selectedCategory
       }
       
       // Apply search term if present
       if (searchTerm) {
-        filter.searchTerm = searchTerm
+        filter.search_term = searchTerm
       }
       
-      const fetchedSettingss = await getAllTools(filter)
-      
       // Apply sorting
-      const sortedSettingss = [...fetchedSettingss].sort((a, b) => {
-        const aValue = a[sortColumn as keyof AiToolSummary]
-        const bValue = b[sortColumn as keyof AiToolSummary]
-        
-        // Handle string comparison
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortDirection === 'asc' 
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue)
-        }
-        
-        // Handle boolean comparison
-        if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
-          return sortDirection === 'asc'
-            ? (aValue ? 1 : 0) - (bValue ? 1 : 0)
-            : (bValue ? 1 : 0) - (aValue ? 1 : 0)
-        }
-        
-        // Handle other types
-        return 0
-      })
+      filter.sortBy = sortColumn as any
+      filter.sortDirection = sortDirection
       
-      setTools(sortedSettingss)
+      const fetchedTools = await getAiTools(filter)
+      setTools(fetchedTools)
     } catch (err) {
       console.error("Error loading tools:", err)
       setError("Failed to load AI tools")
@@ -151,19 +139,30 @@ export default function ToolsManagementPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    loadSettingss()
+    loadTools()
   }
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     try {
-      const newSettingsId = await createTool(formData)
+      const formDataObj = new FormData()
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(item => formDataObj.append(key, item))
+          } else {
+            formDataObj.append(key, String(value))
+          }
+        }
+      })
       
-      if (newSettingsId) {
+      const result = await createAiTool(formDataObj)
+      
+      if (result.success) {
         setIsCreateDialogOpen(false)
         resetForm()
-        loadSettingss()
+        loadTools()
       } else {
         setError("Failed to create AI tool")
       }
@@ -176,15 +175,26 @@ export default function ToolsManagementPage() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!currentSettings) return
+    if (!currentTool) return
     
     try {
-      const success = await updateTool(currentSettings.id, formData)
+      const formDataObj = new FormData()
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(item => formDataObj.append(key, item))
+          } else {
+            formDataObj.append(key, String(value))
+          }
+        }
+      })
       
-      if (success) {
+      const result = await updateAiTool(currentTool.id, formDataObj)
+      
+      if (result.success) {
         setIsEditDialogOpen(false)
         resetForm()
-        loadSettingss()
+        loadTools()
       } else {
         setError("Failed to update AI tool")
       }
@@ -195,15 +205,15 @@ export default function ToolsManagementPage() {
   }
 
   const handleDeleteConfirm = async () => {
-    if (!currentSettings) return
+    if (!currentTool) return
     
     try {
-      const success = await deleteTool(currentSettings.id)
+      const result = await deleteAiTool(currentTool.id)
       
-      if (success) {
+      if (result.success) {
         setIsDeleteDialogOpen(false)
-        setCurrentSettings(null)
-        loadSettingss()
+        setCurrentTool(null)
+        loadTools()
       } else {
         setError("Failed to delete AI tool")
       }
@@ -213,20 +223,18 @@ export default function ToolsManagementPage() {
     }
   }
 
-  const handleToggleActive = async (tool: AiToolSummary) => {
+  const handleToggleActive = async (tool: AiTool) => {
     try {
-      const updatedSettings: AiToolFormData = {
-        name: tool.name,
-        description: tool.description,
-        iconName: tool.iconName,
-        category: tool.category,
-        isActive: !tool.isActive
-      }
+      const newStatus = tool.status === 'active' ? 'deprecated' : 'active'
+      const formDataObj = new FormData()
+      formDataObj.append("name", tool.name)
+      formDataObj.append("description", tool.description || "")
+      formDataObj.append("status", newStatus)
       
-      const success = await updateTool(tool.id, updatedSettings)
+      const result = await updateAiTool(tool.id, formDataObj)
       
-      if (success) {
-        loadSettingss()
+      if (result.success) {
+        loadTools()
       } else {
         setError("Failed to toggle tool status")
       }
@@ -240,38 +248,51 @@ export default function ToolsManagementPage() {
     setFormData({
       name: "",
       description: "",
-      apiEndpoint: "",
-      iconName: "",
-      category: "",
-      isActive: true
+      detailed_description: "",
+      category_id: "",
+      version: "1.0.0",
+      tool_type: "custom",
+      complexity_level: "beginner",
+      api_endpoint: "",
+      pricing_model: "free",
+      status: "active",
+      is_featured: false,
+      is_public: true,
+      tags: [],
+      keywords: []
     })
-    setCurrentSettings(null)
+    setCurrentTool(null)
   }
 
-  const handleEditSettings = async (tool: AiToolSummary) => {
-    setCurrentSettings(tool)
+  const handleEditTool = async (tool: AiTool) => {
+    setCurrentTool(tool)
     try {
-      // Fetch the full tool data
-      const fullSettings = await getToolById(tool.id)
-      if (fullSettings) {
-        setFormData({
-          name: fullSettings.name,
-          description: fullSettings.description,
-          apiEndpoint: fullSettings.apiEndpoint || "",
-          iconName: fullSettings.iconName || "",
-          category: fullSettings.category || "",
-          isActive: fullSettings.isActive
-        })
-        setIsEditDialogOpen(true)
-      }
+      // Use the tool data directly since it's already complete
+      setFormData({
+        name: tool.name,
+        description: tool.description || "",
+        detailed_description: tool.detailed_description || "",
+        category_id: tool.category_id || "",
+        version: tool.version || "1.0.0",
+        tool_type: tool.tool_type || "custom",
+        complexity_level: tool.complexity_level || "beginner",
+        api_endpoint: tool.api_endpoint || "",
+        pricing_model: tool.pricing_model || "free",
+        status: tool.status || "active",
+        is_featured: tool.is_featured || false,
+        is_public: tool.is_public !== undefined ? tool.is_public : true,
+        tags: tool.tags || [],
+        keywords: tool.keywords || []
+      })
+      setIsEditDialogOpen(true)
     } catch (err) {
-      console.error("Error fetching tool details:", err)
+      console.error("Error setting up tool edit:", err)
       setError("Failed to load tool details for editing")
     }
   }
 
-  const handleDeleteSettings = (tool: AiToolSummary) => {
-    setCurrentSettings(tool)
+  const handleDeleteTool = (tool: AiTool) => {
+    setCurrentTool(tool)
     setIsDeleteDialogOpen(true)
   }
 
@@ -282,8 +303,8 @@ export default function ToolsManagementPage() {
     return category ? category.name : categoryId
   }
 
-  // Settingss Table Component
-  const SettingssTable = () => {
+  // Tools Table Component
+  const ToolsTable = () => {
     if (isLoading) {
       return (
         <div className="py-8 flex justify-center">
@@ -299,7 +320,7 @@ export default function ToolsManagementPage() {
       return (
         <div className="py-8 text-center">
           <p className="text-red-500">{error}</p>
-          <Button variant="outline" className="mt-4" onClick={loadSettingss}>
+          <Button variant="outline" className="mt-4" onClick={loadTools}>
             Retry
           </Button>
         </div>
@@ -311,7 +332,7 @@ export default function ToolsManagementPage() {
         <div className="text-center py-8">
           <p className="text-muted-foreground mb-4">No AI tools found</p>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
-            Create Your First Settings
+            Create Your First Tool
           </Button>
         </div>
       )
@@ -367,11 +388,9 @@ export default function ToolsManagementPage() {
                 <TableCell className="min-w-[200px]">
                   <div>
                     <div className="font-medium flex items-center gap-2">
-                      {tool.iconName ? (
-                        <span className="text-muted-foreground">
-                          <Settings className="h-4 w-4" />
-                        </span>
-                      ) : null}
+                      <span className="text-muted-foreground">
+                        <Settings className="h-4 w-4" />
+                      </span>
                       {tool.name}
                     </div>
                     <div className="text-sm text-muted-foreground line-clamp-2 mt-1">
@@ -379,9 +398,9 @@ export default function ToolsManagementPage() {
                     </div>
                     {/* Show category on mobile as part of description */}
                     <div className="md:hidden mt-2">
-                      {tool.category ? (
+                      {tool.category_id ? (
                         <Badge variant="outline" className="capitalize">
-                          {getCategoryName(tool.category)}
+                          {getCategoryName(tool.category_id)}
                         </Badge>
                       ) : (
                         <span className="text-muted-foreground text-xs">Uncategorized</span>
@@ -390,22 +409,22 @@ export default function ToolsManagementPage() {
                   </div>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {tool.category ? (
+                  {tool.category_id ? (
                     <Badge variant="outline" className="capitalize">
-                      {getCategoryName(tool.category)}
+                      {getCategoryName(tool.category_id)}
                     </Badge>
                   ) : (
                     <span className="text-muted-foreground text-sm">Uncategorized</span>
                   )}
                 </TableCell>
                 <TableCell>
-                  {tool.isActive ? (
+                  {tool.status === 'active' ? (
                     <Badge variant="success" className="bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
                       Active
                     </Badge>
                   ) : (
                     <Badge variant="secondary" className="bg-gray-100 text-gray-800 dark:bg-gray-800/20 dark:text-gray-400">
-                      Inactive
+                      {tool.status || 'Inactive'}
                     </Badge>
                   )}
                 </TableCell>
@@ -418,23 +437,23 @@ export default function ToolsManagementPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleEditSettings(tool)}>
+                      <DropdownMenuItem onClick={() => handleEditTool(tool)}>
                         <Pencil className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
-                      {tool.apiEndpoint && (
-                        <DropdownMenuItem onClick={() => window.open(tool.apiEndpoint, '_blank')}>
+                      {tool.api_endpoint && (
+                        <DropdownMenuItem onClick={() => window.open(tool.api_endpoint, '_blank')}>
                           <ExternalLink className="mr-2 h-4 w-4" />
                           Open API Endpoint
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem onClick={() => handleToggleActive(tool)}>
                         <Power className="mr-2 h-4 w-4" />
-                        {tool.isActive ? "Deactivate" : "Activate"}
+                        {tool.status === 'active' ? "Deactivate" : "Activate"}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
-                        onClick={() => handleDeleteSettings(tool)}
+                        onClick={() => handleDeleteTool(tool)}
                         className="text-red-600 dark:text-red-400"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
@@ -453,16 +472,16 @@ export default function ToolsManagementPage() {
 
   return (
     <DashboardLayout
-      title="AI Settingss"
+      title="AI Tools"
       description="Manage your AI tools, create new tools, and control availability"
       breadcrumbs={[
         { label: "Admin", href: "/admin" },
-        { label: "AI Settingss", href: "/admin/tools", current: true }
+        { label: "AI Tools", href: "/admin/tools", current: true }
       ]}
       actions={
         <Button onClick={() => setIsCreateDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Settings
+          New Tool
         </Button>
       }
     >
@@ -474,7 +493,7 @@ export default function ToolsManagementPage() {
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <TabsList className="w-full sm:w-auto">
-            <TabsTrigger value="all">All Settingss</TabsTrigger>
+            <TabsTrigger value="all">All Tools</TabsTrigger>
             <TabsTrigger value="active">Active</TabsTrigger>
             <TabsTrigger value="inactive">Inactive</TabsTrigger>
           </TabsList>
@@ -512,25 +531,25 @@ export default function ToolsManagementPage() {
           </div>
         </div>
         
-        <SettingssTable />
+        <ToolsTable />
       </Tabs>
       
       {/* Categories Card */}
       <div className="mt-8">
         <Card>
           <CardHeader>
-            <CardTitle>Settings Categories</CardTitle>
+            <CardTitle>Tool Categories</CardTitle>
             <CardDescription>Available categories for organizing AI tools</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.length > 0 ? categories.map(category => (
-                <div key={category.id} className={`p-4 rounded-lg ${category.color}`}>
+                <div key={category.id} className={`p-4 rounded-lg ${category.color || 'bg-blue-500'}`}>
                   <h3 className="font-semibold text-white truncate">{category.name}</h3>
                   <p className="text-sm text-white/80 mt-1 line-clamp-2">{category.description}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <Badge className="bg-white/20 text-white hover:bg-white/30">
-                      {category.tools.length} tools
+                      {category.tools_count} tools
                     </Badge>
                   </div>
                 </div>
@@ -544,11 +563,11 @@ export default function ToolsManagementPage() {
         </Card>
       </div>
       
-      {/* Create Settings Dialog */}
+      {/* Create Tool Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
         <DialogContent className="w-[95%] sm:w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Create New AI Settings</DialogTitle>
+            <DialogTitle>Create New AI Tool</DialogTitle>
             <DialogDescription>
               Create a new AI tool that can be used by your clients or internal systems.
             </DialogDescription>
@@ -557,7 +576,7 @@ export default function ToolsManagementPage() {
           <form onSubmit={handleCreateSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Settings Name</Label>
+                <Label htmlFor="name">Tool Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
@@ -572,18 +591,28 @@ export default function ToolsManagementPage() {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Explain what this tool does and how it can be used"
-                  required
+                  placeholder="Brief description of what this tool does"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="detailed_description">Detailed Description</Label>
+                <Textarea
+                  id="detailed_description"
+                  value={formData.detailed_description}
+                  onChange={(e) => setFormData({ ...formData, detailed_description: e.target.value })}
+                  placeholder="Detailed explanation of how this tool works and its benefits"
                   rows={3}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="apiEndpoint">API Endpoint</Label>
+                <Label htmlFor="api_endpoint">API Endpoint</Label>
                 <Input
-                  id="apiEndpoint"
-                  value={formData.apiEndpoint}
-                  onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
+                  id="api_endpoint"
+                  value={formData.api_endpoint}
+                  onChange={(e) => setFormData({ ...formData, api_endpoint: e.target.value })}
                   placeholder="https://api.example.com/tool-endpoint"
                 />
                 <p className="text-sm text-muted-foreground">Optional: The API endpoint where this tool is hosted</p>
@@ -591,23 +620,12 @@ export default function ToolsManagementPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="iconName">Icon Name</Label>
-                  <Input
-                    id="iconName"
-                    value={formData.iconName}
-                    onChange={(e) => setFormData({ ...formData, iconName: e.target.value })}
-                    placeholder="e.g. Settings, BarChart, Code"
-                  />
-                  <p className="text-sm text-muted-foreground">Optional: Lucide icon name</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category_id">Category</Label>
                   <Select
-                    value={formData.category}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    value={formData.category_id}
+                    onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                   >
-                    <SelectTrigger id="category">
+                    <SelectTrigger id="category_id">
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -617,15 +635,43 @@ export default function ToolsManagementPage() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tool_type">Tool Type</Label>
+                  <Select
+                    value={formData.tool_type}
+                    onValueChange={(value) => setFormData({ ...formData, tool_type: value as any })}
+                  >
+                    <SelectTrigger id="tool_type">
+                      <SelectValue placeholder="Select tool type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="chatbot">Chatbot</SelectItem>
+                      <SelectItem value="automation">Automation</SelectItem>
+                      <SelectItem value="analysis">Analysis</SelectItem>
+                      <SelectItem value="integration">Integration</SelectItem>
+                      <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               
               <div className="flex items-center space-x-2 pt-4">
                 <Switch
-                  id="isActive"
-                  checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                  id="is_featured"
+                  checked={formData.is_featured}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                 />
-                <Label htmlFor="isActive">Settings is active and available for use</Label>
+                <Label htmlFor="is_featured">Feature this tool</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="is_public"
+                  checked={formData.is_public}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_public: checked })}
+                />
+                <Label htmlFor="is_public">Make tool publicly available</Label>
               </div>
             </div>
             
@@ -633,17 +679,17 @@ export default function ToolsManagementPage() {
               <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create Settings</Button>
+              <Button type="submit">Create Tool</Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
       
-      {/* Edit Settings Dialog */}
+      {/* Edit Tool Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="w-[95%] sm:w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit AI Settings</DialogTitle>
+            <DialogTitle>Edit AI Tool</DialogTitle>
             <DialogDescription>
               Update the details and settings for this AI tool.
             </DialogDescription>
@@ -740,16 +786,16 @@ export default function ToolsManagementPage() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md max-w-[calc(100%-2rem)] w-full">
           <DialogHeader>
-            <DialogTitle>Delete AI Settings</DialogTitle>
+            <DialogTitle>Delete AI Tool</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete this AI tool? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           
-          {currentSettings && (
+          {currentTool && (
             <div className="py-4">
-              <h3 className="font-medium truncate">{currentSettings.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{currentSettings.description}</p>
+              <h3 className="font-medium truncate">{currentTool.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{currentTool.description}</p>
             </div>
           )}
           

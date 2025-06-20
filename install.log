@@ -1,0 +1,130 @@
+ WARN  using --force I sure hope you know what you are doing
+ WARN  Moving @types/node that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @types/react-dom that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @types/react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving tailwindcss that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving postcss that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving typescript that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @ai-sdk/react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @ai-sdk/xai that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @auth/core that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @hookform/resolvers that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @neondatabase/serverless that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-alert-dialog that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-accordion that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-aspect-ratio that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-avatar that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-checkbox that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-context-menu that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-collapsible that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-dialog that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-dropdown-menu that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-hover-card that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-label that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-menubar that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-navigation-menu that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-popover that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-progress that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-scroll-area that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-radio-group that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-select that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-separator that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-slider that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-slot that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-switch that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-toast that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-tabs that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-toggle that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-toggle-group that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @radix-ui/react-tooltip that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @supabase/auth-ui-shared that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @supabase/auth-ui-react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @supabase/auth-helpers-nextjs that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @supabase/ssr that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving ai that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving @supabase/supabase-js that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving autoprefixer that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving bcryptjs that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving child_process that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving clsx that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving cmdk that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving class-variance-authority that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving embla-carousel-react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving dotenv that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving date-fns that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving input-otp that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving fs that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving lucide-react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving next that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving next-themes that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving nodemailer that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving path that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving react that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving react-dom that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving react-hook-form that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving react-resizable-panels that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving recharts that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving sonner that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving tailwind-merge that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving tailwindcss-animate that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving vaul that was installed by a different package manager to "node_modules/.ignored"
+ WARN  Moving zod that was installed by a different package manager to "node_modules/.ignored"
+ WARN  GET https://registry.npmjs.org/@types%2Freact error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@types%2Freact-dom error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/tailwindcss error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/postcss error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/typescript error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@ai-sdk%2Freact error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+
+   ╭───────────────────────────────────────────────────────────────────╮
+   │                                                                   │
+   │                Update available! 9.9.0 → 10.12.1.                 │
+   │   Changelog: https://github.com/pnpm/pnpm/releases/tag/v10.12.1   │
+   │                 Run "pnpm add -g pnpm" to update.                 │
+   │                                                                   │
+   │         Follow @pnpmjs for updates: https://x.com/pnpmjs          │
+   │                                                                   │
+   ╰───────────────────────────────────────────────────────────────────╯
+
+Progress: resolved 1, reused 0, downloaded 0, added 0
+ WARN  GET https://registry.npmjs.org/@ai-sdk%2Fxai error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@auth%2Fcore error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 2, reused 0, downloaded 0, added 0
+Progress: resolved 3, reused 0, downloaded 0, added 0
+ WARN  GET https://registry.npmjs.org/@hookform%2Fresolvers error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@neondatabase%2Fserverless error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-avatar error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-checkbox error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 3, reused 1, downloaded 0, added 0
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-accordion error (EAI_AGAIN). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-alert-dialog error (EAI_AGAIN). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 3, reused 1, downloaded 1, added 0
+Progress: resolved 10, reused 1, downloaded 2, added 0
+Progress: resolved 15, reused 1, downloaded 3, added 0
+Progress: resolved 20, reused 1, downloaded 9, added 0
+Progress: resolved 20, reused 1, downloaded 10, added 0
+Progress: resolved 21, reused 1, downloaded 10, added 0
+Progress: resolved 29, reused 1, downloaded 15, added 0
+Progress: resolved 37, reused 1, downloaded 19, added 0
+ WARN  deprecated @supabase/auth-helpers-nextjs@0.8.7: This package is now deprecated - please use the @supabase/ssr package instead.
+Progress: resolved 40, reused 1, downloaded 26, added 0
+Progress: resolved 52, reused 2, downloaded 33, added 0
+Progress: resolved 55, reused 2, downloaded 37, added 0
+Progress: resolved 56, reused 3, downloaded 41, added 0
+Progress: resolved 56, reused 3, downloaded 42, added 0
+Progress: resolved 60, reused 3, downloaded 46, added 0
+Progress: resolved 60, reused 3, downloaded 47, added 0
+Progress: resolved 61, reused 3, downloaded 48, added 0
+Progress: resolved 65, reused 4, downloaded 51, added 0
+Progress: resolved 67, reused 6, downloaded 52, added 0
+Progress: resolved 68, reused 6, downloaded 54, added 0
+ WARN  GET https://registry.npmjs.org/@radix-ui/react-dropdown-menu/-/react-dropdown-menu-2.1.15.tgz error (ETIMEDOUT). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 68, reused 6, downloaded 55, added 0
+Progress: resolved 68, reused 6, downloaded 56, added 0
+ WARN  GET https://registry.npmjs.org/tailwindcss-animate error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/vaul error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/nodemailer/-/nodemailer-7.0.3.tgz error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 68, reused 6, downloaded 57, added 0
+ WARN  GET https://registry.npmjs.org/tailwindcss-animate error (EAI_AGAIN). Will retry in 1 minute. 1 retries left.
+ WARN  GET https://registry.npmjs.org/vaul error (EAI_AGAIN). Will retry in 1 minute. 1 retries left.
+Progress: resolved 68, reused 6, downloaded 58, added 0

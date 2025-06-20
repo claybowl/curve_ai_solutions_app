@@ -1,0 +1,12 @@
+
+> my-v0-project@0.1.0 dev /mnt/c/Users/clayb/Desktop/CurveAI/curve_ai_solutions_app
+> node dev-server.js
+
+🚀 Starting optimized dev server...
+   Downloading swc package @next/swc-linux-x64-gnu... to /home/clayb/.cache/next-swc
+   Downloading swc package @next/swc-linux-x64-musl... to /home/clayb/.cache/next-swc
+✅ Next.js app prepared
+🎉 Ready on http://localhost:3000
+(node:17587) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ELIFECYCLE  Command failed.

@@ -36,7 +36,14 @@
       "mcp__postgres__query",
       "Bash(npm run lint:*)",
       "Bash(npx supabase:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(touch:*)",
+      "Bash(timeout 60s pnpm build)",
+      "Bash(timeout 30s pnpm dev)",
+      "Bash(timeout:*)",
+      "Bash(DEBUG=*)",
+      "Bash(madge:*)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   },

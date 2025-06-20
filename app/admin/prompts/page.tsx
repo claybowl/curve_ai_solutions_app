@@ -34,20 +34,14 @@ import {
   LayoutList, Folder, Bot
 } from "lucide-react"
 import {
-  getPromptsAction,
-  createPromptAction,
-  updatePromptAction,
-  deletePromptAction,
+  getPrompts,
+  createPrompt,
+  updatePrompt,
+  deletePrompt,
   updatePromptCategoryAction,
-  getPromptCategoriesAction
+  getPromptCategories
 } from "@/app/actions/prompt-actions"
 import { Prompt, PromptCategory } from "@/types/prompts"
-import { 
-  ChartContainer, 
-  LineChart, 
-  BarChart, 
-  PieChart 
-} from "@/components/ui/chart"
 
 export default function PromptsPage() {
   const router = useRouter()
@@ -92,7 +86,7 @@ export default function PromptsPage() {
   const loadPrompts = async () => {
     setIsLoading(true)
     try {
-      const result = await getPromptsAction()
+      const result = await getPrompts()
       if (result) {
         setPrompts(result)
       }
@@ -110,7 +104,7 @@ export default function PromptsPage() {
 
   const loadCategories = async () => {
     try {
-      const result = await getPromptCategoriesAction()
+      const result = await getPromptCategories()
       if (result) {
         setCategories(result)
       }
@@ -127,13 +121,16 @@ export default function PromptsPage() {
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const result = await createPromptAction({
-        title: newPromptTitle,
-        content: newPromptContent,
-        category: newPromptCategory,
-        tags: newPromptTags.split(",").map(tag => tag.trim()).filter(Boolean),
-        published: newPromptPublished,
+      const formData = new FormData()
+      formData.append("title", newPromptTitle)
+      formData.append("prompt_text", newPromptContent)
+      formData.append("category_id", newPromptCategory)
+      newPromptTags.split(",").map(tag => tag.trim()).filter(Boolean).forEach(tag => {
+        formData.append("tags", tag)
       })
+      formData.append("is_public", String(newPromptPublished))
+      
+      const result = await createPrompt(formData)
       
       if (result) {
         setPrompts(prev => [...prev, result])
@@ -165,14 +162,16 @@ export default function PromptsPage() {
     if (!currentPrompt) return
     
     try {
-      const result = await updatePromptAction({
-        id: currentPrompt.id,
-        title: editTitle,
-        content: editContent,
-        category: editCategory,
-        tags: editTags.split(",").map(tag => tag.trim()).filter(Boolean),
-        published: editPublished,
+      const formData = new FormData()
+      formData.append("title", editTitle)
+      formData.append("prompt_text", editContent)
+      formData.append("category_id", editCategory)
+      editTags.split(",").map(tag => tag.trim()).filter(Boolean).forEach(tag => {
+        formData.append("tags", tag)
       })
+      formData.append("is_public", String(editPublished))
+      
+      const result = await updatePrompt(currentPrompt.id, formData)
       
       if (result) {
         setPrompts(prev => prev.map(prompt => prompt.id === result.id ? result : prompt))
@@ -198,7 +197,7 @@ export default function PromptsPage() {
     if (!currentPrompt) return
     
     try {
-      const result = await deletePromptAction(currentPrompt.id)
+      const result = await deletePrompt(currentPrompt.id)
       
       if (result) {
         setPrompts(prev => prev.filter(prompt => prompt.id !== currentPrompt.id))
@@ -352,16 +351,21 @@ export default function PromptsPage() {
             
             <div className="mt-6">
               <CardTitle className="text-sm mb-3">Category Distribution</CardTitle>
-              <div className="h-[200px] w-full">
-                <ChartContainer>
-                  <PieChart 
-                    data={categoryUsageData} 
-                    category="count"
-                    index="name"
-                    valueFormatter={(value) => `${value} prompts`}
-                    colors={["primary", "indigo", "cyan", "amber", "rose"]}
-                  />
-                </ChartContainer>
+              <div className="space-y-2">
+                {categoryUsageData.map((item, index) => (
+                  <div key={item.name} className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2">
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: `hsl(${index * 60}, 70%, 50%)` }}
+                      />
+                      {item.name}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {item.count}
+                    </Badge>
+                  </div>
+                ))}
               </div>
             </div>
           </CardContent>

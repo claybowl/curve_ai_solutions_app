@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllTools, createTool } from "@/lib/db-tools";
-import { AiToolFilter, AiToolFormData } from "@/types/tools";
-import { verifyAdminRole, getServerUser } from '@/lib/createServerSupabaseClient';
+import { getAiTools, createAiTool } from "@/app/actions/tool-actions";
+import { getCurrentSupabaseUser, isUserAdmin } from "@/lib/db-v2";
 
 // GET - Fetch all tools with optional filtering
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    if (!await verifyAdminRole()) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+    const user = await getCurrentSupabaseUser()
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+
+    const userIsAdmin = await isUserAdmin(user.id)
+    if (!userIsAdmin) {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 })
     }
 
     // Parse query parameters for filtering
     const searchParams = request.nextUrl.searchParams;
-    const filter: AiToolFilter = {};
+    const filter: any = {};
 
     if (searchParams.has("category")) {
       filter.category = searchParams.get("category") as string;
@@ -30,15 +32,8 @@ export async function GET(request: NextRequest) {
       filter.searchTerm = searchParams.get("searchTerm") as string;
     }
 
-    if (searchParams.has("createdBy")) {
-      const createdByParam = searchParams.get("createdBy");
-      if (createdByParam) {
-        filter.createdBy = parseInt(createdByParam, 10);
-      }
-    }
-
     // Get tools with filters
-    const tools = await getAllTools(filter);
+    const tools = await getAiTools(filter);
 
     return NextResponse.json({ tools });
   } catch (error) {
@@ -54,36 +49,39 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    if (!await verifyAdminRole()) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+    const user = await getCurrentSupabaseUser()
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
-    // Parse request body
+    const userIsAdmin = await isUserAdmin(user.id)
+    if (!userIsAdmin) {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 })
+    }
+
+    // Parse request body and convert to FormData for server action
     const data = await request.json();
-    const toolData: AiToolFormData = {
-      name: data.name,
-      description: data.description,
-      apiEndpoint: data.apiEndpoint,
-      iconName: data.iconName,
-      category: data.category,
-      isActive: data.isActive !== undefined ? data.isActive : true,
-    };
+    const formData = new FormData();
+    
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("apiEndpoint", data.apiEndpoint || "");
+    formData.append("iconName", data.iconName || "");
+    formData.append("category", data.category);
+    formData.append("isActive", data.isActive ? "true" : "false");
 
-    // Get user ID from session
-    const user = await getServerUser();
-    const createdBy = user?.id ? parseInt(user.id as string, 10) : undefined;
+    // Create tool using server action
+    const result = await createAiTool(formData);
 
-    // Create tool
-    const toolId = await createTool(toolData, createdBy);
-
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Tool created successfully',
-      toolId 
-    }, { status: 201 });
+    if (result.success) {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Tool created successfully',
+        toolId: result.toolId 
+      }, { status: 201 });
+    } else {
+      return NextResponse.json({ error: result.error }, { status: 400 });
+    }
   } catch (error) {
     console.error("Error creating AI tool:", error);
     return NextResponse.json(

@@ -1,21 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ConsultationList } from "@/components/admin/consultation-list"
+import { DashboardLayout } from "@/components/admin/dashboard-layout"
 
 export default async function ConsultationsPage() {
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-[#1A365D] mb-2">Consultation Requests</h1>
-          <p className="text-gray-500">Manage and respond to consultation requests from clients.</p>
-        </div>
+    <DashboardLayout
+      title="Consultation Requests"
+      description="Manage and respond to consultation requests from clients"
+      breadcrumbs={[
+        { label: "Admin", href: "/admin" },
+        { label: "Consultations", href: "/admin/consultations", current: true }
+      ]}
+      actions={
         <div className="flex gap-4">
           <Button variant="outline">Export</Button>
           <Button>New Consultation</Button>
         </div>
-      </div>
-
+      }
+    >
       <Card>
         <CardHeader>
           <CardTitle>All Consultation Requests</CardTitle>
@@ -24,6 +27,6 @@ export default async function ConsultationsPage() {
           <ConsultationList />
         </CardContent>
       </Card>
-    </div>
+    </DashboardLayout>
   )
 }

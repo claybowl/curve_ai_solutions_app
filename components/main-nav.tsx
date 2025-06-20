@@ -13,14 +13,29 @@ export function MainNav() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [dashboardUrl, setDashboardUrl] = useState("/dashboard")
   const pathname = usePathname()
   const supabase = createClientComponentClient()
 
   useEffect(() => {
-    // Check Supabase auth session
+    // Check Supabase auth session and user role
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       setIsLoggedIn(!!session)
+      
+      if (session?.user) {
+        // Check if user is admin by looking at profiles table
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single()
+        
+        const userIsAdmin = profile?.role === 'admin'
+        setIsAdmin(userIsAdmin)
+        setDashboardUrl(userIsAdmin ? "/admin" : "/dashboard")
+      }
     }
     
     checkAuth()
@@ -28,6 +43,12 @@ export function MainNav() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setIsLoggedIn(!!session)
+      if (!session) {
+        setIsAdmin(false)
+        setDashboardUrl("/dashboard")
+      } else {
+        checkAuth() // Re-check role when session changes
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -49,8 +70,8 @@ export function MainNav() {
     { name: "Assessments", href: "/assessments" },
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
-    { name: "AiGency Platform", href: "/aigency-platform" },
-    { name: "AI Models", href: "/curve-ai-chat" },
+    { name: "AiGency Workbench", href: "/aigency-platform" },
+    { name: "AiGency Knowledge Studio", href: "/curve-ai-chat" },
     { name: "Fundraising", href: "/fundraising" },
     { name: "About", href: "/about" },
     { name: "Consultation", href: "/consultation" },
@@ -106,7 +127,7 @@ export function MainNav() {
             {isLoggedIn ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href={dashboardUrl}>Dashboard</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -180,7 +201,7 @@ export function MainNav() {
               {isLoggedIn ? (
                 <>
                   <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href={dashboardUrl}>Dashboard</Link>
                   </Button>
                   <Button
                     className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-950"

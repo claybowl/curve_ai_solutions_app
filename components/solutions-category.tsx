@@ -4,10 +4,13 @@ import Link from "next/link"
 import { Bot, BarChart, LineChart, Workflow, Code, Zap, Shield, Building } from "lucide-react"
 
 interface Tool {
-  id: number
+  id: string
   name: string
   description: string
-  api_endpoint: string
+  tool_type?: string
+  complexity_level?: string
+  pricing_model?: string
+  tags?: string[]
 }
 
 interface SolutionsCategoryProps {
@@ -35,14 +38,16 @@ export function SolutionsCategory({ id, name, description, tools, color, icon }:
   // Get background color class for cards based on the category color
   const getBgClass = () => {
     const colorMap = {
-      "bg-blue-500": "bg-blue-50 dark:bg-blue-950/30",
-      "bg-purple-500": "bg-purple-50 dark:bg-purple-950/30",
-      "bg-green-500": "bg-green-50 dark:bg-green-950/30",
-      "bg-orange-500": "bg-orange-50 dark:bg-orange-950/30",
-      "bg-teal-500": "bg-teal-50 dark:bg-teal-950/30",
-      "bg-red-500": "bg-red-50 dark:bg-red-950/30",
-      "bg-indigo-500": "bg-indigo-50 dark:bg-indigo-950/30",
-      "bg-amber-500": "bg-amber-50 dark:bg-amber-950/30",
+      "bg-blue-600": "bg-blue-50 dark:bg-blue-950/30",
+      "bg-purple-600": "bg-purple-50 dark:bg-purple-950/30",
+      "bg-green-600": "bg-green-50 dark:bg-green-950/30",
+      "bg-orange-600": "bg-orange-50 dark:bg-orange-950/30",
+      "bg-teal-600": "bg-teal-50 dark:bg-teal-950/30",
+      "bg-red-600": "bg-red-50 dark:bg-red-950/30",
+      "bg-indigo-600": "bg-indigo-50 dark:bg-indigo-950/30",
+      "bg-amber-600": "bg-amber-50 dark:bg-amber-950/30",
+      "bg-gray-600": "bg-gray-50 dark:bg-gray-950/30",
+      "bg-slate-600": "bg-slate-50 dark:bg-slate-950/30",
     };
     return colorMap[color as keyof typeof colorMap] || "bg-gray-50 dark:bg-gray-900/30";
   };
@@ -50,14 +55,16 @@ export function SolutionsCategory({ id, name, description, tools, color, icon }:
   // Get border color class for cards based on the category color
   const getBorderClass = () => {
     const colorMap = {
-      "bg-blue-500": "border-blue-200 hover:border-blue-400 dark:border-blue-900 dark:hover:border-blue-700",
-      "bg-purple-500": "border-purple-200 hover:border-purple-400 dark:border-purple-900 dark:hover:border-purple-700",
-      "bg-green-500": "border-green-200 hover:border-green-400 dark:border-green-900 dark:hover:border-green-700",
-      "bg-orange-500": "border-orange-200 hover:border-orange-400 dark:border-orange-900 dark:hover:border-orange-700",
-      "bg-teal-500": "border-teal-200 hover:border-teal-400 dark:border-teal-900 dark:hover:border-teal-700",
-      "bg-red-500": "border-red-200 hover:border-red-400 dark:border-red-900 dark:hover:border-red-700",
-      "bg-indigo-500": "border-indigo-200 hover:border-indigo-400 dark:border-indigo-900 dark:hover:border-indigo-700",
-      "bg-amber-500": "border-amber-200 hover:border-amber-400 dark:border-amber-900 dark:hover:border-amber-700",
+      "bg-blue-600": "border-blue-200 hover:border-blue-400 dark:border-blue-900 dark:hover:border-blue-700",
+      "bg-purple-600": "border-purple-200 hover:border-purple-400 dark:border-purple-900 dark:hover:border-purple-700",
+      "bg-green-600": "border-green-200 hover:border-green-400 dark:border-green-900 dark:hover:border-green-700",
+      "bg-orange-600": "border-orange-200 hover:border-orange-400 dark:border-orange-900 dark:hover:border-orange-700",
+      "bg-teal-600": "border-teal-200 hover:border-teal-400 dark:border-teal-900 dark:hover:border-teal-700",
+      "bg-red-600": "border-red-200 hover:border-red-400 dark:border-red-900 dark:hover:border-red-700",
+      "bg-indigo-600": "border-indigo-200 hover:border-indigo-400 dark:border-indigo-900 dark:hover:border-indigo-700",
+      "bg-amber-600": "border-amber-200 hover:border-amber-400 dark:border-amber-900 dark:hover:border-amber-700",
+      "bg-gray-600": "border-gray-200 hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-700",
+      "bg-slate-600": "border-slate-200 hover:border-slate-400 dark:border-slate-800 dark:hover:border-slate-700",
     };
     return colorMap[color as keyof typeof colorMap] || "border-gray-200 hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-700";
   };

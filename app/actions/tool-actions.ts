@@ -204,7 +204,15 @@ export async function getToolsByCategory() {
       return []
     }
 
-    return categories || []
+    // Transform the data to match the expected format and filter tools
+    const transformedCategories = categories?.map(category => ({
+      ...category,
+      tools: (category.ai_tools || []).filter(tool => 
+        tool.status === 'active' && tool.is_public === true
+      )
+    })) || []
+
+    return transformedCategories
   } catch (error) {
     console.error("Error fetching tools by category:", error)
     return []

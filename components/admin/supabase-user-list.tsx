@@ -16,19 +16,18 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
+// Updated type to match V2 schema (profiles table)
 type User = {
-  id: string
+  user_id: string
   email: string
-  last_sign_in_at: string | null
+  first_name: string
+  last_name: string
+  role: 'admin' | 'client' | 'consultant'
+  company_name?: string
   created_at: string
-  updated_at: string
-  user_metadata: {
-    firstName?: string
-    lastName?: string
-    role?: 'admin' | 'client'
-    [key: string]: any
-  }
+  last_login_at?: string
 }
 
 export function SupabaseUserList() {
@@ -45,33 +44,45 @@ export function SupabaseUserList() {
     message: string
   } | null>(null)
 
-  // Fetch users from the API
+  // Fetch users directly from Supabase (since we're client-side)
   const fetchUsers = async () => {
     setLoading(true)
     setError(null)
     try {
-      console.log('Fetching users from /api/admin/users...')
+      console.log('Fetching users from Supabase...')
       
-      const response = await fetch('/api/admin/users', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Important: include cookies for authentication
-      })
+      const supabase = createClientComponentClient()
       
-      console.log('Response status:', response.status)
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        console.error('API Error:', errorData)
-        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch users`)
+      // Check if current user is authenticated and is admin
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('Please log in to access this feature')
+      }
+
+      // Check if current user is admin
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single()
+
+      if (currentProfile?.role !== 'admin') {
+        throw new Error('Admin access required. You do not have permission to view this page.')
       }
       
-      const data = await response.json()
-      console.log('Users data:', data)
-      setUsers(data.users || [])
+      // Fetch all users from profiles table
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (profilesError) {
+        console.error('Supabase Error:', profilesError)
+        throw new Error(profilesError.message || 'Failed to fetch users')
+      }
+      
+      console.log('Users data:', profiles)
+      setUsers(profiles || [])
     } catch (err: any) {
       console.error('Error fetching users:', err)
       setError(err.message || 'An error occurred while fetching users')
@@ -81,32 +92,26 @@ export function SupabaseUserList() {
   }
 
   // Update user role
-  const updateUserRole = async (userId: string, role: 'admin' | 'client') => {
+  const updateUserRole = async (userId: string, role: 'admin' | 'client' | 'consultant') => {
     try {
-      const response = await fetch('/api/admin/users/role', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId, role })
-      })
+      const supabase = createClientComponentClient()
       
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to update user role')
+      // Update role in profiles table
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('user_id', userId)
+      
+      if (error) {
+        console.error('Supabase Error:', error)
+        throw new Error(error.message || 'Failed to update user role')
       }
       
       // Update local user data
       setUsers(prevUsers => 
         prevUsers.map(user => 
-          user.id === userId 
-            ? { 
-                ...user, 
-                user_metadata: { 
-                  ...user.user_metadata, 
-                  role 
-                } 
-              } 
+          user.user_id === userId 
+            ? { ...user, role } 
             : user
         )
       )
@@ -139,15 +144,16 @@ export function SupabaseUserList() {
     if (searchTerm) {
       filtered = filtered.filter(user => 
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.user_metadata?.firstName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.user_metadata?.lastName || '').toLowerCase().includes(searchTerm.toLowerCase())
+        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.company_name || '').toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
     
     // Filter by role
     if (roleFilter !== 'all') {
       filtered = filtered.filter(user => 
-        user.user_metadata?.role === roleFilter
+        user.role === roleFilter
       )
     }
     
@@ -200,6 +206,7 @@ export function SupabaseUserList() {
           <option value="all">All Roles</option>
           <option value="admin">Admin</option>
           <option value="client">Client</option>
+          <option value="consultant">Consultant</option>
         </select>
         <Button
           variant="outline"
@@ -282,30 +289,33 @@ export function SupabaseUserList() {
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
-                  <tr key={user.id}>
+                  <tr key={user.user_id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
-                        {user.user_metadata?.firstName || ''} {user.user_metadata?.lastName || ''}
+                        {user.first_name} {user.last_name}
                       </div>
                       <div className="text-sm text-gray-500">{user.email}</div>
+                      {user.company_name && (
+                        <div className="text-xs text-gray-400">{user.company_name}</div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge
-                        variant={user.user_metadata?.role === "admin" ? "destructive" : "default"}
-                        className={user.user_metadata?.role === "admin" ? "bg-purple-500" : ""}
+                        variant={user.role === "admin" ? "destructive" : "default"}
+                        className={user.role === "admin" ? "bg-purple-500" : user.role === "consultant" ? "bg-blue-500" : ""}
                       >
-                        {user.user_metadata?.role === "admin" ? "Admin" : user.user_metadata?.role === "client" ? "Client" : "No Role"}
+                        {user.role === "admin" ? "Admin" : user.role === "client" ? "Client" : user.role === "consultant" ? "Consultant" : "Unknown"}
                       </Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : 'Never'}
+                      {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : 'Never'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(user.created_at).toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
-                        <Dialog open={isRoleDialogOpen && selectedUser?.id === user.id} onOpenChange={(open) => {
+                        <Dialog open={isRoleDialogOpen && selectedUser?.user_id === user.user_id} onOpenChange={(open) => {
                           if (!open) setSelectedUser(null);
                           setIsRoleDialogOpen(open);
                         }}>
@@ -330,20 +340,20 @@ export function SupabaseUserList() {
                               <div className="flex flex-col gap-2">
                                 <div className="font-medium">Current Role:</div>
                                 <Badge
-                                  variant={selectedUser?.user_metadata?.role === "admin" ? "destructive" : "default"}
-                                  className={`w-fit ${selectedUser?.user_metadata?.role === "admin" ? "bg-purple-500" : ""}`}
+                                  variant={selectedUser?.role === "admin" ? "destructive" : "default"}
+                                  className={`w-fit ${selectedUser?.role === "admin" ? "bg-purple-500" : selectedUser?.role === "consultant" ? "bg-blue-500" : ""}`}
                                 >
-                                  {selectedUser?.user_metadata?.role === "admin" ? "Admin" : selectedUser?.user_metadata?.role === "client" ? "Client" : "No Role"}
+                                  {selectedUser?.role === "admin" ? "Admin" : selectedUser?.role === "client" ? "Client" : selectedUser?.role === "consultant" ? "Consultant" : "Unknown"}
                                 </Badge>
                               </div>
                               <div className="flex flex-col gap-2">
                                 <div className="font-medium">New Role:</div>
                                 <div className="flex gap-2">
                                   <Button
-                                    variant={selectedUser?.user_metadata?.role === "client" ? "outline" : "default"}
+                                    variant={selectedUser?.role === "client" ? "outline" : "default"}
                                     onClick={() => {
                                       if (selectedUser) {
-                                        updateUserRole(selectedUser.id, 'client');
+                                        updateUserRole(selectedUser.user_id, 'client');
                                         setIsRoleDialogOpen(false);
                                       }
                                     }}
@@ -351,10 +361,21 @@ export function SupabaseUserList() {
                                     Set as Client
                                   </Button>
                                   <Button
-                                    variant={selectedUser?.user_metadata?.role === "admin" ? "outline" : "destructive"}
+                                    variant={selectedUser?.role === "consultant" ? "outline" : "default"}
                                     onClick={() => {
                                       if (selectedUser) {
-                                        updateUserRole(selectedUser.id, 'admin');
+                                        updateUserRole(selectedUser.user_id, 'consultant');
+                                        setIsRoleDialogOpen(false);
+                                      }
+                                    }}
+                                  >
+                                    Set as Consultant
+                                  </Button>
+                                  <Button
+                                    variant={selectedUser?.role === "admin" ? "outline" : "destructive"}
+                                    onClick={() => {
+                                      if (selectedUser) {
+                                        updateUserRole(selectedUser.user_id, 'admin');
                                         setIsRoleDialogOpen(false);
                                       }
                                     }}

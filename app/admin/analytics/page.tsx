@@ -9,13 +9,7 @@ import {
   Table, TableBody, TableCell, TableHead, 
   TableHeader, TableRow 
 } from "@/components/ui/table"
-import { 
-  ChartContainer, 
-  LineChart, 
-  BarChart, 
-  PieChart,
-  AreaChart
-} from "@/components/ui/chart"
+// Chart components not available - using mock data visualization
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -41,42 +35,15 @@ import {
   getAssessmentCategoryBreakdownAction,
   getToolUsageDataAction
 } from "@/app/actions/stats-actions"
+import type {
+  DashboardStats,
+  UserGrowthData,
+  ActivityData,
+  CategoryBreakdown,
+  ToolUsageData
+} from "@/app/actions/stats-actions"
 
-// Type definitions
-interface DashboardStats {
-  userCount: number;
-  assessmentCount: number;
-  pendingAssessments: number;
-  completedAssessments: number;
-  toolCount: number;
-  activeToolCount: number;
-  roleCount: number;
-  blogPostCount: number;
-  promptCount: number;
-  consultationCount: number;
-  pendingConsultations: number;
-}
-
-interface UserGrowthDataPoint {
-  date: string;
-  count: number;
-}
-
-interface ActivityDataPoint {
-  category: string;
-  count: number;
-}
-
-interface CategoryBreakdown {
-  name: string;
-  count: number;
-  percentage: number;
-}
-
-interface ToolUsage {
-  name: string;
-  count: number;
-}
+// Using imported types from stats-actions
 
 export default function AnalyticsDashboardPage() {
   const router = useRouter()
@@ -87,10 +54,10 @@ export default function AnalyticsDashboardPage() {
   
   // State for all data
   const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [userGrowthData, setUserGrowthData] = useState<UserGrowthDataPoint[]>([])
-  const [activityData, setActivityData] = useState<ActivityDataPoint[]>([])
+  const [userGrowthData, setUserGrowthData] = useState<UserGrowthData[]>([])
+  const [activityData, setActivityData] = useState<ActivityData[]>([])
   const [categoryData, setCategoryData] = useState<CategoryBreakdown[]>([])
-  const [toolUsageData, setToolUsageData] = useState<ToolUsage[]>([])
+  const [toolUsageData, setToolUsageData] = useState<ToolUsageData[]>([])
 
   useEffect(() => {
     loadAllData()
@@ -139,16 +106,12 @@ export default function AnalyticsDashboardPage() {
     })
   }
 
-  // Prepare data for line chart (accumulate growth)
+  // Prepare data for line chart (use total users)
   const prepareGrowthChartData = () => {
-    let cumulativeCount = 0
-    return userGrowthData.map(point => {
-      cumulativeCount += point.count
-      return {
-        date: point.date,
-        count: cumulativeCount
-      }
-    })
+    return userGrowthData.map(point => ({
+      date: point.date,
+      count: point.totalUsers
+    }))
   }
 
   return (
