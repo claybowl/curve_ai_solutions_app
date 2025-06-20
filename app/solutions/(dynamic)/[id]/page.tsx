@@ -2,10 +2,34 @@ import { getToolById } from "@/app/actions/tool-actions"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 
 interface ToolPageProps {
   params: {
     id: string
+  }
+}
+
+export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
+  try {
+    const tool = await getToolById(params.id)
+    
+    if (!tool) {
+      return {
+        title: "Solution Not Found | Curve AI Solutions",
+        description: "The requested AI solution could not be found."
+      }
+    }
+
+    return {
+      title: `${tool.name} | Curve AI Solutions`,
+      description: tool.description || `${tool.name} - An advanced AI solution for your business needs.`
+    }
+  } catch (error) {
+    return {
+      title: "Solution | Curve AI Solutions",
+      description: "AI solutions for your business needs."
+    }
   }
 }
 
@@ -98,30 +122,66 @@ export default async function ToolPage({ params }: ToolPageProps) {
               <section>
                 <h2 className="text-2xl font-bold text-[#1A365D] mb-4">Use Cases</h2>
                 <div className="grid gap-6 md:grid-cols-2">
+                  {tool.use_cases && tool.use_cases.length > 0 ? (
+                    tool.use_cases.map((useCase, index) => (
+                      <div key={index} className="border p-6 rounded-lg">
+                        <h3 className="font-bold mb-2 capitalize">{useCase}</h3>
+                        <p className="text-gray-600">
+                          Leverage {toolName} for {useCase} to optimize your business processes.
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="border p-6 rounded-lg">
+                        <h3 className="font-bold mb-2">Process Automation</h3>
+                        <p className="text-gray-600">
+                          Automate repetitive tasks and workflows to free up valuable employee time.
+                        </p>
+                      </div>
+                      <div className="border p-6 rounded-lg">
+                        <h3 className="font-bold mb-2">Data Analysis</h3>
+                        <p className="text-gray-600">
+                          Extract meaningful insights from your business data to drive better decisions.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </section>
+
+              {/* Implementation Details */}
+              <section>
+                <h2 className="text-2xl font-bold text-[#1A365D] mb-4">Implementation Details</h2>
+                <div className="grid gap-6 md:grid-cols-2">
                   <div className="border p-6 rounded-lg">
-                    <h3 className="font-bold mb-2">Process Automation</h3>
-                    <p className="text-gray-600">
-                      Automate repetitive tasks and workflows to free up valuable employee time.
+                    <h3 className="font-bold mb-2">Complexity Level</h3>
+                    <p className="text-gray-600 capitalize">
+                      {tool.complexity_level || 'Intermediate'} - Suitable for businesses with {tool.complexity_level === 'beginner' ? 'basic' : tool.complexity_level === 'expert' ? 'advanced' : 'moderate'} technical requirements.
                     </p>
                   </div>
                   <div className="border p-6 rounded-lg">
-                    <h3 className="font-bold mb-2">Data Analysis</h3>
+                    <h3 className="font-bold mb-2">Implementation Time</h3>
                     <p className="text-gray-600">
-                      Extract meaningful insights from your business data to drive better decisions.
+                      {tool.configuration?.implementation_time || 'Contact for estimate'}
                     </p>
                   </div>
-                  <div className="border p-6 rounded-lg">
-                    <h3 className="font-bold mb-2">Customer Engagement</h3>
-                    <p className="text-gray-600">
-                      Enhance customer interactions with personalized and intelligent responses.
-                    </p>
-                  </div>
-                  <div className="border p-6 rounded-lg">
-                    <h3 className="font-bold mb-2">Predictive Maintenance</h3>
-                    <p className="text-gray-600">
-                      Anticipate equipment failures before they happen to minimize downtime.
-                    </p>
-                  </div>
+                  {tool.target_audience && tool.target_audience.length > 0 && (
+                    <div className="border p-6 rounded-lg">
+                      <h3 className="font-bold mb-2">Target Industries</h3>
+                      <p className="text-gray-600 capitalize">
+                        {tool.target_audience.join(', ')}
+                      </p>
+                    </div>
+                  )}
+                  {tool.tags && tool.tags.length > 0 && (
+                    <div className="border p-6 rounded-lg">
+                      <h3 className="font-bold mb-2">Technologies</h3>
+                      <p className="text-gray-600">
+                        {tool.tags.join(', ')}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </section>
             </div>

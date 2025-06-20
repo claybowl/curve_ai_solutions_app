@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { getSolutions, getSolutionsStats, createSolution, updateSolution, deleteSolution } from "@/app/actions/solution-actions"
+import type { Solution, SolutionFormData } from "@/app/actions/solution-actions"
 import { DashboardLayout } from "@/components/admin/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,51 +30,73 @@ import {
   Search, ChevronDown, Lightbulb, Rocket, Settings, Building2
 } from "lucide-react"
 import { format } from "date-fns"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
 
-// Types for solutions management
-interface Solution {
-  id: string
-  title: string
-  description: string
-  detailed_description?: string
-  industry: string[]
-  use_cases: string[]
-  complexity_level: 'beginner' | 'intermediate' | 'advanced' | 'expert'
-  implementation_time: string
-  roi_potential: 'low' | 'medium' | 'high' | 'very_high'
-  technologies: string[]
-  is_featured: boolean
-  is_public: boolean
-  status: 'draft' | 'published' | 'archived'
-  case_studies?: CaseStudy[]
-  created_at: string
-  updated_at: string
-}
+// Stats component that loads data independently
+function SolutionStatsCards() {
+  const [stats, setStats] = useState({
+    total: 0,
+    published: 0,
+    draft: 0,
+    featured: 0,
+    archived: 0
+  })
 
-interface CaseStudy {
-  id: string
-  client_name: string
-  industry: string
-  challenge: string
-  solution: string
-  results: string
-  metrics: Record<string, any>
-  is_featured: boolean
-}
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const statsData = await getSolutionsStats()
+        setStats(statsData)
+      } catch (error) {
+        console.error("Error loading stats:", error)
+      }
+    }
+    
+    loadStats()
+  }, [])
 
-interface SolutionFormData {
-  title: string
-  description: string
-  detailed_description: string
-  industry: string[]
-  use_cases: string[]
-  complexity_level: 'beginner' | 'intermediate' | 'advanced' | 'expert'
-  implementation_time: string
-  roi_potential: 'low' | 'medium' | 'high' | 'very_high'
-  technologies: string[]
-  is_featured: boolean
-  is_public: boolean
-  status: 'draft' | 'published' | 'archived'
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center">
+            <Building2 className="h-4 w-4 text-blue-500" />
+            <span className="ml-2 text-sm font-medium">Total Solutions</span>
+          </div>
+          <div className="text-2xl font-bold mt-2">{stats.total}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center">
+            <Rocket className="h-4 w-4 text-green-500" />
+            <span className="ml-2 text-sm font-medium">Published</span>
+          </div>
+          <div className="text-2xl font-bold mt-2">{stats.published}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center">
+            <Lightbulb className="h-4 w-4 text-yellow-500" />
+            <span className="ml-2 text-sm font-medium">Featured</span>
+          </div>
+          <div className="text-2xl font-bold mt-2">{stats.featured}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center">
+            <Settings className="h-4 w-4 text-purple-500" />
+            <span className="ml-2 text-sm font-medium">Drafts</span>
+          </div>
+          <div className="text-2xl font-bold mt-2">{stats.draft}</div>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
 
 export default function SolutionsManagementPage() {
@@ -119,85 +141,31 @@ export default function SolutionsManagementPage() {
   const loadSolutions = async () => {
     setIsLoading(true)
     try {
-      // For now, use mock data since we haven't created solution actions yet
-      const mockSolutions: Solution[] = [
-        {
-          id: "1",
-          title: "AI-Powered Customer Service Automation",
-          description: "Implement intelligent chatbots and automated response systems to handle customer inquiries 24/7.",
-          detailed_description: "This comprehensive solution leverages advanced natural language processing to understand customer queries and provide accurate, contextual responses. The system learns from interactions to continuously improve response quality.",
-          industry: ["retail", "ecommerce", "saas"],
-          use_cases: ["customer support", "lead qualification", "order tracking"],
-          complexity_level: "intermediate",
-          implementation_time: "2-4 weeks",
-          roi_potential: "high",
-          technologies: ["OpenAI GPT", "Webhook Integration", "CRM Integration"],
-          is_featured: true,
-          is_public: true,
-          status: "published",
-          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: "2", 
-          title: "Automated Document Processing",
-          description: "Extract and process information from documents using AI-powered OCR and natural language understanding.",
-          industry: ["legal", "finance", "healthcare"],
-          use_cases: ["invoice processing", "contract analysis", "data entry automation"],
-          complexity_level: "advanced",
-          implementation_time: "4-8 weeks",
-          roi_potential: "very_high",
-          technologies: ["OCR", "Document AI", "Workflow Automation"],
-          is_featured: false,
-          is_public: true,
-          status: "published",
-          created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-          updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: "3",
-          title: "Predictive Analytics Dashboard", 
-          description: "Build real-time dashboards that predict business trends and opportunities using machine learning.",
-          industry: ["manufacturing", "retail", "finance"],
-          use_cases: ["demand forecasting", "inventory optimization", "sales prediction"],
-          complexity_level: "expert",
-          implementation_time: "8-12 weeks",
-          roi_potential: "very_high",
-          technologies: ["Machine Learning", "Data Analytics", "Business Intelligence"],
-          is_featured: true,
-          is_public: false,
-          status: "draft",
-          created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          updated_at: new Date().toISOString()
-        }
-      ]
+      // Create filter object for getSolutions
+      const filter: any = {}
       
-      // Filter based on active tab
-      let filteredSolutions = mockSolutions
+      // Apply tab filter
       if (activeTab === "published") {
-        filteredSolutions = mockSolutions.filter(s => s.status === "published")
+        filter.status = "published"
       } else if (activeTab === "draft") {
-        filteredSolutions = mockSolutions.filter(s => s.status === "draft")
+        filter.status = "draft"
       } else if (activeTab === "featured") {
-        filteredSolutions = mockSolutions.filter(s => s.is_featured)
+        filter.status = "featured"
       }
       
       // Apply search filter
       if (searchTerm) {
-        filteredSolutions = filteredSolutions.filter(s => 
-          s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          s.description.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        filter.search_term = searchTerm
       }
       
       // Apply industry filter
       if (filterIndustry) {
-        filteredSolutions = filteredSolutions.filter(s => 
-          s.industry.includes(filterIndustry)
-        )
+        filter.industry = filterIndustry
       }
       
-      setSolutions(filteredSolutions)
+      // Fetch solutions from database
+      const fetchedSolutions = await getSolutions(filter)
+      setSolutions(fetchedSolutions)
     } catch (err) {
       console.error("Error loading solutions:", err)
       setError("Failed to load solutions")
@@ -215,17 +183,11 @@ export default function SolutionsManagementPage() {
     e.preventDefault()
     
     try {
-      // In a real implementation, this would call a create solution action
-      const newSolution: Solution = {
-        id: Date.now().toString(),
-        ...formData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
+      await createSolution(formData)
       
-      setSolutions(prev => [newSolution, ...prev])
       setIsCreateDialogOpen(false)
       resetForm()
+      loadSolutions() // Reload solutions from database
       
       toast({
         title: "Success",
@@ -247,16 +209,11 @@ export default function SolutionsManagementPage() {
     if (!currentSolution) return
     
     try {
-      // In a real implementation, this would call an update solution action
-      const updatedSolution: Solution = {
-        ...currentSolution,
-        ...formData,
-        updated_at: new Date().toISOString()
-      }
+      await updateSolution(currentSolution.id, formData)
       
-      setSolutions(prev => prev.map(s => s.id === currentSolution.id ? updatedSolution : s))
       setIsEditDialogOpen(false)
       resetForm()
+      loadSolutions() // Reload solutions from database
       
       toast({
         title: "Success",
@@ -276,10 +233,11 @@ export default function SolutionsManagementPage() {
     if (!currentSolution) return
     
     try {
-      // In a real implementation, this would call a delete solution action
-      setSolutions(prev => prev.filter(s => s.id !== currentSolution.id))
+      await deleteSolution(currentSolution.id)
+      
       setIsDeleteDialogOpen(false)
       setCurrentSolution(null)
+      loadSolutions() // Reload solutions from database
       
       toast({
         title: "Success",
@@ -580,50 +538,7 @@ export default function SolutionsManagementPage() {
       </Tabs>
       
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Building2 className="h-4 w-4 text-blue-500" />
-              <span className="ml-2 text-sm font-medium">Total Solutions</span>
-            </div>
-            <div className="text-2xl font-bold mt-2">{solutions.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Rocket className="h-4 w-4 text-green-500" />
-              <span className="ml-2 text-sm font-medium">Published</span>
-            </div>
-            <div className="text-2xl font-bold mt-2">
-              {solutions.filter(s => s.status === 'published').length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Lightbulb className="h-4 w-4 text-yellow-500" />
-              <span className="ml-2 text-sm font-medium">Featured</span>
-            </div>
-            <div className="text-2xl font-bold mt-2">
-              {solutions.filter(s => s.is_featured).length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <Settings className="h-4 w-4 text-purple-500" />
-              <span className="ml-2 text-sm font-medium">Drafts</span>
-            </div>
-            <div className="text-2xl font-bold mt-2">
-              {solutions.filter(s => s.status === 'draft').length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <SolutionStatsCards />
 
       {/* Create Solution Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

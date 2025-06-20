@@ -71,7 +71,7 @@ export function MainNav() {
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
     { name: "AiGency Workbench", href: "/aigency-platform" },
-    { name: "AiGency Knowledge Studio", href: "/curve-ai-chat" },
+    { name: "Knowledge Studio", href: "/curve-ai-chat" },
     { name: "Fundraising", href: "/fundraising" },
     { name: "About", href: "/about" },
     { name: "Consultation", href: "/consultation" },
