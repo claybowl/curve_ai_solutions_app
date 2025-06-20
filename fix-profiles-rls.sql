@@ -1,35 +1,22 @@
--- Fix profiles table RLS policies to prevent infinite recursion
--- Run this in your Supabase SQL Editor
+-- Fix RLS issue on profiles_backup table
+-- This script enables Row Level Security on the profiles_backup table
 
--- First, drop the existing problematic policies
-DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
-DROP POLICY IF EXISTS "Admins can update all profiles" ON profiles;
+-- Enable RLS on profiles_backup table
+ALTER TABLE public.profiles_backup ENABLE ROW LEVEL SECURITY;
 
--- Create a security definer function to check admin status
--- This function runs with elevated privileges to avoid RLS recursion
-CREATE OR REPLACE FUNCTION is_admin_user(user_uuid UUID DEFAULT auth.uid())
-RETURNS BOOLEAN AS $$
-BEGIN
-  -- Check if the user has admin role using a simple query
-  -- This function runs as SECURITY DEFINER so it bypasses RLS
-  RETURN EXISTS (
-    SELECT 1 FROM profiles 
-    WHERE user_id = user_uuid AND role = 'admin'
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Create policy for profiles_backup table (restrictive - only authenticated users can access their own data)
+CREATE POLICY "Users can view own backup profile" ON public.profiles_backup
+    FOR SELECT USING (auth.uid() = id);
 
--- Now create the admin policies using the function
-CREATE POLICY "Admins can view all profiles" ON profiles
-  FOR SELECT USING (is_admin_user());
+CREATE POLICY "Users can update own backup profile" ON public.profiles_backup
+    FOR UPDATE USING (auth.uid() = id);
 
-CREATE POLICY "Admins can update all profiles" ON profiles
-  FOR UPDATE USING (is_admin_user());
-
--- Also create an admin insert policy for completeness
-CREATE POLICY "Admins can insert profiles" ON profiles
-  FOR INSERT WITH CHECK (is_admin_user());
-
--- Grant execute permission on the function to authenticated users
-GRANT EXECUTE ON FUNCTION is_admin_user TO authenticated;
-GRANT EXECUTE ON FUNCTION is_admin_user TO anon;
+-- If you want to allow admins to access all backup profiles, uncomment the following:
+-- CREATE POLICY "Admins can view all backup profiles" ON public.profiles_backup
+--     FOR ALL USING (
+--         EXISTS (
+--             SELECT 1 FROM public.profiles 
+--             WHERE profiles.id = auth.uid() 
+--             AND profiles.role = 'admin'
+--         )
+--     );
