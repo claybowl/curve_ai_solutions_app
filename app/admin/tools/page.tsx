@@ -44,9 +44,11 @@ import type {
   AiToolFilter,
   ToolCategorySummary
 } from "@/types/tools"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ToolsManagementPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [tools, setTools] = useState<AiTool[]>([])
   const [categories, setCategories] = useState<ToolCategorySummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -163,12 +165,27 @@ export default function ToolsManagementPage() {
         setIsCreateDialogOpen(false)
         resetForm()
         loadTools()
+        toast({
+          title: "Success!",
+          description: "AI tool created successfully.",
+        })
       } else {
         setError("Failed to create AI tool")
+        toast({
+          title: "Error",
+          description: "Failed to create AI tool",
+          variant: "destructive",
+        })
       }
     } catch (err) {
       console.error("Error creating tool:", err)
-      setError("An error occurred while creating the AI tool")
+      const errorMessage = err instanceof Error ? err.message : "An error occurred while creating the AI tool"
+      setError(errorMessage)
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
     }
   }
 
@@ -195,12 +212,27 @@ export default function ToolsManagementPage() {
         setIsEditDialogOpen(false)
         resetForm()
         loadTools()
+        toast({
+          title: "Success!",
+          description: "AI tool updated successfully.",
+        })
       } else {
         setError("Failed to update AI tool")
+        toast({
+          title: "Error",
+          description: "Failed to update AI tool",
+          variant: "destructive",
+        })
       }
     } catch (err) {
       console.error("Error updating tool:", err)
-      setError("An error occurred while updating the AI tool")
+      const errorMessage = err instanceof Error ? err.message : "An error occurred while updating the AI tool"
+      setError(errorMessage)
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
     }
   }
 
@@ -723,8 +755,8 @@ export default function ToolsManagementPage() {
                 <Label htmlFor="edit-apiEndpoint">API Endpoint</Label>
                 <Input
                   id="edit-apiEndpoint"
-                  value={formData.apiEndpoint}
-                  onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
+                  value={formData.api_endpoint}
+                  onChange={(e) => setFormData({ ...formData, api_endpoint: e.target.value })}
                   placeholder="https://api.example.com/tool-endpoint"
                 />
                 <p className="text-sm text-muted-foreground">Optional: The API endpoint where this tool is hosted</p>
@@ -732,21 +764,29 @@ export default function ToolsManagementPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="edit-iconName">Icon Name</Label>
-                  <Input
-                    id="edit-iconName"
-                    value={formData.iconName}
-                    onChange={(e) => setFormData({ ...formData, iconName: e.target.value })}
-                    placeholder="e.g. Settings, BarChart, Code"
-                  />
-                  <p className="text-sm text-muted-foreground">Optional: Lucide icon name</p>
+                  <Label htmlFor="edit-tool-type">Tool Type</Label>
+                  <Select
+                    value={formData.tool_type || ""}
+                    onValueChange={(value) => setFormData({ ...formData, tool_type: value as any })}
+                  >
+                    <SelectTrigger id="edit-tool-type">
+                      <SelectValue placeholder="Select tool type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="chatbot">Chatbot</SelectItem>
+                      <SelectItem value="automation">Automation</SelectItem>
+                      <SelectItem value="analysis">Analysis</SelectItem>
+                      <SelectItem value="integration">Integration</SelectItem>
+                      <SelectItem value="custom">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="edit-category">Category</Label>
                   <Select
-                    value={formData.category || ""}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    value={formData.category_id || ""}
+                    onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                   >
                     <SelectTrigger id="edit-category">
                       <SelectValue placeholder="Select a category" />
@@ -760,15 +800,28 @@ export default function ToolsManagementPage() {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2 pt-4">
-                <Switch
-                  id="edit-isActive"
-                  checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-                />
-                <Label htmlFor="edit-isActive">
-                  {formData.isActive ? "Settings is active and available" : "Settings is inactive"}
-                </Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="edit-is-featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                  />
+                  <Label htmlFor="edit-is-featured">
+                    Featured Tool
+                  </Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="edit-is-public"
+                    checked={formData.is_public}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_public: checked })}
+                  />
+                  <Label htmlFor="edit-is-public">
+                    Public Tool
+                  </Label>
+                </div>
               </div>
             </div>
             

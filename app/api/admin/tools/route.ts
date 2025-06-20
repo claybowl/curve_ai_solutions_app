@@ -20,16 +20,20 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const filter: any = {};
 
-    if (searchParams.has("category")) {
-      filter.category = searchParams.get("category") as string;
+    if (searchParams.has("category_id")) {
+      filter.category_id = searchParams.get("category_id") as string;
     }
 
-    if (searchParams.has("isActive")) {
-      filter.isActive = searchParams.get("isActive") === "true";
+    if (searchParams.has("status")) {
+      filter.status = searchParams.get("status") as string;
     }
 
-    if (searchParams.has("searchTerm")) {
-      filter.searchTerm = searchParams.get("searchTerm") as string;
+    if (searchParams.has("search_term")) {
+      filter.search_term = searchParams.get("search_term") as string;
+    }
+
+    if (searchParams.has("tool_type")) {
+      filter.tool_type = searchParams.get("tool_type") as string;
     }
 
     // Get tools with filters
@@ -63,12 +67,27 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     const formData = new FormData();
     
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("apiEndpoint", data.apiEndpoint || "");
-    formData.append("iconName", data.iconName || "");
-    formData.append("category", data.category);
-    formData.append("isActive", data.isActive ? "true" : "false");
+    // Use new schema field names
+    formData.append("name", data.name || "");
+    formData.append("description", data.description || "");
+    formData.append("detailed_description", data.detailed_description || "");
+    formData.append("api_endpoint", data.api_endpoint || "");
+    formData.append("category_id", data.category_id || "");
+    formData.append("tool_type", data.tool_type || "custom");
+    formData.append("complexity_level", data.complexity_level || "beginner");
+    formData.append("pricing_model", data.pricing_model || "free");
+    formData.append("status", data.status || "active");
+    formData.append("is_featured", data.is_featured ? "true" : "false");
+    formData.append("is_public", data.is_public ? "true" : "false");
+    
+    // Handle array fields
+    if (data.tags && Array.isArray(data.tags)) {
+      data.tags.forEach((tag: string) => formData.append("tags", tag));
+    }
+    
+    if (data.keywords && Array.isArray(data.keywords)) {
+      data.keywords.forEach((keyword: string) => formData.append("keywords", keyword));
+    }
 
     // Create tool using server action
     const result = await createAiTool(formData);
