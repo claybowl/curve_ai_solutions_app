@@ -71,7 +71,7 @@ export function MainNav() {
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
     { name: "AiGency Workbench", href: "/aigency-platform" },
-    { name: "Knowledge Studio", href: "/curve-ai-chat" },
+    { name: "Knowledge Studio", href: "/donjon-chat" },
     { name: "Fundraising", href: "/fundraising" },
     { name: "About", href: "/about" },
     { name: "Consultation", href: "/consultation" },
@@ -80,9 +80,36 @@ export function MainNav() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white dark:bg-gray-950 dark:border-gray-800">
       <div className="container flex h-16 items-center px-4 sm:px-6">
-        <Link href="/" className="flex items-center">
-          <span className="text-xl font-bold text-[#1A365D] dark:text-white">Curve AI</span>
-          <span className="ml-2 text-[#0076FF] dark:text-[#3b82f6]">Solutions</span>
+        <Link href="/" className="flex items-center space-x-3">
+          {/* Castle Icon */}
+          <div className="flex-shrink-0">
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 32 32" 
+              className="text-donjon-graphite dark:text-white"
+              fill="currentColor"
+            >
+              {/* Solid castle tower with tapered base */}
+              <path d="M6 28 L6 20 L4 20 L4 18 L6 18 L6 8 L8 8 L8 6 L10 6 L10 8 L12 8 L12 6 L14 6 L14 8 L16 8 L16 6 L18 6 L18 8 L20 8 L20 6 L22 6 L22 8 L24 8 L24 6 L26 6 L26 8 L28 8 L28 18 L30 18 L30 20 L28 20 L28 28 L6 28 Z" />
+              
+              {/* Main tower body */}
+              <rect x="10" y="8" width="12" height="12" />
+              
+              {/* Battlements */}
+              <rect x="10" y="6" width="4" height="2" />
+              <rect x="14" y="6" width="4" height="2" />
+              <rect x="18" y="6" width="4" height="2" />
+              
+              {/* Arched doorway (cutout) */}
+              <path d="M14 20 L14 24 L18 24 L18 20 Q18 18 16 18 Q14 18 14 20 Z" fill="transparent" />
+            </svg>
+          </div>
+          {/* Company Name */}
+          <div className="flex flex-col">
+            <span className="text-lg font-bold text-donjon-graphite dark:text-white leading-tight">DONJON</span>
+            <span className="text-xs text-donjon-indigo dark:text-donjon-indigo leading-tight">INTELLIGENCE SYSTEMS</span>
+          </div>
         </Link>
         <nav className="ml-auto hidden md:flex gap-6">
           {navigation.map((item) => (
@@ -94,8 +121,8 @@ export function MainNav() {
               className={cn(
                 "text-sm font-medium transition-colors flex items-center",
                 pathname === item.href
-                  ? "text-[#0076FF] dark:text-[#3b82f6]"
-                  : "text-gray-700 hover:text-[#0076FF] dark:text-gray-300 dark:hover:text-[#3b82f6]",
+                  ? "text-donjon-indigo dark:text-donjon-indigo"
+                  : "text-gray-700 hover:text-donjon-indigo dark:text-gray-300 dark:hover:text-donjon-indigo",
               )}
             >
               {item.name}
@@ -144,7 +171,7 @@ export function MainNav() {
                   <Link href="/login">Sign In</Link>
                 </Button>
                 <Button
-                  className="bg-[#0076FF] hover:bg-[#0076FF]/90 dark:bg-[#3b82f6] dark:hover:bg-[#3b82f6]/90"
+                  className="bg-donjon-indigo hover:bg-donjon-indigo/90 dark:bg-donjon-indigo dark:hover:bg-donjon-indigo/90"
                   asChild
                 >
                   <Link href="/login">Sign Up</Link>
@@ -170,8 +197,8 @@ export function MainNav() {
                 className={cn(
                   "text-sm font-medium transition-colors flex items-center",
                   pathname === item.href
-                    ? "text-[#0076FF] dark:text-[#3b82f6]"
-                    : "text-gray-700 hover:text-[#0076FF] dark:text-gray-300 dark:hover:text-[#3b82f6]",
+                    ? "text-donjon-indigo dark:text-donjon-indigo"
+                    : "text-gray-700 hover:text-donjon-indigo dark:text-gray-300 dark:hover:text-donjon-indigo",
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -217,7 +244,7 @@ export function MainNav() {
                     <Link href="/login">Sign In</Link>
                   </Button>
                   <Button
-                    className="bg-[#0076FF] hover:bg-[#0076FF]/90 dark:bg-[#3b82f6] dark:hover:bg-[#3b82f6]/90"
+                    className="bg-donjon-indigo hover:bg-donjon-indigo/90 dark:bg-donjon-indigo dark:hover:bg-donjon-indigo/90"
                     asChild
                     onClick={() => setIsMenuOpen(false)}
                   >

@@ -53,6 +53,13 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        donjon: {
+          graphite: "#2C2C2E",
+          indigo: "#4169E1",
+          silver: "#C0C0C0",
+          ember: "#FF6B35",
+          platinum: "#E5E4E2",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

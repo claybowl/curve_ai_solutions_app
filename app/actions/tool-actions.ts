@@ -247,8 +247,6 @@ export async function getToolsByCategory() {
           tags
         )
       `)
-      .eq('ai_tools.status', 'active')
-      .eq('ai_tools.is_public', true)
       .order('sort_order')
 
     if (error) {
@@ -257,9 +255,9 @@ export async function getToolsByCategory() {
     }
 
     // Transform the data to match the expected format and filter tools
-    const transformedCategories = categories?.map(category => ({
+    const transformedCategories = categories?.map((category: any) => ({
       ...category,
-      tools: (category.ai_tools || []).filter(tool => 
+      tools: (category.ai_tools || []).filter((tool: any) => 
         tool.status === 'active' && tool.is_public === true
       )
     })) || []
@@ -722,8 +720,8 @@ export async function getRecommendedTools(limit: number = 6) {
         // Use assessment data to recommend relevant tools
         const assessment = assessments[0]
         const lowScoreCategories = assessment.assessment_results
-          ?.filter(result => result.category_score < 6)
-          .map(result => result.assessment_categories?.name)
+          ?.filter((result: any) => result.category_score < 6)
+          .map((result: any) => result.assessment_categories?.name)
           .filter(Boolean) || []
 
         // Recommend tools that help with low-scoring areas

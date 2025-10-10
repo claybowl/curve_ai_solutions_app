@@ -10,8 +10,8 @@ import { AuthProvider } from "@/providers/auth-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Curve AI Solutions",
-  description: "The Anti-Gravity for business. Breakaway with no resistance.",
+  title: "Donjon Intelligence Systems",
+  description: "Fortifying the future of intelligence. Building fortified AI systems that think, adapt, and protect like living digital fortresses.",
     generator: 'v0.dev'
 }
 

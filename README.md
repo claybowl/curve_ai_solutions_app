@@ -1,13 +1,13 @@
-# Curve AI Solutions
+# Donjon Intelligence Systems
 
-A Next.js web application offering AI consultation services, assessments, and tools with a comprehensive admin dashboard.
+A Next.js web application offering fortified AI consultation services, assessments, and tools with a comprehensive admin dashboard.
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/claybowls-projects/v0-clean-machine-final)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 
 ## Overview
 
-Curve AI Solutions is a platform that helps businesses integrate AI capabilities into their existing workflows. The application includes:
+Donjon Intelligence Systems is a platform that helps businesses integrate fortified AI capabilities into their existing workflows. The application includes:
 
 - **AI Assessment Tool**: Evaluate an organization's AI readiness
 - **Consultation Services**: Request consultation with AI experts
@@ -35,8 +35,8 @@ Curve AI Solutions is a platform that helps businesses integrate AI capabilities
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/curve-ai-solutions.git
-cd curve-ai-solutions
+git clone https://github.com/yourusername/donjon-intelligence-systems.git
+cd donjon-intelligence-systems
 
 # Install dependencies
 pnpm install

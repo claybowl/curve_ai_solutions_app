@@ -6,8 +6,8 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div className="mb-8 md:mb-0">
-            <h3 className="text-lg font-bold mb-4">Curve AI Solutions</h3>
-            <p className="text-gray-400 mb-4">The Anti-Gravity for business. Breakaway with no resistance.</p>
+            <h3 className="text-lg font-bold mb-4">Donjon Intelligence Systems</h3>
+            <p className="text-gray-400 mb-4">Fortifying the future of intelligence. Building fortified AI systems that think, adapt, and protect like living digital fortresses.</p>
           </div>
 
           <div className="mb-8 md:mb-0">
@@ -56,13 +56,13 @@ export function Footer() {
             <h3 className="text-lg font-bold mb-4">Connect</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="https://twitter.com/curveaisolutions" className="text-gray-400 hover:text-white transition">
+                <Link href="https://twitter.com/donjonintel" className="text-gray-400 hover:text-white transition">
                   Twitter
                 </Link>
               </li>
               <li>
                 <Link
-                  href="https://linkedin.com/company/curveaisolutions"
+                  href="https://linkedin.com/company/donjon-intelligence-systems"
                   className="text-gray-400 hover:text-white transition"
                 >
                   LinkedIn
@@ -74,7 +74,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <p className="text-gray-400 text-center">
-            © {new Date().getFullYear()} Curve AI Solutions. All rights reserved.
+            © {new Date().getFullYear()} Donjon Intelligence Systems. All rights reserved.
           </p>
         </div>
       </div>
