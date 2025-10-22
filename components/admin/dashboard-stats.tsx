@@ -1,20 +1,42 @@
-import { neon } from "@neondatabase/serverless"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, FileText, Calendar, Wrench } from "lucide-react"
 
 async function getStats() {
-  const sql = neon(process.env.DATABASE_URL!)
+  try {
+    // Check if DATABASE_URL is available before attempting database queries
+    if (!process.env.DATABASE_URL) {
+      console.log("DATABASE_URL not available, using mock stats")
+      return {
+        userCount: 0,
+        assessmentCount: 0,
+        pendingAssessments: 0,
+        toolCount: 0,
+      }
+    }
 
-  const userCount = await sql`SELECT COUNT(*) FROM users`
-  const assessmentCount = await sql`SELECT COUNT(*) FROM ai_assessments`
-  const pendingAssessments = await sql`SELECT COUNT(*) FROM ai_assessments WHERE status = 'pending'`
-  const toolCount = await sql`SELECT COUNT(*) FROM ai_tools`
+    const { neon } = await import("@neondatabase/serverless")
+    const sql = neon(process.env.DATABASE_URL)
 
-  return {
-    userCount: userCount[0].count,
-    assessmentCount: assessmentCount[0].count,
-    pendingAssessments: pendingAssessments[0].count,
-    toolCount: toolCount[0].count,
+    const userCount = await sql`SELECT COUNT(*) FROM users`
+    const assessmentCount = await sql`SELECT COUNT(*) FROM ai_assessments`
+    const pendingAssessments = await sql`SELECT COUNT(*) FROM ai_assessments WHERE status = 'pending'`
+    const toolCount = await sql`SELECT COUNT(*) FROM ai_tools`
+
+    return {
+      userCount: userCount[0].count,
+      assessmentCount: assessmentCount[0].count,
+      pendingAssessments: pendingAssessments[0].count,
+      toolCount: toolCount[0].count,
+    }
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error)
+    // Return mock data if there's an error
+    return {
+      userCount: 0,
+      assessmentCount: 0,
+      pendingAssessments: 0,
+      toolCount: 0,
+    }
   }
 }
 

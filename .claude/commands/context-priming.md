@@ -4,9 +4,9 @@ This document provides essential context for the Claude project to ensure effect
 
 ## Project Overview
 
-- **Project Name**: Claude
-- **Objective**: To develop a robust and scalable application that meets the needs of our users.
-- **Key Features**: User authentication, profile management, admin dashboard, and responsive UI components.
+- **Project Name**: curve_ai_solutions_app
+- **Objective**: Web app which host the creations of my start up, Donjon Intelligence Systems- profile management, admin dashboard, and responsive UI components.
+- **familarize**: Read the CLAUDE.md file in the root directory and the /.claude/commands/prompt-instructions.md file and understand the tone of development.
 
 ## Development Guidelines
 
