@@ -9,15 +9,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
+import { submitAssessment } from "@/app/actions/assessment-actions"
 
 interface AssessmentFormProps {
   questions: {
-    id: number
+    id: string | number
     question_text: string
-    category: string
+    category?: string
     weight: number
+    question_type?: string
+    options?: string[]
   }[]
-  userId: number
+  userId: string
 }
 
 export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
@@ -45,20 +48,11 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
     const data = new FormData(form)
 
     try {
-      const response = await fetch("/app/actions/assessment-actions", {
-        method: "POST",
-        body: data,
-      })
-
-      if (response.ok) {
-        router.refresh()
-        router.push("/assessments")
-      } else {
-        console.error("Assessment submission failed")
-      }
+      await submitAssessment(data)
+      // The server action will handle redirect
     } catch (error) {
       console.error("Error submitting assessment:", error)
-    } finally {
+      alert("There was an error submitting your assessment. Please try again.")
       setIsSubmitting(false)
     }
   }
@@ -89,8 +83,9 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
         <CardTitle className="text-2xl">AI Readiness Assessment</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 p-6">
-        <form action="/app/actions/assessment-actions" method="post">
+        <form onSubmit={handleSubmit}>
           <input type="hidden" name="userId" value={userId} />
+          <input type="hidden" name="title" value="AI Readiness Assessment" />
 
           {questions.map((question, index) => {
             // Determine question type based on question content or category
@@ -100,9 +95,11 @@ export function AssessmentForm({ questions, userId }: AssessmentFormProps) {
             return (
               <div key={question.id} className="mb-8 p-4 border border-gray-100 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
                 <div className="mb-3">
-                  <span className="inline-block bg-[#0076FF]/10 dark:bg-[#0076FF]/20 text-[#0076FF] dark:text-[#3B9DFF] text-xs font-medium px-2 py-1 rounded-full mb-2">
-                    {question.category}
-                  </span>
+                  {question.category && (
+                    <span className="inline-block bg-[#0076FF]/10 dark:bg-[#0076FF]/20 text-[#0076FF] dark:text-[#3B9DFF] text-xs font-medium px-2 py-1 rounded-full mb-2">
+                      {question.category}
+                    </span>
+                  )}
                   <Label htmlFor={`question_${question.id}`} className="text-lg font-medium block mb-2">
                     {index + 1}. {question.question_text}
                   </Label>

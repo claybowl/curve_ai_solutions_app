@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/clayb/**)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

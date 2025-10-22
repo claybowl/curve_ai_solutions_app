@@ -45,11 +45,11 @@ export default function DonjonLogoVisualization() {
       // Add very subtle floating animation
       const floatY = Math.sin(time * 0.3) * 1
 
-      // Tower base (slightly tapered)
+      // Tower dimensions - MUCH TALLER
       const baseWidth = size * 0.8
       const baseHeight = size * 0.3
       const towerWidth = size * 0.6
-      const towerHeight = size * 1.2
+      const towerHeight = size * 2.0  // Increased from 1.2 to 2.0 for height
 
       // Draw tower shadow
       ctx.beginPath()
@@ -57,23 +57,32 @@ export default function DonjonLogoVisualization() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
       ctx.fill()
 
-      // Draw tower base
+      // Draw tower base with gradient for depth
       ctx.beginPath()
       ctx.moveTo(-baseWidth / 2, floatY)
       ctx.lineTo(-towerWidth / 2, baseHeight + floatY)
       ctx.lineTo(towerWidth / 2, baseHeight + floatY)
       ctx.lineTo(baseWidth / 2, floatY)
       ctx.closePath()
-      ctx.fillStyle = donjonGraphite
+      const baseGradient = ctx.createLinearGradient(-baseWidth / 2, 0, baseWidth / 2, 0)
+      baseGradient.addColorStop(0, "#1a1a1a")
+      baseGradient.addColorStop(0.5, donjonGraphite)
+      baseGradient.addColorStop(1, "#1a1a1a")
+      ctx.fillStyle = baseGradient
       ctx.fill()
       ctx.strokeStyle = donjonSilver
       ctx.lineWidth = 2
       ctx.stroke()
 
-      // Draw main tower body
+      // Draw main tower body with gradient for 3D depth
       ctx.beginPath()
       ctx.rect(-towerWidth / 2, baseHeight + floatY, towerWidth, towerHeight)
-      ctx.fillStyle = donjonGraphite
+      const towerGradient = ctx.createLinearGradient(-towerWidth / 2, 0, towerWidth / 2, 0)
+      towerGradient.addColorStop(0, "#1a1a1a")
+      towerGradient.addColorStop(0.3, donjonGraphite)
+      towerGradient.addColorStop(0.7, donjonGraphite)
+      towerGradient.addColorStop(1, "#1a1a1a")
+      ctx.fillStyle = towerGradient
       ctx.fill()
       ctx.strokeStyle = donjonSilver
       ctx.lineWidth = 2
@@ -109,7 +118,7 @@ export default function DonjonLogoVisualization() {
       // Draw battlements
       for (let i = 0; i < 3; i++) {
         const x = -towerWidth / 2 + (i + 0.5) * (towerWidth / 3)
-        
+
         // Merlon (solid part)
         ctx.beginPath()
         ctx.rect(x - battlementWidth / 2, battlementY, battlementWidth, battlementHeight)
@@ -154,59 +163,131 @@ export default function DonjonLogoVisualization() {
       ctx.fillStyle = glowGradient
       ctx.fill()
 
-      // Add additional architectural elements
-      // Draw tower flags
-      for (let i = 0; i < 3; i++) {
-        const flagX = -towerWidth / 2 + (i + 0.5) * (towerWidth / 3)
-        const flagY = battlementY - 15
-        
-        // Flag pole
-        ctx.beginPath()
-        ctx.moveTo(flagX, flagY)
-        ctx.lineTo(flagX, flagY - 20)
-        ctx.strokeStyle = donjonSilver
-        ctx.lineWidth = 2
-        ctx.stroke()
-        
-        // Flag
-        ctx.beginPath()
-        ctx.moveTo(flagX, flagY - 20)
-        ctx.lineTo(flagX + 8, flagY - 15)
-        ctx.lineTo(flagX, flagY - 10)
-        ctx.closePath()
-        ctx.fillStyle = i === 1 ? donjonEmber : donjonIndigo
-        ctx.fill()
-      }
+      // FLAGS REMOVED - keeping the tower simple
 
-      // Add additional architectural details to fill space
-      // Draw foundation stones
+      // Draw foundation stones with texture
       for (let i = 0; i < 5; i++) {
         const stoneX = -baseWidth / 2 + (i + 0.5) * (baseWidth / 5)
         const stoneY = floatY - 5
         const stoneWidth = baseWidth / 6
         const stoneHeight = 8
-        
+
+        // Add gradient to stone for depth
+        const stoneGradient = ctx.createLinearGradient(
+          stoneX - stoneWidth / 2,
+          stoneY,
+          stoneX + stoneWidth / 2,
+          stoneY
+        )
+        stoneGradient.addColorStop(0, "#A0A0A0")
+        stoneGradient.addColorStop(0.5, donjonSilver)
+        stoneGradient.addColorStop(1, "#A0A0A0")
+
         ctx.beginPath()
         ctx.rect(stoneX - stoneWidth / 2, stoneY, stoneWidth, stoneHeight)
-        ctx.fillStyle = donjonSilver
+        ctx.fillStyle = stoneGradient
         ctx.fill()
         ctx.strokeStyle = donjonGraphite
         ctx.lineWidth = 1
         ctx.stroke()
+
+        // Add mortar lines for texture
+        ctx.strokeStyle = "#1a1a1a"
+        ctx.lineWidth = 0.5
+        ctx.beginPath()
+        ctx.moveTo(stoneX - stoneWidth / 2, stoneY + stoneHeight / 2)
+        ctx.lineTo(stoneX + stoneWidth / 2, stoneY + stoneHeight / 2)
+        ctx.stroke()
       }
 
-      // Draw tower windows
+      // Draw multiple levels of windows for more geometric interest
+      const windowLevels = 5  // More windows up the tower
+      for (let level = 0; level < windowLevels; level++) {
+        for (let i = 0; i < 2; i++) {
+          const windowX = -towerWidth / 4 + i * (towerWidth / 2)
+          const windowY = baseHeight + towerHeight * (0.15 + level * 0.15) + floatY
+          const windowSize = 8
+
+          // Draw glowing aura around window
+          const windowGlow = ctx.createRadialGradient(windowX, windowY, 0, windowX, windowY, windowSize * 2)
+          windowGlow.addColorStop(0, "rgba(65, 105, 225, 0.8)")
+          windowGlow.addColorStop(0.5, "rgba(65, 105, 225, 0.4)")
+          windowGlow.addColorStop(1, "rgba(65, 105, 225, 0)")
+          ctx.fillStyle = windowGlow
+          ctx.beginPath()
+          ctx.arc(windowX, windowY, windowSize * 2, 0, Math.PI * 2)
+          ctx.fill()
+
+          // Draw window itself
+          ctx.beginPath()
+          ctx.rect(windowX - windowSize / 2, windowY - windowSize / 2, windowSize, windowSize)
+          ctx.fillStyle = donjonIndigo
+          ctx.fill()
+          ctx.strokeStyle = donjonSilver
+          ctx.lineWidth = 1
+          ctx.stroke()
+        }
+      }
+
+      // Add corner turrets for geometric interest
+      const turretWidth = towerWidth * 0.12
+      const turretHeight = towerHeight * 0.25
+
+      // Left turret
+      ctx.beginPath()
+      ctx.rect(-towerWidth / 2 - turretWidth / 2, baseHeight + floatY, turretWidth, turretHeight)
+      ctx.fillStyle = donjonGraphite
+      ctx.fill()
+      ctx.strokeStyle = donjonPlatinum
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+
+      // Right turret
+      ctx.beginPath()
+      ctx.rect(towerWidth / 2 - turretWidth / 2, baseHeight + floatY, turretWidth, turretHeight)
+      ctx.fillStyle = donjonGraphite
+      ctx.fill()
+      ctx.strokeStyle = donjonPlatinum
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+
+      // Add turret battlements
+      const turretBattlementWidth = turretWidth * 0.3
+      const turretBattlementHeight = turretHeight * 0.15
+
+      // Left turret battlements
       for (let i = 0; i < 2; i++) {
-        const windowX = -towerWidth / 4 + i * (towerWidth / 2)
-        const windowY = baseHeight + towerHeight * 0.3 + floatY
-        const windowSize = 8
-        
+        const tx = -towerWidth / 2 - turretWidth / 2 + (i + 0.5) * (turretWidth / 2)
         ctx.beginPath()
-        ctx.rect(windowX - windowSize / 2, windowY - windowSize / 2, windowSize, windowSize)
-        ctx.fillStyle = donjonIndigo
+        ctx.rect(tx - turretBattlementWidth / 2, baseHeight + floatY - turretBattlementHeight, turretBattlementWidth, turretBattlementHeight)
+        ctx.fillStyle = donjonGraphite
         ctx.fill()
-        ctx.strokeStyle = donjonSilver
+        ctx.strokeStyle = donjonPlatinum
         ctx.lineWidth = 1
+        ctx.stroke()
+      }
+
+      // Right turret battlements
+      for (let i = 0; i < 2; i++) {
+        const tx = towerWidth / 2 - turretWidth / 2 + (i + 0.5) * (turretWidth / 2)
+        ctx.beginPath()
+        ctx.rect(tx - turretBattlementWidth / 2, baseHeight + floatY - turretBattlementHeight, turretBattlementWidth, turretBattlementHeight)
+        ctx.fillStyle = donjonGraphite
+        ctx.fill()
+        ctx.strokeStyle = donjonPlatinum
+        ctx.lineWidth = 1
+        ctx.stroke()
+      }
+
+      // Add vertical buttresses for geometric detail
+      const buttressCount = 3
+      for (let i = 0; i < buttressCount; i++) {
+        const buttressX = -towerWidth / 3 + i * (towerWidth / 3)
+        ctx.beginPath()
+        ctx.moveTo(buttressX, baseHeight + floatY)
+        ctx.lineTo(buttressX, baseHeight + towerHeight + floatY)
+        ctx.strokeStyle = "rgba(192, 192, 192, 0.3)"
+        ctx.lineWidth = 2
         ctx.stroke()
       }
 
@@ -405,27 +486,27 @@ export default function DonjonLogoVisualization() {
     // Draw the company name
     const drawCompanyName = (time: number) => {
       const yOffset = Math.sin(time * 0.2) * 1
-      
+
       // Draw "DONJON" in bold serif (larger) with glow effect
       ctx.font = "bold 40px serif"
       ctx.textAlign = "center"
-      
+
       // Add glow effect
       ctx.shadowColor = donjonIndigo
       ctx.shadowBlur = 10
       ctx.fillStyle = "#FFFFFF"
       ctx.fillText("DONJON", centerX, centerY + 190 + yOffset)
-      
+
       // Reset shadow
       ctx.shadowBlur = 0
-      
+
       // Draw "INTELLIGENCE SYSTEMS" in sans-serif with glow
       ctx.font = "22px sans-serif"
       ctx.shadowColor = donjonEmber
       ctx.shadowBlur = 8
       ctx.fillStyle = donjonSilver
       ctx.fillText("INTELLIGENCE SYSTEMS", centerX, centerY + 220 + yOffset)
-      
+
       // Reset shadow
       ctx.shadowBlur = 0
     }
@@ -434,39 +515,17 @@ export default function DonjonLogoVisualization() {
     const animate = () => {
       if (!ctx) return
 
-      // Clear canvas with a rich, castle-themed gradient background
+      // Clear canvas with a clean, minimal gradient background
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(width, height) / 2)
       gradient.addColorStop(0, "#1a1a1a") // Deep graphite center
-      gradient.addColorStop(0.3, "#2C2C2E") // Donjon graphite
-      gradient.addColorStop(0.6, "#4169E1") // Royal indigo
-      gradient.addColorStop(0.8, "#2C2C2E") // Back to graphite
+      gradient.addColorStop(0.5, "#2C2C2E") // Donjon graphite
       gradient.addColorStop(1, "#0a0a0a") // Deep black edges
-      
+
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, width, height)
 
-      // Add subtle stone texture overlay
-      ctx.save()
-      ctx.globalAlpha = 0.1
-      for (let i = 0; i < 200; i++) {
-        const x = Math.random() * width
-        const y = Math.random() * height
-        const size = Math.random() * 3 + 1
-        
-        ctx.beginPath()
-        ctx.arc(x, y, size, 0, Math.PI * 2)
-        ctx.fillStyle = donjonSilver
-        ctx.fill()
-      }
-      ctx.restore()
-
-      // Draw the Donjon tower first (as the main element) - make it larger and more prominent
-      drawDonjonTower(centerX, centerY - 20, 140, time)
-
-      // Draw AI-themed elements integrated around the tower
-      drawDNAHelix(time)
-      drawNeuralNetwork(time)
-      drawDataStreams(time)
+      // Draw the TALL Donjon tower - positioned higher since it's much taller now
+      drawDonjonTower(centerX, centerY - 60, 200, time)
 
       // Draw company name on top with better contrast
       drawCompanyName(time)

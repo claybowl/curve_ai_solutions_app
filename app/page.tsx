@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, BarChart2, Database, Shield, Zap, Bot, LineChart, Workflow, Calendar } from "lucide-react"
+import { ArrowRight, BarChart2, Database, Shield, Zap, Bot, LineChart, Workflow, Calendar, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/custom-card"
 import DonjonLogoVisualization from "@/components/donjon-logo-visualization"
@@ -18,19 +18,26 @@ export default function Home() {
                   Welcome to the Keep of Intelligence
                 </h1>
                 <p className="max-w-[600px] text-gray-200 md:text-xl">
-                  Fortifying the future of intelligence. Building fortified AI systems that think, adapt, and protect.
+                  Building AI systems that think, adapt, and endure.
                 </p>
               </div>
               <p className="max-w-[600px] text-gray-200 md:text-xl">
-                We engineer intelligent, resilient systems that serve as the cognitive strongholds of the modern world — 
-                integrating knowledge, automation, and reasoning into fortified architectures that stand the test of time.
+                We engineer resilient intelligence platforms—integrating knowledge, automation, and reasoning into architectures built to scale and evolve with your mission.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" className="bg-donjon-ember hover:bg-donjon-ember/90 text-white" asChild>
-                  <Link href="/consultation">
-                    Enter the Keep
+                  <Link href="/products">
+                    View Products & Pricing
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                  asChild
+                >
+                  <Link href="/consultation">Schedule Consultation</Link>
                 </Button>
                 <Button
                   size="lg"
@@ -78,6 +85,54 @@ export default function Home() {
             >
               <Link href="/about">View Full Roadmap</Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Product Showcase */}
+      <section className="w-full py-12 bg-gradient-to-r from-donjon-ember to-orange-600">
+        <div className="container px-4 md:px-6 mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1 text-white">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">Digital Transformation Suite</h2>
+              <p className="text-lg text-white/90 mb-4">
+                Transform your local service business with AI-powered automation. Complete packages starting at $12,500.
+              </p>
+              <ul className="space-y-2 mb-4">
+                <li className="flex items-center">
+                  <Check className="h-5 w-5 mr-2" />
+                  <span>95% reduction in quote turnaround time</span>
+                </li>
+                <li className="flex items-center">
+                  <Check className="h-5 w-5 mr-2" />
+                  <span>25%+ increase in conversion rates</span>
+                </li>
+                <li className="flex items-center">
+                  <Check className="h-5 w-5 mr-2" />
+                  <span>30%+ improvement in revenue per lead</span>
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Button
+                size="lg"
+                className="bg-white text-donjon-ember hover:bg-gray-100"
+                asChild
+              >
+                <Link href="/products">
+                  View Packages & Pricing
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                asChild
+              >
+                <Link href="/consultation">Schedule Consultation</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -256,12 +311,22 @@ export default function Home() {
             </Card>
           </div>
 
-          <div className="flex justify-center mt-12">
+          <div className="flex justify-center mt-12 gap-4">
             <Button
               variant="outline"
               className="border-donjon-indigo text-donjon-indigo hover:bg-donjon-indigo/10 dark:border-donjon-indigo dark:text-donjon-indigo dark:hover:bg-donjon-indigo/10"
+              asChild
             >
-              View All Solutions
+              <Link href="/solutions">View All Solutions</Link>
+            </Button>
+            <Button
+              className="bg-donjon-ember hover:bg-donjon-ember/90 text-white"
+              asChild
+            >
+              <Link href="/products">
+                Buy Now
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>
