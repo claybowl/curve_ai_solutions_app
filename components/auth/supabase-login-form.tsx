@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signInWithEmail } from "@/lib/supabase-client"
-import { getBrowserClient } from "@/lib/supabase-browser"
+import { signInWithEmail, supabase } from "@/lib/supabase-client"
 
 export function SupabaseLoginForm() {
   const [email, setEmail] = useState("")
@@ -47,18 +46,12 @@ export function SupabaseLoginForm() {
     try {
       addDebugInfo(`Attempting login with email: ${email}`)
       
-      // Get a browser-specific client for login
-      const supabaseBrowser = getBrowserClient()
-      
-      // Login with the browser client to ensure cookies are set correctly
-      const { data, error } = await supabaseBrowser.auth.signInWithPassword({
-        email, 
-        password
-      })
+      // Login through the unified client (auth helpers handle cookies)
+      const { data, error: authError } = await signInWithEmail(email, password)
 
-      if (error) {
-        addDebugInfo(`Login error: ${error.message}`)
-        setError(error.message || "Authentication failed")
+      if (authError) {
+        addDebugInfo(`Login error: ${authError.message}`)
+        setError(authError.message || "Authentication failed")
         setLoading(false)
         return
       }
@@ -76,7 +69,7 @@ export function SupabaseLoginForm() {
         try {
           // Force session refresh before redirect
           addDebugInfo("Refreshing session before redirect")
-          await supabaseBrowser.auth.refreshSession()
+          await supabase.auth.refreshSession()
           
           // Check cookies
           addDebugInfo("Checking cookies...")

@@ -41,9 +41,12 @@ export function SupabaseSignupForm() {
         // Success, show success message
         setSuccess(true)
         
-        // If email confirmation is not required, redirect to login
+        // If email confirmation is not required, redirect to appropriate dashboard
         if (!data.user.identities?.some(id => id.provider === 'email' && !id.identity_data?.email_confirmed_at)) {
-          router.push('/login')
+          // Check if user is admin and redirect accordingly
+          const userRole = data.user.user_metadata?.role || 'client'
+          const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard'
+          router.push(redirectUrl)
         }
       }
     } catch (err) {

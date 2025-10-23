@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import { runMigration } from '@/lib/supabase-migration'
-import { isUserAdmin } from '@/lib/supabase-client'
+import { isUserAdmin } from '@/lib/db-v2'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   try {
-    // Create Supabase client
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
     // Check if user is admin
     const isAdmin = await isUserAdmin()
     

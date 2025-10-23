@@ -15,7 +15,7 @@ export default function Home() {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
-                  Welcome to the Keep of Intelligence
+                  The Donjon: Where We Keep Intelligence Secure
                 </h1>
                 <p className="max-w-[600px] text-gray-200 md:text-xl">
                   Building AI systems that think, adapt, and endure.
@@ -56,6 +56,88 @@ export default function Home() {
         </div>
       </CastleBackground>
 
+      {/* 🔥 EMERGENCY CASH TACTICS - First 10 Tulsa Businesses Offer */}
+      <section className="w-full py-8 bg-gradient-to-r from-red-600 via-orange-600 to-red-600 animate-gradient-x bg-[length:200%_200%] relative overflow-hidden">
+        {/* Animated fire effect background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-1/4 w-32 h-32 bg-yellow-400 rounded-full blur-2xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-yellow-400 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        </div>
+
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
+          <div className="max-w-5xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <span className="text-4xl animate-bounce">🔥</span>
+              <Badge className="bg-yellow-400 text-red-900 font-bold text-lg px-4 py-1 uppercase tracking-wider">
+                LIMITED TIME
+              </Badge>
+              <span className="text-4xl animate-bounce" style={{ animationDelay: '0.2s' }}>🔥</span>
+            </div>
+
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-3 drop-shadow-lg">
+              EMERGENCY CASH TACTICS
+            </h2>
+
+            <p className="text-xl md:text-2xl font-bold text-yellow-300 mb-4">
+              "First 10 Tulsa Businesses" Offer
+            </p>
+
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border-4 border-yellow-400 shadow-2xl mb-4">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                <div className="text-center">
+                  <div className="text-5xl md:text-6xl font-black text-white mb-2">
+                    $599
+                  </div>
+                  <div className="text-lg text-yellow-300 font-bold line-through opacity-75">
+                    Regular: $1,299
+                  </div>
+                  <div className="text-2xl font-bold text-white mt-2">
+                    💼 SOLO Package
+                  </div>
+                  <div className="text-xl text-yellow-300 font-semibold mt-2">
+                    50% OFF
+                  </div>
+                </div>
+
+                <div className="text-6xl text-yellow-400 hidden md:block">+</div>
+
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                    $29/mo
+                  </div>
+                  <div className="text-lg text-yellow-300 font-bold">
+                    Forever Price Lock
+                  </div>
+                  <div className="text-base text-white/90 mt-2">
+                    Never increases
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
+              <Button
+                size="lg"
+                className="bg-yellow-400 text-red-900 hover:bg-yellow-300 font-black text-xl px-10 py-7 shadow-2xl hover:scale-105 transition-transform"
+                asChild
+              >
+                <Link href="/products">
+                  Claim Your Spot Now
+                  <ArrowRight className="ml-2 h-6 w-6" />
+                </Link>
+              </Button>
+              <div className="text-white font-bold text-lg">
+                ⚡ Only for Tulsa businesses
+              </div>
+            </div>
+
+            <p className="text-white/90 text-sm">
+              <strong className="text-yellow-300">Why we're doing this:</strong> 5 SOLO packages ($1,299) = $6,495 • 2 CREW packages ($2,499) = $4,998 • We need quick cash to scale operations
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Coming Soon Banner - New section highlighting upcoming launches */}
       <section className="w-full py-8 bg-donjon-indigo/10 dark:bg-donjon-indigo/20">
         <div className="container px-4 md:px-6 mx-auto">
@@ -90,13 +172,13 @@ export default function Home() {
       </section>
 
       {/* Featured Product Showcase */}
-      <section className="w-full py-12 bg-gradient-to-r from-donjon-ember to-orange-600">
+      <section className="w-full py-12 bg-gradient-to-r from-[#1E2A38] via-[#2F3B44] to-[#3F8CFF] animate-gradient-x bg-[length:200%_200%]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1 text-white">
               <h2 className="text-3xl md:text-4xl font-bold mb-3">Digital Transformation Suite</h2>
               <p className="text-lg text-white/90 mb-4">
-                Transform your local service business with AI-powered automation. Complete packages starting at $12,500.
+                Transform your local service business with AI-powered automation. Complete packages starting at $1,299.
               </p>
               <ul className="space-y-2 mb-4">
                 <li className="flex items-center">

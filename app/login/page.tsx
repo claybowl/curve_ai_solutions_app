@@ -8,13 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
-import { createClient } from '@supabase/supabase-js'
-
-// Create a direct Supabase client without any complex configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import { supabase } from "@/lib/supabase-client"
 
 function LoginContent() {
   const router = useRouter()
@@ -54,7 +48,12 @@ function LoginContent() {
         return
       }
 
-      console.log("✓ Login successful!")
+      console.log("Login successful!")
+      try {
+        await supabase.auth.refreshSession()
+      } catch (refreshError) {
+        console.warn("Failed to refresh session after login:", refreshError)
+      }
       console.log("User ID:", data.user.id)
       console.log("Email:", data.user.email)
       

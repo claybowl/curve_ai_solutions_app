@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { supabase } from "@/lib/supabase-client"
 
 export default function LastResortPage() {
   const [email, setEmail] = useState("")
@@ -26,26 +27,13 @@ export default function LastResortPage() {
     addLog(`Attempting login with email: ${email}`)
     
     try {
-      const { createClient } = await import('@supabase/supabase-js')
-      
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Missing Supabase environment variables')
+      if (supabaseUrl) {
+        addLog(`Using Supabase URL: ${supabaseUrl}`)
+      } else {
+        addLog('Supabase URL not set; falling back to mock client')
       }
-      
-      addLog(`Creating Supabase client with URL: ${supabaseUrl}`)
-      
-      // Create the client with minimal config
-      const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-          detectSessionInUrl: false // Disable URL detection
-        }
-      })
-      
+
       addLog('Authenticating with Supabase...')
       
       // Attempt login
@@ -76,6 +64,15 @@ export default function LastResortPage() {
       setUser(data.session.user)
       setSessionId(data.session.access_token)
       setShowDashboard(true)
+
+      try {
+        await supabase.auth.refreshSession()
+        addLog('Session refreshed successfully')
+      } catch (refreshError) {
+        const message =
+          refreshError instanceof Error ? refreshError.message : String(refreshError)
+        addLog(`Session refresh error: ${message}`)
+      }
       
       // Try to check cookies
       addLog('Checking cookies...')
@@ -102,13 +99,6 @@ export default function LastResortPage() {
 
   const handleLogout = async () => {
     try {
-      const { createClient } = await import('@supabase/supabase-js')
-      
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      
-      const supabase = createClient(supabaseUrl, supabaseAnonKey)
-      
       addLog('Signing out...')
       await supabase.auth.signOut()
       addLog('Sign out complete')

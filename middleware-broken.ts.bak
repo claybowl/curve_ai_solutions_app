@@ -1,0 +1,53 @@
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs"
+
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next()
+  const path = request.nextUrl.pathname
+
+  // Handle redirects for deprecated auth routes
+  if (path.startsWith("/auth/signin") || path === "/auth/login") {
+    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl")
+    const url = new URL("/login", request.url)
+    if (callbackUrl) {
+      url.searchParams.set("callbackUrl", callbackUrl)
+    }
+    return NextResponse.redirect(url)
+  }
+
+  // Protect admin routes - check auth at middleware level for extra security
+  if (path.startsWith("/admin")) {
+    try {
+      const supabase = createMiddlewareClient({ req: request, res })
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (!session) {
+        const url = new URL("/login", request.url)
+        url.searchParams.set("message", "Please log in to access the admin area")
+        url.searchParams.set("callbackUrl", path)
+        return NextResponse.redirect(url)
+      }
+
+      // Note: Role check happens in admin layout for server-side security
+      // This middleware check is an extra layer of protection
+    } catch (error) {
+      console.error("Middleware auth error:", error)
+      // On error, redirect to login to be safe
+      const url = new URL("/login", request.url)
+      url.searchParams.set("message", "Authentication error")
+      return NextResponse.redirect(url)
+    }
+  }
+
+  return res
+}
+
+// Configure the middleware matcher
+export const config = {
+  matcher: [
+    "/auth/signin",
+    "/auth/login",
+    "/admin/:path*"  // Protect all admin routes
+  ],
+}

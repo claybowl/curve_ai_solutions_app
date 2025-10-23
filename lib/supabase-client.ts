@@ -1,11 +1,13 @@
 "use client"
 
-import { createClient } from '@supabase/supabase-js'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/supabase'
 
-// Mock client for build time or when environment variables are missing
+// Lightweight mock to keep components from crashing during build/static analysis
 const createMockClient = () => {
   const mockResponse = async () => ({ data: null, error: null })
-  
+
   const createChainableMock = () => {
     const mock = {
       select: () => createChainableMock(),
@@ -13,6 +15,7 @@ const createMockClient = () => {
       order: () => createChainableMock(),
       limit: () => createChainableMock(),
       single: mockResponse,
+      maybeSingle: mockResponse,
       insert: () => createChainableMock(),
       update: () => createChainableMock(),
       delete: () => createChainableMock(),
@@ -20,7 +23,7 @@ const createMockClient = () => {
       filter: () => createChainableMock(),
       match: () => createChainableMock(),
       range: () => createChainableMock(),
-      then: (resolve: any) => resolve({ data: null, error: null })
+      then: (resolve: any) => resolve({ data: null, error: null }),
     }
     return mock
   }
@@ -36,52 +39,46 @@ const createMockClient = () => {
       resetPasswordForEmail: mockResponse,
       updateUser: mockResponse,
       refreshSession: mockResponse,
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: () => {} } },
+      }),
     },
-    from: () => createChainableMock()
-  }
+    from: () => createChainableMock(),
+  } as unknown as SupabaseClient<Database>
 }
 
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+let cachedClient: SupabaseClient<Database> | null = null
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Missing Supabase environment variables, using mock client')
-    return createMockClient()
+function ensureClient(): SupabaseClient<Database> {
+  if (cachedClient) {
+    return cachedClient
   }
 
   try {
-    return createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        flowType: 'implicit'
-      }
-    })
+    cachedClient = createClientComponentClient<Database>()
   } catch (error) {
-    console.warn('Failed to create Supabase client, using mock client:', error)
-    return createMockClient()
+    console.warn('Falling back to mock Supabase client:', error)
+    cachedClient = createMockClient()
   }
+
+  return cachedClient
 }
 
-// Create a client-side supabase client for use in browser
-export const supabase = createSupabaseClient()
+export const supabase = ensureClient()
 
-// Client-side authentication functions
 export async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const client = ensureClient()
+  const { data, error } = await client.auth.signInWithPassword({
     email,
     password,
   })
-  
+
   return { data, error }
 }
 
 export async function signUpWithEmail(
-  email: string, 
-  password: string, 
+  email: string,
+  password: string,
   profileData: {
     firstName: string
     lastName: string
@@ -89,7 +86,8 @@ export async function signUpWithEmail(
     role?: 'admin' | 'client'
   }
 ) {
-  const { data, error } = await supabase.auth.signUp({
+  const client = ensureClient()
+  const { data, error } = await client.auth.signUp({
     email,
     password,
     options: {
@@ -98,58 +96,63 @@ export async function signUpWithEmail(
         firstName: profileData.firstName,
         lastName: profileData.lastName,
         companyName: profileData.companyName,
-        role: profileData.role || 'client'
+        role: profileData.role || 'client',
       },
     },
   })
-  
+
   return { data, error }
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut()
+  const client = ensureClient()
+  const { error } = await client.auth.signOut()
   return { error }
 }
 
 export async function getCurrentUser() {
-  const { data, error } = await supabase.auth.getUser()
+  const client = ensureClient()
+  const { data, error } = await client.auth.getUser()
   return { user: data.user, error }
 }
 
 export async function getSession() {
-  const { data, error } = await supabase.auth.getSession()
+  const client = ensureClient()
+  const { data, error } = await client.auth.getSession()
   return { session: data.session, error }
 }
 
 export async function signInWithMagicLink(email: string) {
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const client = ensureClient()
+  const { data, error } = await client.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: `${window.location.origin}/auth/callback`,
     },
   })
-  
+
   return { data, error }
 }
 
 export async function resetPassword(email: string) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  const client = ensureClient()
+  const { data, error } = await client.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
   })
-  
+
   return { data, error }
 }
 
-// Client-side function to get user profile
 export async function getUserProfile(userId?: string) {
   const { user } = await getCurrentUser()
   const targetUserId = userId || user?.id
-  
+
   if (!targetUserId) {
     return { profile: null, error: 'No user ID provided' }
   }
 
-  const { data: profile, error } = await supabase
+  const client = ensureClient()
+  const { data: profile, error } = await client
     .from('profiles')
     .select('*')
     .eq('user_id', targetUserId)
@@ -158,25 +161,22 @@ export async function getUserProfile(userId?: string) {
   return { profile, error }
 }
 
-// Update user metadata
 export async function updateUserMetadata(metadata: any) {
-  const { data, error } = await supabase.auth.updateUser({
-    data: metadata
+  const client = ensureClient()
+  const { data, error } = await client.auth.updateUser({
+    data: metadata,
   })
-  
+
   return { data, error }
 }
 
-// Check if user is admin
 export async function isUserAdmin() {
   const { user } = await getCurrentUser()
   if (!user) return false
-  
-  // Check metadata first (faster)
+
   const userRole = user.user_metadata?.role || user.app_metadata?.role
   if (userRole === 'admin') return true
-  
-  // If not found in metadata, check profiles table
+
   try {
     const { profile } = await getUserProfile(user.id)
     return profile?.role === 'admin'
@@ -184,4 +184,10 @@ export async function isUserAdmin() {
     console.error('Error checking profile role:', error)
     return false
   }
+}
+
+export type UserMetadata = {
+  role?: 'admin' | 'client'
+  firstName?: string
+  lastName?: string
 }

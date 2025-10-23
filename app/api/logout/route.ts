@@ -9,22 +9,21 @@ import { cookies } from "next/headers"
  */
 export async function POST(request: Request) {
   try {
-    const response = new NextResponse()
-    const supabase = createRouteHandlerClient(request, response)
-    
-    // Sign out from Supabase
-    await supabase.auth.signOut()
-    
-    // Clear legacy cookies for backward compatibility
-    const cookieStore = await cookies()
-    cookieStore.delete("admin-auth")
-    cookieStore.delete("simple-admin-auth")
-
-    // Return success response
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: "Successfully logged out",
     })
+    const supabase = await createRouteHandlerClient(request, response)
+
+    await supabase.auth.signOut()
+
+    const cookieStore = await cookies()
+    cookieStore.delete("admin-auth")
+    cookieStore.delete("simple-admin-auth")
+    response.cookies.delete("admin-auth")
+    response.cookies.delete("simple-admin-auth")
+
+    return response
   } catch (error) {
     console.error("Logout error:", error)
     return NextResponse.json({

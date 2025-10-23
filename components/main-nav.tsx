@@ -83,26 +83,48 @@ export function MainNav() {
         <Link href="/" className="flex items-center space-x-3">
           {/* Castle Icon */}
           <div className="flex-shrink-0">
-            <svg 
-              width="32" 
-              height="32" 
-              viewBox="0 0 32 32" 
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 64 64"
               className="text-donjon-graphite dark:text-white"
               fill="currentColor"
             >
-              {/* Solid castle tower with tapered base */}
-              <path d="M6 28 L6 20 L4 20 L4 18 L6 18 L6 8 L8 8 L8 6 L10 6 L10 8 L12 8 L12 6 L14 6 L14 8 L16 8 L16 6 L18 6 L18 8 L20 8 L20 6 L22 6 L22 8 L24 8 L24 6 L26 6 L26 8 L28 8 L28 18 L30 18 L30 20 L28 20 L28 28 L6 28 Z" />
-              
-              {/* Main tower body */}
-              <rect x="10" y="8" width="12" height="12" />
-              
-              {/* Battlements */}
-              <rect x="10" y="6" width="4" height="2" />
-              <rect x="14" y="6" width="4" height="2" />
-              <rect x="18" y="6" width="4" height="2" />
-              
-              {/* Arched doorway (cutout) */}
-              <path d="M14 20 L14 24 L18 24 L18 20 Q18 18 16 18 Q14 18 14 20 Z" fill="transparent" />
+              {/* Left Tower */}
+              <rect x="4" y="20" width="12" height="40" />
+              <rect x="4" y="18" width="3" height="4" />
+              <rect x="9" y="18" width="3" height="4" />
+              <rect x="13" y="18" width="3" height="4" />
+
+              {/* Right Tower */}
+              <rect x="48" y="20" width="12" height="40" />
+              <rect x="48" y="18" width="3" height="4" />
+              <rect x="53" y="18" width="3" height="4" />
+              <rect x="57" y="18" width="3" height="4" />
+
+              {/* Main Keep (center) */}
+              <rect x="16" y="28" width="32" height="32" />
+
+              {/* Keep Battlements */}
+              <rect x="16" y="26" width="4" height="4" />
+              <rect x="22" y="26" width="4" height="4" />
+              <rect x="28" y="26" width="4" height="4" />
+              <rect x="34" y="26" width="4" height="4" />
+              <rect x="40" y="26" width="4" height="4" />
+              <rect x="44" y="26" width="4" height="4" />
+
+              {/* Central Gate/Door */}
+              <rect x="26" y="48" width="12" height="12" opacity="0.3" />
+
+              {/* Windows on towers */}
+              <rect x="8" y="30" width="4" height="5" opacity="0.3" />
+              <rect x="8" y="40" width="4" height="5" opacity="0.3" />
+              <rect x="52" y="30" width="4" height="5" opacity="0.3" />
+              <rect x="52" y="40" width="4" height="5" opacity="0.3" />
+
+              {/* Windows on keep */}
+              <rect x="22" y="36" width="4" height="5" opacity="0.3" />
+              <rect x="38" y="36" width="4" height="5" opacity="0.3" />
             </svg>
           </div>
           {/* Company Name */}

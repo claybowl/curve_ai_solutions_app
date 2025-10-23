@@ -2,8 +2,9 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
+  // Get the pathname of the request
   const path = request.nextUrl.pathname
-
+  
   // Handle redirects for deprecated auth routes only
   if (path.startsWith("/auth/signin") || path === "/auth/login") {
     const callbackUrl = request.nextUrl.searchParams.get("callbackUrl")
@@ -13,17 +14,16 @@ export async function middleware(request: NextRequest) {
     }
     return NextResponse.redirect(url)
   }
-
-  // Let all other routes pass through
-  // Admin auth is handled by server-side checks in admin/layout.tsx
-  // This prevents middleware from interfering with the auth flow
+  
+  // Let all other routes pass through without authentication checks
+  // Authentication will be handled by individual pages
   return NextResponse.next()
 }
 
 // Configure the middleware matcher - only for auth route redirects
 export const config = {
   matcher: [
-    "/auth/signin",
+    "/auth/signin", 
     "/auth/login"
   ],
 }

@@ -13,9 +13,4 @@ export {
   getUserProfile
 } from './supabase-client'
 
-// Type exports
-export type UserMetadata = {
-  role?: 'admin' | 'client'
-  firstName?: string
-  lastName?: string
-}
+export type { UserMetadata } from './supabase-client'

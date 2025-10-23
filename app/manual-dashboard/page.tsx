@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase-client"
 
 export default function ManualDashboardPage() {
   const [user, setUser] = useState<any>(null)
@@ -14,38 +15,24 @@ export default function ManualDashboardPage() {
   }
 
   useEffect(() => {
-    // Create a new supabase client just for this page
+    // Use the shared Supabase client to inspect the current session
     const loadSupabaseClient = async () => {
       try {
-        addLog("Dynamically importing Supabase client...")
-        const { createClient } = await import('@supabase/supabase-js')
-        
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-        
-        if (!supabaseUrl || !supabaseAnonKey) {
-          throw new Error('Missing Supabase environment variables')
+        if (supabaseUrl) {
+          addLog(`Using Supabase URL: ${supabaseUrl}`)
         }
-        
-        addLog(`Creating Supabase client with URL: ${supabaseUrl}`)
-        const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-          }
-        })
-        
+
         addLog("Checking for existing session...")
         const { data, error } = await supabase.auth.getSession()
-        
+
         if (error) {
           addLog(`Session error: ${error.message}`)
           setError(error.message)
           setLoading(false)
           return
         }
-        
+
         if (data?.session) {
           addLog(`Session found! User ID: ${data.session.user.id}`)
           addLog(`User email: ${data.session.user.email}`)
@@ -55,11 +42,12 @@ export default function ManualDashboardPage() {
           addLog("No session found")
           setError("Not authenticated. Please log in first.")
         }
-        
+
         setLoading(false)
       } catch (err) {
-        addLog(`Error: ${(err as Error).message}`)
-        setError(`An error occurred: ${(err as Error).message}`)
+        const message = err instanceof Error ? err.message : String(err)
+        addLog(`Error: ${message}`)
+        setError(`An error occurred: ${message}`)
         setLoading(false)
       }
     }
@@ -70,17 +58,9 @@ export default function ManualDashboardPage() {
   const handleLogout = async () => {
     try {
       addLog("Logging out...")
-      const { createClient } = await import('@supabase/supabase-js')
-      
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      
-      const supabase = createClient(supabaseUrl, supabaseAnonKey)
-      
       await supabase.auth.signOut()
       addLog("Logged out successfully")
-      
-      // Redirect to home page
+
       window.location.href = "/"
     } catch (err) {
       addLog(`Logout error: ${(err as Error).message}`)
