@@ -1,15 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { UserManagementTable } from "@/components/admin-dashboard/user-management-table"
+import { getAllUsers } from "@/app/actions/admin-dashboard-actions"
 
 export default async function UsersPage() {
-  const supabase = await createServerSupabaseClient()
-
-  // Fetch all users
-  const { data: users, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .order("created_at", { ascending: false })
+  const { data: users, error } = await getAllUsers()
 
   if (error) {
     console.error("Error fetching users:", error)

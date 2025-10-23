@@ -1,20 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { AssessmentManagementTable } from "@/components/admin-dashboard/assessment-management-table"
+import { getAllAssessments } from "@/app/actions/admin-dashboard-actions"
 
 export default async function AssessmentsPage() {
-  const supabase = await createServerSupabaseClient()
-
-  // Fetch all assessments with user info
-  const { data: assessments, error } = await supabase
-    .from("assessments")
-    .select(
-      `
-      *,
-      profiles:user_id (email, first_name, last_name, company_name)
-    `
-    )
-    .order("created_at", { ascending: false })
+  const { data: assessments, error } = await getAllAssessments()
 
   if (error) {
     console.error("Error fetching assessments:", error)
