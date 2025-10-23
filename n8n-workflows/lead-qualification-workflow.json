@@ -1,0 +1,213 @@
+{
+  "name": "Lead Qualification Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-qualification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "lead-qualification-webhook"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "leadName",
+              "value": "={{ $json.body.name }}"
+            },
+            {
+              "name": "company",
+              "value": "={{ $json.body.company }}"
+            },
+            {
+              "name": "industry",
+              "value": "={{ $json.body.industry }}"
+            },
+            {
+              "name": "budget",
+              "value": "={{ $json.body.budget }}"
+            },
+            {
+              "name": "timeline",
+              "value": "={{ $json.body.timeline }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple lead scoring logic\nconst budget = $input.first().json.budget;\nconst timeline = $input.first().json.timeline;\nconst industry = $input.first().json.industry;\n\nlet score = 0;\n\n// Budget scoring (0-40 points)\nif (budget === 'enterprise' || budget > 10000) score += 40;\nelse if (budget === 'business' || budget > 5000) score += 30;\nelse if (budget > 1000) score += 20;\nelse score += 10;\n\n// Timeline scoring (0-30 points)\nif (timeline === 'immediate' || timeline === '1-month') score += 30;\nelse if (timeline === '1-3 months') score += 20;\nelse if (timeline === '3-6 months') score += 10;\n\n// Industry scoring (0-30 points)\nconst highValueIndustries = ['technology', 'finance', 'healthcare', 'manufacturing'];\nif (highValueIndustries.includes(industry.toLowerCase())) score += 30;\nelse score += 15;\n\n// Determine qualification level\nlet qualification = 'Cold';\nif (score >= 75) qualification = 'Hot';\nelse if (score >= 50) qualification = 'Warm';\n\nreturn {\n  ...($input.first().json),\n  score: score,\n  qualification: qualification,\n  scoredAt: new Date().toISOString()\n};"
+      },
+      "name": "AI Qualification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "leads",
+        "columns": "name,company,industry,budget,timeline,qualification_score,qualification_level,created_at",
+        "additionalFields": {}
+      },
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "credentials": {
+        "postgres": {
+          "id": "2",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.qualification }}",
+              "operation": "equals",
+              "value2": "Hot"
+            }
+          ]
+        }
+      },
+      "name": "Is Hot Lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "leads@curveai.solutions",
+        "toEmail": "sales@curveai.solutions",
+        "subject": "🔥 HOT LEAD: {{ $json.leadName }} from {{ $json.company }}",
+        "text": "HIGH PRIORITY LEAD ALERT\n\nLead Details:\n- Name: {{ $json.leadName }}\n- Company: {{ $json.company }}\n- Industry: {{ $json.industry }}\n- Budget: {{ $json.budget }}\n- Timeline: {{ $json.timeline }}\n\nQualification Score: {{ $json.score }}/100\nLevel: {{ $json.qualification }}\n\nACTION REQUIRED: Contact within 24 hours",
+        "options": {}
+      },
+      "name": "Alert Sales Team",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1250, 200],
+      "credentials": {
+        "smtp": {
+          "id": "1",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"qualification\": $json.qualification, \"score\": $json.score, \"message\": \"Lead qualified successfully\" } }}"
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Lead Data": {
+      "main": [
+        [
+          {
+            "node": "AI Qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Qualification": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Database": {
+      "main": [
+        [
+          {
+            "node": "Is Hot Lead?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Hot Lead?": {
+      "main": [
+        [
+          {
+            "node": "Alert Sales Team",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Sales Team": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "lead-management",
+      "id": "3"
+    },
+    {
+      "name": "ai",
+      "id": "4"
+    }
+  ]
+}

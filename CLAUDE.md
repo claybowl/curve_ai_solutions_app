@@ -204,6 +204,66 @@ This section organizes the work being done on this project using Claude Code.
 ## Session Summaries
 
 <details>
+<summary>### 2025-10-23: N8N Integration (Option B) & Knowledge Graph Setup</summary>
+
+Implemented complete n8n workflow orchestration system and activated knowledge graph memory:
+
+1. **Color Palette Harmonization**:
+   - Fixed landing page bright orange-red gradient
+   - Replaced with harmonized donjon-graphite → donjon-indigo → donjon-graphite gradient
+   - Updated all accent colors to use donjon-ember and donjon-silver
+   - Result: Professional, on-brand appearance that matches existing design system
+
+2. **Knowledge Graph Memory MCP Server**:
+   - Installed `@modelcontextprotocol/server-memory` MCP server
+   - Added to Claude Desktop configuration
+   - Designed comprehensive knowledge graph schema for Agent #1
+   - Created architecture document with entities, relations, and observations patterns
+   - Enables persistent memory across sessions for better context continuity
+
+3. **N8N Workflow Orchestration (Option B Implementation)**:
+   - Created complete database schema with `n8n_workflows` and `n8n_workflow_executions` tables
+   - Implemented RLS policies for admin-only access
+   - Built n8n API client with webhook triggering and status checking
+   - Created server actions for workflow CRUD operations and execution
+   - Developed admin dashboard at `/admin/ai-agents` with:
+     - Statistics cards (workflows, executions, activity)
+     - Color-coded workflow cards with emoji icons
+     - One-click workflow triggering with loading states
+     - Execution history table with status tracking
+     - Real-time updates and toast notifications
+
+4. **Example N8N Workflows**:
+   - Created 3 ready-to-import workflow templates:
+     - Consultation Alert: Email notifications + database logging
+     - Lead Qualification Agent: AI-powered scoring with hot lead alerts
+     - Weekly Report Generator: Automated analytics reports
+   - All workflows include proper error handling and response formatting
+
+5. **Documentation**:
+   - Comprehensive deployment guide in `N8N_INTEGRATION_COMPLETE.md`
+   - Quick-start guide in `START_HERE_CLAY.md`
+   - Architecture diagrams and troubleshooting guides
+   - Path to Option C (Agent Marketplace) outlined
+
+**Result**: Production-ready n8n workflow orchestration system that serves as foundation for future Agent Marketplace (Option C). Complete with admin UI, execution tracking, example workflows, and full documentation. System ready for testing after database migration.
+
+**Files Created**:
+- `supabase/migrations/20251023_n8n_workflows.sql`
+- `lib/n8n-client.ts`
+- `app/actions/workflow-actions.ts`
+- `app/admin/ai-agents/page.tsx`
+- `components/admin/workflow-card.tsx`
+- `components/admin/execution-history.tsx`
+- `n8n-workflows/consultation-alert-workflow.json`
+- `n8n-workflows/lead-qualification-workflow.json`
+- `n8n-workflows/weekly-report-workflow.json`
+- `.claude/knowledge-graph-architecture.md`
+- `N8N_INTEGRATION_COMPLETE.md`
+- `START_HERE_CLAY.md`
+</details>
+
+<details>
 <summary>### 2025-06-15: Authentication System Cleanup & Unification</summary>
 
 Completed a major cleanup and unification of the authentication system:

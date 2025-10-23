@@ -1,0 +1,223 @@
+{
+  "name": "Weekly Report Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "weekly-report",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "weekly-report-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as new_consultations,\n  COUNT(*) FILTER (WHERE status = 'completed') as completed_consultations,\n  COUNT(DISTINCT user_id) as active_users\nFROM consultations\nWHERE created_at >= NOW() - INTERVAL '7 days';",
+        "additionalFields": {}
+      },
+      "name": "Get Consultation Stats",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 200],
+      "credentials": {
+        "postgres": {
+          "id": "2",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  COUNT(*) as total_assessments,\n  AVG(ai_readiness_score) as avg_score\nFROM assessments\nWHERE created_at >= NOW() - INTERVAL '7 days';",
+        "additionalFields": {}
+      },
+      "name": "Get Assessment Stats",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 400],
+      "credentials": {
+        "postgres": {
+          "id": "2",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll"
+      },
+      "name": "Merge Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format report data\nconst consultationStats = $input.all()[0].json;\nconst assessmentStats = $input.all()[1].json;\n\nconst reportDate = new Date().toLocaleDateString('en-US', {\n  weekday: 'long',\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric'\n});\n\nconst report = {\n  title: `Weekly Report - ${reportDate}`,\n  period: 'Last 7 days',\n  consultations: {\n    new: consultationStats.new_consultations || 0,\n    completed: consultationStats.completed_consultations || 0,\n    active_users: consultationStats.active_users || 0\n  },\n  assessments: {\n    total: assessmentStats.total_assessments || 0,\n    average_score: Math.round((assessmentStats.avg_score || 0) * 10) / 10\n  },\n  insights: [],\n  generatedAt: new Date().toISOString()\n};\n\n// Generate insights\nif (report.consultations.new > 10) {\n  report.insights.push('✅ Strong consultation demand this week!');\n}\nif (report.assessments.average_score > 7) {\n  report.insights.push('✅ High AI readiness scores across assessments');\n}\nif (report.consultations.active_users > 5) {\n  report.insights.push('✅ Good user engagement');\n}\nif (report.consultations.new === 0) {\n  report.insights.push('⚠️ No new consultations this week - consider marketing push');\n}\n\nreturn report;"
+      },
+      "name": "Generate Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@curveai.solutions",
+        "toEmail": "team@curveai.solutions",
+        "subject": "📊 Weekly Performance Report - {{ $json.title }}",
+        "text": "DONJON INTELLIGENCE SYSTEMS\nWeekly Performance Report\n\nPeriod: {{ $json.period }}\n\n📈 CONSULTATION METRICS:\n- New Consultations: {{ $json.consultations.new }}\n- Completed: {{ $json.consultations.completed }}\n- Active Users: {{ $json.consultations.active_users }}\n\n🎯 ASSESSMENT METRICS:\n- Total Assessments: {{ $json.assessments.total }}\n- Average Score: {{ $json.assessments.average_score }}/10\n\n💡 KEY INSIGHTS:\n{{ $json.insights.join('\\n') }}\n\n---\nGenerated: {{ $json.generatedAt }}\nAutomated by n8n AI Agent",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "name": "Email Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1050, 200],
+      "credentials": {
+        "smtp": {
+          "id": "1",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "reports",
+        "columns": "report_type,period,data,created_at",
+        "additionalFields": {}
+      },
+      "name": "Archive Report",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1050, 400],
+      "credentials": {
+        "postgres": {
+          "id": "2",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"report\": $json, \"message\": \"Weekly report generated and sent\" } }}"
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Consultation Stats",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Assessment Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Consultation Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Assessment Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Report": {
+      "main": [
+        [
+          {
+            "node": "Email Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Archive Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Report": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Report": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "reporting",
+      "id": "5"
+    },
+    {
+      "name": "analytics",
+      "id": "6"
+    }
+  ]
+}
