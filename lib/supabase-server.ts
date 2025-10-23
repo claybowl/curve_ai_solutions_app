@@ -90,11 +90,11 @@ export async function createRouteHandlerClient(request: Request, response: Respo
           get(name: string) {
             const cookies = request.headers.get('cookie')
             if (!cookies) return undefined
-            
+
             const cookie = cookies
               .split(';')
               .find(c => c.trim().startsWith(`${name}=`))
-            
+
             return cookie ? decodeURIComponent(cookie.split('=')[1]) : undefined
           },
           set(name: string, value: string, options: any) {
@@ -121,3 +121,6 @@ export async function createRouteHandlerClient(request: Request, response: Respo
     return createMockClient()
   }
 }
+
+// Alias for compatibility with server actions
+export const createClient = createServerSupabaseClient

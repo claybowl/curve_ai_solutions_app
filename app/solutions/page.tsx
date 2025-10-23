@@ -30,6 +30,9 @@ export const metadata = {
   description: "Explore our comprehensive suite of AI agent infrastructure solutions - from agent development to industry-specific implementations.",
 }
 
+// Force dynamic rendering since we fetch data with auth
+export const dynamic = 'force-dynamic'
+
 type PackageBundle = {
   id: string
   name: string

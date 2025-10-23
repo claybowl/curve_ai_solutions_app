@@ -13,6 +13,9 @@ import { getActiveWorkflows, getWorkflowStats, getWorkflowExecutions } from '@/a
 import WorkflowCard from '@/components/admin/workflow-card'
 import ExecutionHistory from '@/components/admin/execution-history'
 
+// Force dynamic rendering since we use cookies for auth
+export const dynamic = 'force-dynamic'
+
 export default async function AIAgentsPage() {
   const [workflows, stats, recentExecutions] = await Promise.all([
     getActiveWorkflows(),

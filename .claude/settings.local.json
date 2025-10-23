@@ -5,7 +5,8 @@
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
       "Bash(echo:*)",
-      "Bash(claude mcp add-json:*)"
+      "Bash(claude mcp add-json:*)",
+      "Bash(pnpm run build:*)"
     ],
     "deny": [],
     "ask": []
