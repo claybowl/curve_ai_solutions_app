@@ -19,13 +19,56 @@ const nextConfig = {
   // },
   webpack: (config, { dev, isServer }) => {
     if (dev) {
-      // Optimize webpack for dev mode
+      // Optimize webpack for dev mode - reduce memory usage
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,
         ignored: ['**/node_modules', '**/.git', '**/.next'],
       }
+
+      // Optimize caching to reduce memory pressure
+      config.cache = {
+        type: 'filesystem',
+        compression: 'gzip',
+        maxAge: 5184000000, // 60 days
+      }
     }
+
+    // Optimize chunk splitting to reduce bundle size
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20,
+            },
+            // Supabase chunk (isolate heavy library)
+            supabase: {
+              name: 'supabase',
+              test: /[\\/]node_modules[\\/](@supabase)[\\/]/,
+              chunks: 'all',
+              priority: 30,
+            },
+            // Commons chunk
+            common: {
+              minChunks: 2,
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true,
+            },
+          },
+        },
+      }
+    }
+
     return config
   },
   // Reduce file watching for better performance

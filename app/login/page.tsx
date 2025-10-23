@@ -49,20 +49,15 @@ function LoginContent() {
       }
 
       console.log("Login successful!")
-      try {
-        await supabase.auth.refreshSession()
-      } catch (refreshError) {
-        console.warn("Failed to refresh session after login:", refreshError)
-      }
       console.log("User ID:", data.user.id)
       console.log("Email:", data.user.email)
-      
+
       // Check user role and redirect
       try {
         // Check user metadata first (faster)
         const userRole = data.user.user_metadata?.role || data.user.app_metadata?.role
         let isAdmin = userRole === 'admin'
-        
+
         // If not found in metadata, check profiles table
         if (!isAdmin) {
           const { data: profile, error: profileError } = await supabase
@@ -70,24 +65,23 @@ function LoginContent() {
             .select('role')
             .eq('user_id', data.user.id)
             .single()
-          
+
           if (!profileError && profile) {
             isAdmin = profile.role === 'admin'
           }
         }
-        
-        const finalRedirectUrl = isAdmin ? '/admin' : (callbackUrlFromParams || "/dashboard");
+
+        const finalRedirectUrl = isAdmin ? '/admin-dashboard' : (callbackUrlFromParams || "/dashboard");
         console.log(`Signed in, admin: ${isAdmin}, redirecting to ${finalRedirectUrl}`)
-        
-        router.push(finalRedirectUrl)
-        
+
+        // Use window.location.href for full page reload to trigger server-side auth
+        window.location.href = finalRedirectUrl
+
       } catch (roleError) {
         console.error("Error checking user role:", roleError)
         // Default to dashboard if role check fails
-        router.push(callbackUrlFromParams || "/dashboard")
+        window.location.href = callbackUrlFromParams || "/dashboard"
       }
-      
-      setLoading(false)
       
     } catch (err) {
       console.error("Unexpected login error:", err)

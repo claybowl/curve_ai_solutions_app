@@ -13,10 +13,17 @@ export async function GET() {
     
     console.log("Supabase URL exists:", !!supabaseUrl)
     console.log("Supabase Anon Key exists:", !!supabaseAnonKey)
-    
-    // Check cookies
-    const cookieStore = await cookies()
-    const allCookies = cookieStore.getAll()
+
+    // Check cookies - handle cases where cookies might not be available
+    let allCookies: any[] = []
+    try {
+      const cookieStore = await cookies()
+      if (cookieStore) {
+        allCookies = cookieStore.getAll()
+      }
+    } catch (error) {
+      console.log("Failed to access cookies:", error)
+    }
     console.log("Cookie count:", allCookies.length)
     console.log("Cookie names:", allCookies.map(c => c.name))
     

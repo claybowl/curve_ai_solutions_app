@@ -55,7 +55,14 @@ function ensureClient(): SupabaseClient<Database> {
   }
 
   try {
-    cachedClient = createClientComponentClient<Database>()
+    // Use the standard Next.js Supabase helper which handles cookies automatically
+    // and properly integrates with auth-helpers middleware
+    cachedClient = createClientComponentClient<Database>({
+      // Disable realtime to prevent memory issues during dev
+      realtime: {
+        enabled: false,
+      },
+    })
   } catch (error) {
     console.warn('Falling back to mock Supabase client:', error)
     cachedClient = createMockClient()

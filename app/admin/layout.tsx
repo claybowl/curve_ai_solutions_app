@@ -1,6 +1,5 @@
 import type React from "react"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
-import { getCurrentSupabaseUser } from "@/lib/db-v2"
 import { redirect } from "next/navigation"
 import { createServerSupabaseClient } from "@/lib/supabase-server"
 
@@ -10,21 +9,24 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   // SERVER-SIDE AUTH CHECK - CRITICAL SECURITY!
-  const user = await getCurrentSupabaseUser()
+  const supabase = await createServerSupabaseClient()
 
-  if (!user) {
+  // Check authentication
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
     redirect('/login?message=Please log in to access the admin area&callbackUrl=/admin')
   }
 
   // Check if user is admin
-  const supabase = await createServerSupabaseClient()
-  const { data: profile } = await supabase
+  // Users can read their own profile, so use the authenticated client
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('role')
     .eq('user_id', user.id)
     .single()
 
-  if (!profile || profile.role !== 'admin') {
+  if (profileError || !profile || profile.role !== 'admin') {
     redirect('/dashboard?message=Unauthorized - Admin access required')
   }
 

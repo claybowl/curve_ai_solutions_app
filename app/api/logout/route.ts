@@ -17,11 +17,25 @@ export async function POST(request: Request) {
 
     await supabase.auth.signOut()
 
-    const cookieStore = await cookies()
-    cookieStore.delete("admin-auth")
-    cookieStore.delete("simple-admin-auth")
-    response.cookies.delete("admin-auth")
-    response.cookies.delete("simple-admin-auth")
+    // Clean up legacy cookies if available
+    try {
+      const cookieStore = await cookies()
+      if (cookieStore) {
+        cookieStore.delete("admin-auth")
+        cookieStore.delete("simple-admin-auth")
+      }
+    } catch (error) {
+      // Cookies might not be available in certain contexts
+      console.warn("Failed to clean up cookies:", error)
+    }
+
+    // Delete via response headers as well
+    try {
+      response.cookies.delete("admin-auth")
+      response.cookies.delete("simple-admin-auth")
+    } catch (error) {
+      // Silently fail if response cookies not available
+    }
 
     return response
   } catch (error) {

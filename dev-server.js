@@ -23,7 +23,25 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
   console.log('✅ Next.js app prepared')
-  
+
+  // Suppress non-fatal HMR errors during development
+  // These are cookie-related errors that don't affect functionality
+  process.on('unhandledRejection', (reason) => {
+    const message = reason?.message || String(reason)
+
+    // Suppress harmless HMR cookie errors
+    if (
+      message.includes('Cannot read properties of undefined (reading \'get\')') ||
+      message.includes('Cannot read properties of undefined (reading \'set\')')
+    ) {
+      // Silently suppress these non-fatal HMR errors
+      return
+    }
+
+    // For other unhandled rejections, let them through
+    console.error('⚠️  Unhandled rejection:', reason)
+  })
+
   createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true)

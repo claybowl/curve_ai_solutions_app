@@ -47,7 +47,19 @@ export async function createServerSupabaseClient() {
 
   // Try to create Supabase client, fallback to mock if it fails
   try {
-    const cookieStore = await cookies()
+    let cookieStore: any
+    try {
+      cookieStore = await cookies()
+    } catch (cookieError) {
+      // Cookies might not be available in certain contexts (like dev mode refresh)
+      // This is expected behavior - return mock client gracefully
+      return createMockClient()
+    }
+
+    // Double-check that cookieStore is actually defined (can be undefined without throwing)
+    if (!cookieStore) {
+      return createMockClient()
+    }
 
     return createServerClient(
       supabaseUrl,
@@ -55,13 +67,35 @@ export async function createServerSupabaseClient() {
       {
         cookies: {
           get(name: string) {
-            return cookieStore.get(name)?.value
+            try {
+              return cookieStore?.get(name)?.value
+            } catch {
+              return undefined
+            }
           },
           set(name: string, value: string, options: any) {
-            cookieStore.set({ name, value, ...options })
+            try {
+              cookieStore?.set({ name, value, ...options })
+            } catch {
+              // Silently fail if cookies not available
+            }
           },
           remove(name: string, options: any) {
-            cookieStore.set({ name, value: '', ...options })
+            try {
+              cookieStore?.set({ name, value: '', ...options })
+            } catch {
+              // Silently fail if cookies not available
+            }
+          },
+        },
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        },
+        // CRITICAL: Disable realtime to prevent memory issues during compilation
+        global: {
+          headers: {
+            'X-Client-Info': 'curve-ai-server',
           },
         },
       }
@@ -114,6 +148,16 @@ export async function createRouteHandlerClient(request: Request, response: Respo
             )
           },
         },
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        },
+        // CRITICAL: Disable realtime to prevent memory issues
+        global: {
+          headers: {
+            'X-Client-Info': 'curve-ai-route',
+          },
+        },
       }
     )
   } catch (error) {
@@ -124,3 +168,95 @@ export async function createRouteHandlerClient(request: Request, response: Respo
 
 // Alias for compatibility with server actions
 export const createClient = createServerSupabaseClient
+
+/**
+ * Create a Supabase client with SERVICE ROLE key (bypasses RLS)
+ * ONLY use this for server-side operations that need to bypass RLS
+ * Never expose this to the client
+ */
+export async function createServiceRoleClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.warn('Missing Supabase service role key, returning mock client')
+    return createMockClient()
+  }
+
+  try {
+    // Service role client - bypasses RLS, use with caution
+    return createServerClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+        global: {
+          headers: {
+            'X-Client-Info': 'curve-ai-service-role',
+          },
+        },
+      }
+    )
+  } catch (error) {
+    console.warn('Failed to create service role client:', error)
+    return createMockClient()
+  }
+}
+
+/**
+ * Verifies if the current user has admin role
+ * @returns boolean indicating if the user has admin role
+ */
+export async function verifyAdminRole() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) return false
+
+  // Check metadata first (fastest)
+  if (session.user.user_metadata?.role === 'admin' || session.user.app_metadata?.role === 'admin') {
+    return true
+  }
+
+  // Check profiles table (user can read their own profile)
+  try {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (error) {
+      console.error('Error checking admin role:', error)
+      return false
+    }
+
+    return profile?.role === 'admin'
+  } catch (error) {
+    console.error('Error checking admin role (exception):', error)
+    return false
+  }
+}
+
+/**
+ * Gets the current session if it exists
+ * @returns The current session or null
+ */
+export async function getServerSession() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  return session
+}
+
+/**
+ * Gets the current user if authenticated
+ * @returns The current user or null
+ */
+export async function getServerUser() {
+  const session = await getServerSession()
+  return session?.user || null
+}

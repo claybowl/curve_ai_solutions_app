@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToolById, updateTool, deleteTool } from "@/lib/db-tools";
 import { AiToolFormData } from "@/types/tools";
-import { verifyAdminRole } from '@/lib/createServerSupabaseClient';
+import { verifyAdminRole } from '@/lib/supabase-server';
 
 // Helper function to validate tool ID
 function parseToolId(params: { id: string }): number | null {

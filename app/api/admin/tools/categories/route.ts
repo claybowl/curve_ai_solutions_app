@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getToolCategories } from "@/lib/db-tools";
-import { verifyAdminRole } from '@/lib/createServerSupabaseClient';
+import { verifyAdminRole } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
