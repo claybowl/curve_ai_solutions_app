@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, BarChart2, Database, Shield, Zap, Bot, LineChart, Workflow, Calendar, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/custom-card"
 import DonjonLogoVisualization from "@/components/donjon-logo-visualization"
 import { CastleBackground } from "@/components/castle-background"
