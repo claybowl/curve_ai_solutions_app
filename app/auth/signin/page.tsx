@@ -5,7 +5,7 @@ import type React from "react"
 import { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabase } from '@/lib/supabase-client'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,7 +15,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 function SignInContent() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
   const searchParams = useSearchParams()
   const registered = searchParams?.get("registered") === "true"
   const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
@@ -39,7 +38,7 @@ function SignInContent() {
       setUser(user)
     }
     checkUser()
-  }, [supabase, router, callbackUrl])
+  }, [router, callbackUrl])
 
   useEffect(() => {
     if (registered) {

@@ -7,7 +7,7 @@ import { Menu, X, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabase } from '@/lib/supabase-client'
 
 export function MainNav() {
   const router = useRouter()
@@ -16,7 +16,6 @@ export function MainNav() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [dashboardUrl, setDashboardUrl] = useState("/dashboard")
   const pathname = usePathname()
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     // Check Supabase auth session and user role
@@ -52,7 +51,7 @@ export function MainNav() {
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [])
 
   const handleLogout = async () => {
     try {
