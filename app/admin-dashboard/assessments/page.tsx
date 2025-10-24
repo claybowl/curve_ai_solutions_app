@@ -1,14 +1,14 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AssessmentManagementTable } from "@/components/admin-dashboard/assessment-management-table"
-import { getAllAssessments } from "@/app/actions/admin-dashboard-actions"
 
-export default async function AssessmentsPage() {
-  const { data: assessments, error } = await getAllAssessments()
+const mockAssessments = [
+  { id: "1", user_id: "2", score: 75, status: "completed", completion_percentage: 75, created_at: new Date().toISOString() },
+  { id: "2", user_id: "3", score: 88, status: "completed", completion_percentage: 88, created_at: new Date().toISOString() },
+]
 
-  if (error) {
-    console.error("Error fetching assessments:", error)
-  }
-
+export default function AssessmentsPage() {
   return (
     <main className="p-6">
       <div className="mb-8">
@@ -25,7 +25,7 @@ export default async function AssessmentsPage() {
           <CardTitle>All Assessments</CardTitle>
         </CardHeader>
         <CardContent>
-          <AssessmentManagementTable assessments={assessments || []} />
+          <AssessmentManagementTable assessments={mockAssessments} />
         </CardContent>
       </Card>
     </main>

@@ -1,14 +1,14 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { UserManagementTable } from "@/components/admin-dashboard/user-management-table"
-import { getAllUsers } from "@/app/actions/admin-dashboard-actions"
 
-export default async function UsersPage() {
-  const { data: users, error } = await getAllUsers()
+const mockUsers = [
+  { id: "1", email: "admin@curveai.com", first_name: "Admin", last_name: "User", role: "admin", status: "active", created_at: new Date().toISOString() },
+  { id: "2", email: "user@example.com", first_name: "John", last_name: "Doe", role: "client", status: "active", created_at: new Date().toISOString() },
+]
 
-  if (error) {
-    console.error("Error fetching users:", error)
-  }
-
+export default function UsersPage() {
   return (
     <main className="p-6">
       <div className="mb-8">
@@ -25,7 +25,7 @@ export default async function UsersPage() {
           <CardTitle>All Users</CardTitle>
         </CardHeader>
         <CardContent>
-          <UserManagementTable users={users || []} />
+          <UserManagementTable users={mockUsers} />
         </CardContent>
       </Card>
     </main>

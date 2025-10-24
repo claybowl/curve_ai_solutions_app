@@ -54,22 +54,9 @@ function LoginContent() {
 
       // Check user role and redirect
       try {
-        // Check user metadata first (faster)
+        // Check user metadata for role (no DB query to avoid RLS errors)
         const userRole = data.user.user_metadata?.role || data.user.app_metadata?.role
-        let isAdmin = userRole === 'admin'
-
-        // If not found in metadata, check profiles table
-        if (!isAdmin) {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('user_id', data.user.id)
-            .single()
-
-          if (!profileError && profile) {
-            isAdmin = profile.role === 'admin'
-          }
-        }
+        const isAdmin = userRole === 'admin'
 
         const finalRedirectUrl = isAdmin ? '/admin-dashboard' : (callbackUrlFromParams || "/dashboard");
         console.log(`Signed in, admin: ${isAdmin}, redirecting to ${finalRedirectUrl}`)

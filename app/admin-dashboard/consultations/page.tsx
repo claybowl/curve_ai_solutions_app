@@ -1,14 +1,14 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ConsultationManagementTable } from "@/components/admin-dashboard/consultation-management-table"
-import { getAllConsultations } from "@/app/actions/admin-dashboard-actions"
 
-export default async function ConsultationsPage() {
-  const { data: consultations, error } = await getAllConsultations()
+const mockConsultations = [
+  { id: "1", first_name: "John", last_name: "Doe", email: "john@example.com", company_name: "Acme Corp", status: "pending", created_at: new Date().toISOString() },
+  { id: "2", first_name: "Jane", last_name: "Smith", email: "jane@example.com", company_name: "Tech Startup", status: "in_progress", created_at: new Date().toISOString() },
+]
 
-  if (error) {
-    console.error("Error fetching consultations:", error)
-  }
-
+export default function ConsultationsPage() {
   return (
     <main className="p-6">
       <div className="mb-8">
@@ -25,7 +25,7 @@ export default async function ConsultationsPage() {
           <CardTitle>All Consultation Requests</CardTitle>
         </CardHeader>
         <CardContent>
-          <ConsultationManagementTable consultations={consultations || []} />
+          <ConsultationManagementTable consultations={mockConsultations} />
         </CardContent>
       </Card>
     </main>

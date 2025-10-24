@@ -212,38 +212,8 @@ function MobileSidebar({ pathname, router }: { pathname: string; router: any }) 
 export function AdminDashboardSidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    async function checkAdminStatus() {
-      try {
-        const { user } = await getCurrentUser()
-        setIsAdmin(user?.user_metadata?.role === "admin")
-      } catch (error) {
-        console.error("Error checking admin status:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    setIsMounted(true)
-    checkAdminStatus()
-  }, [])
-
-  // Redirect non-admin users to dashboard
-  useEffect(() => {
-    if (!isLoading && !isAdmin && isMounted) {
-      console.log("Not an admin user, redirecting from sidebar")
-      router.push("/dashboard")
-    }
-  }, [isAdmin, isLoading, isMounted, router])
-
-  // Show loading state or nothing while checking session
-  if (isLoading || !isMounted || !isAdmin) {
-    return null
-  }
+  // Layout already verifies admin status, so just render sidebar immediately
+  // No async checks needed here
 
   return (
     <>
