@@ -1,19 +1,22 @@
 /**
- * Database utilities for V2 schema (Supabase)
- * This file provides standardized database operations for the new V2 schema
+ * Database utilities for V2 schema
+ * DEPRECATED: This file previously used Supabase. Now uses Stack Auth for auth and Neon PostgreSQL for database.
+ * 
+ * This file is kept for backward compatibility but should be migrated to use:
+ * - Stack Auth: @/lib/stack-auth-server for authentication
+ * - Neon PostgreSQL: @/lib/db.ts for database operations
  */
 
-import { createServerSupabaseClient } from './supabase-server'
-import type { Database } from '@/types/supabase' // We'll create this next
-
-// Helper type for Supabase client
-type SupabaseClient = Awaited<ReturnType<typeof createServerSupabaseClient>>
+import { getCurrentUserServer } from './stack-auth-server'
 
 /**
- * Get a Supabase client for database operations
+ * Get a database client for database operations
+ * DEPRECATED: Use Neon PostgreSQL directly from @/lib/db.ts
  */
-export async function getSupabaseClient(): Promise<SupabaseClient> {
-  return await createServerSupabaseClient()
+export async function getSupabaseClient(): Promise<any> {
+  throw new Error(
+    'Supabase is not used. Please use Neon PostgreSQL (from "@/lib/db.ts") for database operations.'
+  )
 }
 
 /**
@@ -78,18 +81,23 @@ export async function testSupabaseConnection() {
 }
 
 /**
- * Get current user from Supabase auth
+ * Get current user from Stack Auth
+ * DEPRECATED: Use getCurrentUserServer from @/lib/stack-auth-server instead
  */
 export async function getCurrentSupabaseUser() {
   try {
-    const client = await getSupabaseClient()
-    const { data: { user }, error } = await client.auth.getUser()
+    const user = await getCurrentUserServer()
     
-    if (error || !user) {
+    if (!user) {
       return null
     }
     
-    return user
+    // Transform Stack Auth user to match expected format
+    return {
+      id: user.id,
+      email: user.primaryEmail,
+      // Add other properties as needed
+    }
   } catch (error) {
     console.error('[getCurrentSupabaseUser] Exception:', error)
     return null

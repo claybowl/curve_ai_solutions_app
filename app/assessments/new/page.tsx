@@ -1,22 +1,19 @@
 import { getAssessmentQuestions } from "@/app/actions/assessment-actions"
 import { AssessmentForm } from "@/components/assessment-form"
-import { getCurrentSupabaseUser } from "@/lib/db-v2"
-import { redirect } from "next/navigation"
+import { getCurrentUserServer } from "@/lib/stack-auth-server"
 
-// This page uses cookies/auth, so it cannot be statically generated
+// This page can be accessed without login
 export const dynamic = 'force-dynamic'
 
 export default async function NewAssessmentPage() {
-  // Get the current user
-  const user = await getCurrentSupabaseUser()
-
-  if (!user) {
-    redirect('/login')
-  }
+  // Get the current user (optional - assessment works without login)
+  const user = await getCurrentUserServer()
+  
+  // Use user ID if logged in, otherwise use 'anonymous' or null
+  const userId = user?.id || 'anonymous'
 
   // Get assessment questions from the database
   const questions = await getAssessmentQuestions()
-  const userId = user.id
 
   return (
     <div className="container py-8 max-w-5xl">

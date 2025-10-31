@@ -51,9 +51,9 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="relative w-full max-w-[600px] aspect-square">
+              <div className="relative w-full max-w-[720px] aspect-square">
                 <Image
-                  src="https://i.ibb.co/MQJTLsY/donjon-logo.png"
+                  src="https://i.ibb.co/0VtJmtwd/image.png"
                   alt="Donjon Intelligence Systems Logo"
                   fill
                   className="object-contain rounded-lg"

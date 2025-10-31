@@ -49,24 +49,35 @@ export async function signInWithEmail(email: string, password: string) {
           noRedirect: true,
         })
         
+        // Validate result before returning
+        if (result === null || result === undefined) {
+          throw new Error('Sign in returned an empty result. Please check your credentials.')
+        }
+        
         // Handle result
         if (result && typeof result === 'object') {
           if ('status' in result && result.status === 'error') {
             throw new Error(result.error?.message || 'Sign in failed')
           }
+          // Check if result has user or accessToken property (Stack Auth success indicators)
+          if ('user' in result || 'accessToken' in result) {
+            return result
+          }
         }
         
+        // If we get here, the result is valid but unexpected format
         return result
       } catch (methodError: any) {
-        // If noRedirect doesn't work, try without it
+        // If noRedirect doesn't work, try alternative methods first
+        // Don't retry without noRedirect as it may return undefined
         if (methodError.message?.includes('noRedirect') || methodError.message?.includes('accessToken')) {
-          // Try without noRedirect - Stack Auth might handle redirects automatically
-          return await client.signInWithCredential({
-            email,
-            password,
-          })
+          // Instead of retrying without noRedirect, try alternative methods
+          // This prevents the undefined return issue
+          console.warn('signInWithCredential with noRedirect failed, trying alternative methods')
+        } else {
+          // Re-throw if it's not a noRedirect/accessToken error
+          throw methodError
         }
-        throw methodError
       }
     }
     
@@ -74,7 +85,36 @@ export async function signInWithEmail(email: string, password: string) {
     const alternativeMethods = ['signInWithPassword', 'signIn', 'authenticate']
     for (const methodName of alternativeMethods) {
       if (typeof client[methodName] === 'function') {
-        return await client[methodName]({ email, password })
+        try {
+          const result = await client[methodName]({ email, password })
+          
+          // Validate result
+          if (result === null || result === undefined) {
+            console.warn(`${methodName} returned undefined, trying next method`)
+            continue
+          }
+          
+          // Check for error in result
+          if (result && typeof result === 'object') {
+            if ('status' in result && result.status === 'error') {
+              throw new Error((result as any).error?.message || 'Sign in failed')
+            }
+            // Valid result
+            if ('user' in result || 'accessToken' in result || 'data' in result) {
+              return result
+            }
+          }
+          
+          return result
+        } catch (methodError: any) {
+          // If this method fails, try the next one
+          console.warn(`${methodName} failed:`, methodError.message)
+          if (methodName === alternativeMethods[alternativeMethods.length - 1]) {
+            // Last method failed, throw the error
+            throw methodError
+          }
+          continue
+        }
       }
     }
     

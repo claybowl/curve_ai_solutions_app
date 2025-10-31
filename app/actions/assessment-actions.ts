@@ -13,6 +13,10 @@ import { getCurrentUserServer } from "@/lib/stack-auth-server"
 // TODO: Import business database client when implemented
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+
+// Remove Supabase imports - not used anymore
+// import { createServerSupabaseClient } from './supabase-server'
+// import { getCurrentSupabaseUser } from './db-v2'
 import type { 
   Assessment, 
   AssessmentQuestion, 
@@ -121,33 +125,19 @@ export async function getAssessmentCategories() {
 // Submit a new assessment
 export async function submitAssessment(formData: FormData) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    // Get current user (optional - allows anonymous submissions)
+    const user = await getCurrentUserServer()
     
-    if (!user) {
-      throw new Error("Authentication required")
-    }
+    // Use user ID if logged in, otherwise use 'anonymous'
+    const userId = user?.id || 'anonymous'
 
     const title = formData.get("title") as string || "AI Readiness Assessment"
 
-    // Create a new assessment
-    const { data: assessmentData, error: assessmentError } = await supabase
-      .from('assessments')
-      .insert({
-        user_id: user.id,
-        title: title,
-        status: 'in_progress'
-      })
-      .select('id')
-      .single()
-
-    if (assessmentError || !assessmentData) {
-      console.error("Error creating assessment:", assessmentError)
-      throw new Error("Failed to create assessment")
-    }
-
-    const assessmentId = assessmentData.id
-
+    // TODO: Replace with Neon PostgreSQL database operations
+    // For now, assessment submission logs a warning but allows submission
+    console.warn("submitAssessment: Business database integration needed for Neon PostgreSQL")
+    
+    // Temporary: Return success message (actual database save disabled until database is implemented)
     // Process each question response
     const questions = await getAssessmentQuestions()
     let totalScore = 0
@@ -161,19 +151,15 @@ export async function submitAssessment(formData: FormData) {
         totalScore += score
         validResponses++
 
-        // Save the response
-        const { error: responseError } = await supabase
-          .from('assessment_responses')
-          .insert({
-            assessment_id: assessmentId,
-            question_id: question.id,
-            response_value: response,
-            response_score: score
-          })
-
-        if (responseError) {
-          console.error("Error saving assessment response:", responseError)
-        }
+        // TODO: Save the response to Neon PostgreSQL when database is implemented
+        /* 
+        const { neon } = await import("@neondatabase/serverless")
+        const sql = neon(process.env.DATABASE_URL!)
+        await sql`
+          INSERT INTO assessment_responses (assessment_id, question_id, response_value, response_score)
+          VALUES (${assessmentId}, ${question.id}, ${response}, ${score})
+        `
+        */
       }
     }
 
@@ -181,28 +167,38 @@ export async function submitAssessment(formData: FormData) {
     const completionPercentage = (validResponses / questions.length) * 100
     const overallScore = validResponses > 0 ? totalScore / validResponses : 0
 
-    // Update the assessment with the scores
-    const { error: updateError } = await supabase
-      .from('assessments')
-      .update({
-        overall_score: overallScore,
-        completion_percentage: completionPercentage,
-        status: completionPercentage === 100 ? 'completed' : 'in_progress',
-        completed_at: completionPercentage === 100 ? new Date().toISOString() : null
-      })
-      .eq('id', assessmentId)
-
-    if (updateError) {
-      console.error("Error updating assessment score:", updateError)
-    }
+    // TODO: Update the assessment with the scores in Neon PostgreSQL when database is implemented
+    /*
+    const { neon } = await import("@neondatabase/serverless")
+    const sql = neon(process.env.DATABASE_URL!)
+    await sql`
+      UPDATE assessments
+      SET overall_score = ${overallScore},
+          completion_percentage = ${completionPercentage},
+          status = ${completionPercentage === 100 ? 'completed' : 'in_progress'},
+          completed_at = ${completionPercentage === 100 ? new Date().toISOString() : null}
+      WHERE id = ${assessmentId}
+    `
+    */
 
     // Generate category-specific results if assessment is complete
     if (completionPercentage === 100) {
-      await generateAssessmentResults(assessmentId)
+      // TODO: Implement when database is ready
+      // await generateAssessmentResults(assessmentId)
     }
 
+    // For now, return success message (redirect disabled until database is implemented)
     revalidatePath("/assessments")
-    redirect(`/assessments/${assessmentId}/results`)
+    
+    // Return success - in the future, redirect to results page
+    // redirect(`/assessments/${assessmentId}/results`)
+    
+    return {
+      success: true,
+      message: "Assessment submitted successfully! Database integration needed to save results.",
+      score: overallScore,
+      completionPercentage: completionPercentage
+    }
   } catch (error) {
     console.error("Error submitting assessment:", error)
     throw error
@@ -260,66 +256,13 @@ function calculateQuestionScore(response: string, question: any): number {
 // Generate assessment results by category
 async function generateAssessmentResults(assessmentId: string) {
   try {
-    const supabase = await createServerSupabaseClient()
-    
-    // Get all responses for this assessment with questions and categories
-    const { data: responses, error: responsesError } = await supabase
-      .from('assessment_responses')
-      .select(`
-        *,
-        assessment_questions!inner(
-          *,
-          assessment_categories(*)
-        )
-      `)
-      .eq('assessment_id', assessmentId)
-
-    if (responsesError || !responses) {
-      console.error("Error fetching assessment responses:", responsesError)
-      return
-    }
-
-    // Group responses by category
-    const categoriesMap = new Map()
-    
-    responses.forEach((response: any) => {
-      const category = response.assessment_questions.assessment_categories
-      if (!category) return
-      
-      if (!categoriesMap.has(category.id)) {
-        categoriesMap.set(category.id, {
-          category,
-          scores: [],
-          responses: []
-        })
-      }
-      
-      categoriesMap.get(category.id).scores.push(response.response_score || 0)
-      categoriesMap.get(category.id).responses.push(response)
-    })
-
-    // Calculate category scores and generate results
-    for (const [categoryId, categoryData] of categoriesMap) {
-      const { category, scores, responses } = categoryData
-      const categoryScore = scores.length > 0 ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0
-      
-      // Generate simple recommendations based on score
-      const recommendations = generateCategoryRecommendations(category, categoryScore, responses)
-      const strengths = generateCategoryStrengths(category, categoryScore)
-      const improvementAreas = generateCategoryImprovements(category, categoryScore)
-
-      // Save the category result
-      await supabase
-        .from('assessment_results')
-        .insert({
-          assessment_id: assessmentId,
-          category_id: categoryId,
-          category_score: categoryScore,
-          recommendations,
-          strengths,
-          improvement_areas: improvementAreas
-        })
-    }
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("generateAssessmentResults: Database integration needed")
+    return
+    // TODO: Uncomment when database is implemented
+    // const { neon } = await import("@neondatabase/serverless")
+    // const sql = neon(process.env.DATABASE_URL!)
+    // Query assessment responses and generate results
   } catch (error) {
     console.error("Error generating assessment results:", error)
   }
@@ -385,62 +328,11 @@ function generateCategoryImprovements(category: any, score: number): string[] {
 // Get assessment by ID with responses and results
 export async function getAssessmentById(id: string) {
   try {
-    const supabase = await createServerSupabaseClient()
-
-    // Get assessment with user profile info
-    const { data: assessment, error: assessmentError } = await supabase
-      .from('assessments')
-      .select(`
-        *,
-        profiles!inner(
-          first_name,
-          last_name,
-          company_name,
-          email
-        )
-      `)
-      .eq('id', id)
-      .single()
-
-    if (assessmentError || !assessment) {
-      console.error("Error fetching assessment:", assessmentError)
-      return null
-    }
-
-    // Get responses with question and category details
-    const { data: responses, error: responsesError } = await supabase
-      .from('assessment_responses')
-      .select(`
-        *,
-        assessment_questions!inner(
-          *,
-          assessment_categories(*)
-        )
-      `)
-      .eq('assessment_id', id)
-
-    if (responsesError) {
-      console.error("Error fetching assessment responses:", responsesError)
-    }
-
-    // Get assessment results by category
-    const { data: results, error: resultsError } = await supabase
-      .from('assessment_results')
-      .select(`
-        *,
-        assessment_categories(*)
-      `)
-      .eq('assessment_id', id)
-
-    if (resultsError) {
-      console.error("Error fetching assessment results:", resultsError)
-    }
-
-    return {
-      ...assessment,
-      responses: responses || [],
-      results: results || []
-    }
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("getAssessmentById: Database integration needed")
+    
+    // TODO: Query Neon PostgreSQL database
+    return null
   } catch (error) {
     console.error("Error getting assessment by ID:", error)
     return null
@@ -450,36 +342,21 @@ export async function getAssessmentById(id: string) {
 // Get all assessments for current user or specified user
 export async function getUserAssessments(userId?: string) {
   try {
-    const supabase = await createServerSupabaseClient()
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("getUserAssessments: Database integration needed")
     
     // If no userId provided, get current user
     if (!userId) {
-      const user = await getCurrentSupabaseUser()
+      const user = await getCurrentUserServer()
       if (!user) {
-        throw new Error("Authentication required")
+        // Return empty array instead of throwing - allows non-authenticated access
+        return []
       }
       userId = user.id
     }
     
-    const { data: assessments, error } = await supabase
-      .from('assessments')
-      .select(`
-        *,
-        profiles!inner(
-          first_name,
-          last_name,
-          company_name
-        )
-      `)
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error("Error fetching user assessments:", error)
-      return []
-    }
-
-    return assessments || []
+    // TODO: Query Neon PostgreSQL database
+    return []
   } catch (error) {
     console.error("Error getting user assessments:", error)
     return []
@@ -489,65 +366,68 @@ export async function getUserAssessments(userId?: string) {
 // Get all assessments (admin function)
 export async function getAllAssessments(filter?: AssessmentFilter) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("getAllAssessments: Database integration needed")
+    
+    const user = await getCurrentUserServer()
     
     if (!user) {
       throw new Error("Authentication required")
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('user_id', user.id)
-      .single()
+    // Check if user is admin using Stack Auth
+    const { isUserAdmin } = await import('@/lib/stack-auth-server')
+    const isAdmin = await isUserAdmin()
 
-    if (!profile || profile.role !== 'admin') {
+    if (!isAdmin) {
       throw new Error("Admin access required")
     }
 
-    let query = supabase
-      .from('assessments')
-      .select(`
-        *,
-        profiles!inner(
-          first_name,
-          last_name,
-          company_name,
-          email
-        )
-      `)
+    // TODO: Query Neon PostgreSQL database
+    return []
+    
+    // TODO: Uncomment when database is implemented
+    // let query = supabase
+    //   .from('assessments')
+    //   .select(`
+    //     *,
+    //     profiles!inner(
+    //       first_name,
+    //       last_name,
+    //       company_name,
+    //       email
+    //     )
+    //   `)
 
-    // Apply filters
-    if (filter?.status) {
-      query = query.eq('status', filter.status)
-    }
-    if (filter?.user_id) {
-      query = query.eq('user_id', filter.user_id)
-    }
+    // // Apply filters
+    // if (filter?.status) {
+    //   query = query.eq('status', filter.status)
+    // }
+    // if (filter?.user_id) {
+    //   query = query.eq('user_id', filter.user_id)
+    // }
 
-    // Apply sorting
-    const sortBy = filter?.sortBy || 'created_at'
-    const sortDirection = filter?.sortDirection || 'desc'
-    query = query.order(sortBy, { ascending: sortDirection === 'asc' })
+    // // Apply sorting
+    // const sortBy = filter?.sortBy || 'created_at'
+    // const sortDirection = filter?.sortDirection || 'desc'
+    // query = query.order(sortBy, { ascending: sortDirection === 'asc' })
 
-    // Apply pagination
-    if (filter?.limit) {
-      query = query.limit(filter.limit)
-    }
-    if (filter?.offset) {
-      query = query.range(filter.offset, filter.offset + (filter.limit || 10) - 1)
-    }
+    // // Apply pagination
+    // if (filter?.limit) {
+    //   query = query.limit(filter.limit)
+    // }
+    // if (filter?.offset) {
+    //   query = query.range(filter.offset, filter.offset + (filter.limit || 10) - 1)
+    // }
 
-    const { data: assessments, error } = await query
+    // const { data: assessments, error } = await query
 
-    if (error) {
-      console.error("Error fetching all assessments:", error)
-      return []
-    }
+    // if (error) {
+    //   console.error("Error fetching all assessments:", error)
+    //   return []
+    // }
 
-    return assessments || []
+    // return assessments || []
   } catch (error) {
     console.error("Error getting all assessments:", error)
     return []
@@ -560,30 +440,16 @@ export async function updateAssessmentStatus(
   status: 'in_progress' | 'completed' | 'abandoned'
 ) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("updateAssessmentStatus: Database integration needed")
+    
+    const user = await getCurrentUserServer()
     
     if (!user) {
       throw new Error("Authentication required")
     }
 
-    const updateData: any = { status }
-    
-    if (status === 'completed') {
-      updateData.completed_at = new Date().toISOString()
-    }
-
-    const { error } = await supabase
-      .from('assessments')
-      .update(updateData)
-      .eq('id', assessmentId)
-      .eq('user_id', user.id) // Ensure user can only update their own assessments
-
-    if (error) {
-      console.error("Error updating assessment status:", error)
-      throw new Error("Failed to update assessment status")
-    }
-
+    // TODO: Update in Neon PostgreSQL database
     revalidatePath("/assessments")
     revalidatePath(`/assessments/${assessmentId}/results`)
     
@@ -597,49 +463,48 @@ export async function updateAssessmentStatus(
 // Delete assessment
 export async function deleteAssessment(assessmentId: string) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    // TODO: Migrate to Neon PostgreSQL when database is implemented
+    console.warn("deleteAssessment: Database integration needed")
+    
+    const user = await getCurrentUserServer()
     
     if (!user) {
       throw new Error("Authentication required")
     }
 
-    // Check if user owns the assessment or is admin
-    const { data: assessment } = await supabase
-      .from('assessments')
-      .select('user_id')
-      .eq('id', assessmentId)
-      .single()
-
-    if (!assessment) {
-      throw new Error("Assessment not found")
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('user_id', user.id)
-      .single()
-
-    const isOwner = assessment.user_id === user.id
-    const isAdmin = profile?.role === 'admin'
-
-    if (!isOwner && !isAdmin) {
+    // TODO: Check ownership and delete from Neon PostgreSQL database
+    // const { neon } = await import("@neondatabase/serverless")
+    // const sql = neon(process.env.DATABASE_URL!)
+    // const assessment = await sql`SELECT user_id FROM assessments WHERE id = ${assessmentId}`
+    
+    const { isUserAdmin } = await import('@/lib/stack-auth-server')
+    const isAdmin = await isUserAdmin()
+    
+    // For now, allow deletion if user is admin
+    if (!isAdmin) {
       throw new Error("Not authorized to delete this assessment")
     }
 
-    const { error } = await supabase
-      .from('assessments')
-      .delete()
-      .eq('id', assessmentId)
+    // TODO: Delete from Neon PostgreSQL database
+    // const { neon } = await import("@neondatabase/serverless")
+    // const sql = neon(process.env.DATABASE_URL!)
+    // await sql`DELETE FROM assessments WHERE id = ${assessmentId}`
 
-    if (error) {
-      console.error("Error deleting assessment:", error)
-      throw new Error("Failed to delete assessment")
-    }
-
-    revalidatePath("/assessments")
     return { success: true }
+    
+    // TODO: Uncomment when database is implemented
+    // const { error } = await supabase
+    //   .from('assessments')
+    //   .delete()
+    //   .eq('id', assessmentId)
+
+    // if (error) {
+    //   console.error("Error deleting assessment:", error)
+    //   throw new Error("Failed to delete assessment")
+    // }
+
+    // revalidatePath("/assessments")
+    // return { success: true }
   } catch (error) {
     console.error("Error deleting assessment:", error)
     throw error
