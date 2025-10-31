@@ -31,20 +31,455 @@ export async function getAssessmentQuestions() {
     // TODO: Replace with business database client when implemented
     // const db = await getBusinessDatabaseClient()
     // const { data: questions, error } = await db.from('assessment_questions')
-    
+
     console.warn("getAssessmentQuestions: Business database integration needed")
-    return []
-      .select(`
-        *,
-        assessment_categories(
-          id,
-          name,
-          description,
-          icon
-        )
-      `)
-      .eq('is_active', true)
-      .order('sort_order')
+
+    // Return comprehensive AI Readiness Assessment questions
+    return [
+      // BUSINESS UNDERSTANDING & GOALS
+      {
+        id: "q1",
+        category_id: "cat-1",
+        question_text: "On a scale of 1-10, how familiar are you with what AI can actually do for businesses like yours?",
+        question_type: "scale",
+        options: null,
+        weight: 1.0,
+        sort_order: 1,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-1",
+          name: "Current AI Understanding",
+          description: "Understanding your team's familiarity with AI capabilities",
+          icon: "brain"
+        }
+      },
+      {
+        id: "q2",
+        category_id: "cat-1",
+        question_text: "Have you or anyone on your team used AI tools before (like ChatGPT, Claude, or other AI assistants)?",
+        question_type: "boolean",
+        options: null,
+        weight: 1.0,
+        sort_order: 2,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-1",
+          name: "Current AI Understanding",
+          description: "Understanding your team's familiarity with AI capabilities",
+          icon: "brain"
+        }
+      },
+      {
+        id: "q3",
+        category_id: "cat-1",
+        question_text: "What's the main reason you're interested in AI for your business right now?",
+        question_type: "multiple_choice",
+        options: [
+          "Want to save time on routine tasks",
+          "Looking to improve customer service",
+          "Need to make better decisions from data",
+          "Trying to stay ahead of competitors",
+          "Heard about AI and want to explore possibilities",
+          "Other (please explain below)"
+        ],
+        weight: 1.0,
+        sort_order: 3,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-1",
+          name: "Current AI Understanding",
+          description: "Understanding your team's familiarity with AI capabilities",
+          icon: "brain"
+        }
+      },
+
+      // BUSINESS OPERATIONS
+      {
+        id: "q4",
+        category_id: "cat-2",
+        question_text: "How many people work in your business?",
+        question_type: "multiple_choice",
+        options: [
+          "Just me (solopreneur)",
+          "2-10 employees",
+          "11-50 employees",
+          "51-200 employees",
+          "More than 200 employees"
+        ],
+        weight: 1.0,
+        sort_order: 4,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-2",
+          name: "Business Operations",
+          description: "Understanding your business structure and processes",
+          icon: "users"
+        }
+      },
+      {
+        id: "q5",
+        category_id: "cat-2",
+        question_text: "What type of work takes up most of your team's time? (Be honest - we all have them!)",
+        question_type: "multiple_choice",
+        options: [
+          "Answering customer questions",
+          "Doing paperwork and admin tasks",
+          "Finding and managing information",
+          "Creating reports and documents",
+          "Scheduling and coordinating",
+          "All of the above"
+        ],
+        weight: 1.0,
+        sort_order: 5,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-2",
+          name: "Business Operations",
+          description: "Understanding your business structure and processes",
+          icon: "users"
+        }
+      },
+      {
+        id: "q6",
+        category_id: "cat-2",
+        question_text: "If you could eliminate one repetitive task from your daily work, what would it be?",
+        question_type: "text",
+        options: null,
+        weight: 1.0,
+        sort_order: 6,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-2",
+          name: "Business Operations",
+          description: "Understanding your business structure and processes",
+          icon: "users"
+        }
+      },
+
+      // DATA & INFORMATION
+      {
+        id: "q7",
+        category_id: "cat-3",
+        question_text: "How do you currently keep track of important business information?",
+        question_type: "multiple_choice",
+        options: [
+          "Mostly in my head or notes",
+          "Paper files and folders",
+          "Spreadsheets (Excel, Google Sheets)",
+          "Simple software (QuickBooks, etc.)",
+          "Business software with reports",
+          "We don't really track it systematically"
+        ],
+        weight: 1.0,
+        sort_order: 7,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-3",
+          name: "Data & Information",
+          description: "Understanding how you manage business information",
+          icon: "database"
+        }
+      },
+      {
+        id: "q8",
+        category_id: "cat-3",
+        question_text: "When you need to make an important business decision, how do you figure out what to do?",
+        question_type: "multiple_choice",
+        options: [
+          "Go with my gut feeling",
+          "Ask trusted friends or advisors",
+          "Look at basic sales numbers",
+          "Check reports and trends",
+          "We don't have a formal process"
+        ],
+        weight: 1.0,
+        sort_order: 8,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-3",
+          name: "Data & Information",
+          description: "Understanding how you manage business information",
+          icon: "database"
+        }
+      },
+      {
+        id: "q9",
+        category_id: "cat-3",
+        question_text: "Do you have customer information (emails, phone numbers, purchase history) that you could use better?",
+        question_type: "boolean",
+        options: null,
+        weight: 1.0,
+        sort_order: 9,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-3",
+          name: "Data & Information",
+          description: "Understanding how you manage business information",
+          icon: "database"
+        }
+      },
+
+      // TECHNICAL READINESS
+      {
+        id: "q10",
+        category_id: "cat-4",
+        question_text: "How comfortable are you with trying new software or technology?",
+        question_type: "scale",
+        options: null,
+        weight: 1.0,
+        sort_order: 10,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-4",
+          name: "Technical Readiness",
+          description: "Assessing your comfort with technology",
+          icon: "computer"
+        }
+      },
+      {
+        id: "q11",
+        category_id: "cat-4",
+        question_text: "Who handles technical stuff in your business?",
+        question_type: "multiple_choice",
+        options: [
+          "I do everything myself",
+          "We have a part-time IT person",
+          "We have a full-time technical person",
+          "We use outside contractors",
+          "We don't really have anyone technical"
+        ],
+        weight: 1.0,
+        sort_order: 11,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-4",
+          name: "Technical Readiness",
+          description: "Assessing your comfort with technology",
+          icon: "computer"
+        }
+      },
+      {
+        id: "q12",
+        category_id: "cat-4",
+        question_text: "Are your current business systems (website, email, software) all connected and working together?",
+        question_type: "boolean",
+        options: null,
+        weight: 1.0,
+        sort_order: 12,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-4",
+          name: "Technical Readiness",
+          description: "Assessing your comfort with technology",
+          icon: "computer"
+        }
+      },
+
+      // BUDGET & INVESTMENT
+      {
+        id: "q13",
+        category_id: "cat-5",
+        question_text: "How much could you realistically invest monthly to save 10 hours of work per week?",
+        question_type: "multiple_choice",
+        options: [
+          "Less than $100/month",
+          "$100-300/month",
+          "$300-1000/month",
+          "$1000-3000/month",
+          "More than $3000/month",
+          "I'd need to see the ROI first"
+        ],
+        weight: 1.0,
+        sort_order: 13,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-5",
+          name: "Budget & Investment",
+          description: "Understanding your investment capacity",
+          icon: "dollar-sign"
+        }
+      },
+      {
+        id: "q14",
+        category_id: "cat-5",
+        question_text: "How do you usually decide whether to invest in something new for your business?",
+        question_type: "multiple_choice",
+        options: [
+          "If it saves time, I'm interested",
+          "I need to see clear ROI within 3 months",
+          "I think long-term (1+ years)",
+          "I get advice from others first",
+          "I'm pretty cautious with spending"
+        ],
+        weight: 1.0,
+        sort_order: 14,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-5",
+          name: "Budget & Investment",
+          description: "Understanding your investment capacity",
+          icon: "dollar-sign"
+        }
+      },
+
+      // TEAM & CULTURE
+      {
+        id: "q15",
+        category_id: "cat-6",
+        question_text: "How would your team react if you suggested using AI to help with their work?",
+        question_type: "multiple_choice",
+        options: [
+          "Excited and ready to try it",
+          "Curious but a little nervous",
+          "Skeptical but open-minded",
+          "Worried about job security",
+          "Probably resistant to change"
+        ],
+        weight: 1.0,
+        sort_order: 15,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-6",
+          name: "Team & Culture",
+          description: "Understanding your team's openness to change",
+          icon: "heart"
+        }
+      },
+      {
+        id: "q16",
+        category_id: "cat-6",
+        question_text: "What's the biggest change your business has gone through in the last 2 years?",
+        question_type: "text",
+        options: null,
+        weight: 1.0,
+        sort_order: 16,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-6",
+          name: "Team & Culture",
+          description: "Understanding your team's openness to change",
+          icon: "heart"
+        }
+      },
+
+      // CUSTOMER IMPACT
+      {
+        id: "q17",
+        category_id: "cat-7",
+        question_text: "How do your customers currently interact with your business?",
+        question_type: "multiple_choice",
+        options: [
+          "Mostly in-person or phone calls",
+          "Email and website",
+          "Social media and messaging",
+          "Mobile app",
+          "All of the above"
+        ],
+        weight: 1.0,
+        sort_order: 17,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-7",
+          name: "Customer Experience",
+          description: "Understanding your customer interactions",
+          icon: "message-circle"
+        }
+      },
+      {
+        id: "q18",
+        category_id: "cat-7",
+        question_text: "What's one thing your customers wish you could do better or faster?",
+        question_type: "text",
+        options: null,
+        weight: 1.0,
+        sort_order: 18,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-7",
+          name: "Customer Experience",
+          description: "Understanding your customer interactions",
+          icon: "message-circle"
+        }
+      },
+
+      // FINAL THOUGHTS
+      {
+        id: "q19",
+        category_id: "cat-8",
+        question_text: "On a scale of 1-10, how urgently does your business need to work smarter, not harder?",
+        question_type: "scale",
+        options: null,
+        weight: 1.0,
+        sort_order: 19,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-8",
+          name: "Priorities & Timeline",
+          description: "Understanding your urgency and priorities",
+          icon: "clock"
+        }
+      },
+      {
+        id: "q20",
+        category_id: "cat-8",
+        question_text: "What's your biggest concern or question about using AI in your business?",
+        question_type: "text",
+        options: null,
+        weight: 1.0,
+        sort_order: 20,
+        is_required: true,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        assessment_categories: {
+          id: "cat-8",
+          name: "Priorities & Timeline",
+          description: "Understanding your urgency and priorities",
+          icon: "clock"
+        }
+      }
+    ]
+
+    // TODO: Uncomment when database is implemented
+    /*
+    const { data: questions, error } = await query
 
     if (error) {
       console.error("Error fetching assessment questions:", error)
@@ -52,6 +487,7 @@ export async function getAssessmentQuestions() {
     }
 
     return questions || []
+    */
   } catch (error) {
     console.error("Error fetching assessment questions:", error)
     return []
@@ -62,35 +498,16 @@ export async function getAssessmentQuestions() {
 export async function getAssessmentQuestionsByCategory(categoryId?: string) {
   try {
     // TODO: Replace with business database client when implemented
-    // const db = await getBusinessDatabaseClient()
-    // let query = db.from('assessment_questions')
-    
     console.warn("getAssessmentQuestionsByCategory: Business database integration needed")
-    return []
-      .select(`
-        *,
-        assessment_categories(
-          id,
-          name,
-          description,
-          icon
-        )
-      `)
-      .eq('is_active', true)
-      .order('sort_order')
+
+    // Get all questions and filter by category if needed
+    const allQuestions = await getAssessmentQuestions()
 
     if (categoryId) {
-      query = query.eq('category_id', categoryId)
+      return allQuestions.filter(q => q.category_id === categoryId)
     }
 
-    const { data: questions, error } = await query
-
-    if (error) {
-      console.error("Error fetching assessment questions by category:", error)
-      return []
-    }
-
-    return questions || []
+    return allQuestions
   } catch (error) {
     console.error("Error fetching assessment questions by category:", error)
     return []
@@ -101,21 +518,83 @@ export async function getAssessmentQuestionsByCategory(categoryId?: string) {
 export async function getAssessmentCategories() {
   try {
     // TODO: Replace with business database client when implemented
-    // const db = await getBusinessDatabaseClient()
-    // const { data: categories, error } = await db.from('assessment_categories')
-    
     console.warn("getAssessmentCategories: Business database integration needed")
-    return []
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order')
 
-    if (error) {
-      console.error("Error fetching assessment categories:", error)
-      return []
-    }
-
-    return categories || []
+    // Return comprehensive assessment categories
+    return [
+      {
+        id: "cat-1",
+        name: "Current AI Understanding",
+        description: "Understanding your team's familiarity with AI capabilities",
+        icon: "brain",
+        sort_order: 1,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-2",
+        name: "Business Operations",
+        description: "Understanding your business structure and processes",
+        icon: "users",
+        sort_order: 2,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-3",
+        name: "Data & Information",
+        description: "Understanding how you manage business information",
+        icon: "database",
+        sort_order: 3,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-4",
+        name: "Technical Readiness",
+        description: "Assessing your comfort with technology",
+        icon: "computer",
+        sort_order: 4,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-5",
+        name: "Budget & Investment",
+        description: "Understanding your investment capacity",
+        icon: "dollar-sign",
+        sort_order: 5,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-6",
+        name: "Team & Culture",
+        description: "Understanding your team's openness to change",
+        icon: "heart",
+        sort_order: 6,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-7",
+        name: "Customer Experience",
+        description: "Understanding your customer interactions",
+        icon: "message-circle",
+        sort_order: 7,
+        is_active: true,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: "cat-8",
+        name: "Priorities & Timeline",
+        description: "Understanding your urgency and priorities",
+        icon: "clock",
+        sort_order: 8,
+        is_active: true,
+        created_at: new Date().toISOString()
+      }
+    ]
   } catch (error) {
     console.error("Error fetching assessment categories:", error)
     return []
@@ -142,6 +621,7 @@ export async function submitAssessment(formData: FormData) {
     const questions = await getAssessmentQuestions()
     let totalScore = 0
     let validResponses = 0
+    const responses: { [key: string]: string } = {}
 
     for (const question of questions) {
       const response = formData.get(`question_${question.id}`) as string
@@ -150,6 +630,7 @@ export async function submitAssessment(formData: FormData) {
         const score = calculateQuestionScore(response, question)
         totalScore += score
         validResponses++
+        responses[question.id] = response
 
         // TODO: Save the response to Neon PostgreSQL when database is implemented
         /* 
@@ -166,6 +647,22 @@ export async function submitAssessment(formData: FormData) {
     // Calculate completion percentage and overall score
     const completionPercentage = (validResponses / questions.length) * 100
     const overallScore = validResponses > 0 ? totalScore / validResponses : 0
+
+    // Send email notification
+    try {
+      await sendAssessmentEmail({
+        userId,
+        title,
+        responses,
+        questions,
+        overallScore,
+        completionPercentage,
+        submittedAt: new Date().toISOString()
+      })
+    } catch (emailError) {
+      console.error("Error sending assessment email:", emailError)
+      // Don't fail the submission if email fails
+    }
 
     // TODO: Update the assessment with the scores in Neon PostgreSQL when database is implemented
     /*
@@ -521,4 +1018,150 @@ export const deleteAssessmentAction = deleteAssessment
 // Legacy function for assessment reports
 export async function generateAssessmentReport(assessmentId: string) {
   return { success: true, message: "Assessment report generation not implemented yet" }
+}
+
+// Email function to send assessment results
+async function sendAssessmentEmail(data: {
+  userId: string
+  title: string
+  responses: { [key: string]: string }
+  questions: any[]
+  overallScore: number
+  completionPercentage: number
+  submittedAt: string
+}) {
+  try {
+    // Format the assessment data for email
+    const emailContent = formatAssessmentEmailContent(data)
+    
+    // Try using Resend API first (preferred)
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = await import('resend')
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      
+      await resend.emails.send({
+        from: 'assessments@curveai.com',
+        to: 'donjon.systems@gmail.com',
+        subject: `New Assessment Submitted: ${data.title}`,
+        html: emailContent
+      })
+      return
+    }
+    
+    // Fallback to SendGrid
+    if (process.env.SENDGRID_API_KEY) {
+      const sgMail = await import('@sendgrid/mail')
+      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY)
+      
+      await sgMail.default.send({
+        to: 'donjon.systems@gmail.com',
+        from: 'assessments@curveai.com',
+        subject: `New Assessment Submitted: ${data.title}`,
+        html: emailContent
+      })
+      return
+    }
+    
+    // If no email service is configured, log a warning
+    console.warn("No email service configured. Assessment data:", {
+      userId: data.userId,
+      title: data.title,
+      score: data.overallScore,
+      completionPercentage: data.completionPercentage
+    })
+  } catch (error) {
+    console.error("Error in sendAssessmentEmail:", error)
+    throw error
+  }
+}
+
+// Helper function to format assessment data as HTML email
+function formatAssessmentEmailContent(data: {
+  userId: string
+  title: string
+  responses: { [key: string]: string }
+  questions: any[]
+  overallScore: number
+  completionPercentage: number
+  submittedAt: string
+}): string {
+  const questionsMap = new Map(data.questions.map(q => [q.id, q]))
+  
+  let responsesHtml = `
+    <h3>Assessment Responses:</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <thead style="background-color: #f5f5f5;">
+        <tr>
+          <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Question</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Response</th>
+        </tr>
+      </thead>
+      <tbody>
+  `
+  
+  for (const [questionId, response] of Object.entries(data.responses)) {
+    const question = questionsMap.get(questionId)
+    const questionText = question?.question_text || questionId
+    responsesHtml += `
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd; vertical-align: top;"><strong>${questionText}</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">${response}</td>
+      </tr>
+    `
+  }
+  
+  responsesHtml += `
+      </tbody>
+    </table>
+  `
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; color: #333; }
+          .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+          .header { background-color: #0076FF; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+          .header h1 { margin: 0; }
+          .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+          .stat-box { background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0076FF; border-radius: 3px; }
+          .stat-box h3 { margin: 0 0 10px 0; color: #0076FF; }
+          .stat-box p { margin: 0; font-size: 24px; font-weight: bold; }
+          .info-box { background-color: #f0f0f0; padding: 15px; border-radius: 3px; margin-bottom: 20px; }
+          .footer { color: #999; font-size: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✅ Assessment Submitted</h1>
+            <p>${data.title}</p>
+          </div>
+          
+          <div class="info-box">
+            <p><strong>Submission Time:</strong> ${new Date(data.submittedAt).toLocaleString()}</p>
+            <p><strong>User ID:</strong> ${data.userId}</p>
+          </div>
+          
+          <div class="stats">
+            <div class="stat-box">
+              <h3>Overall Score</h3>
+              <p>${data.overallScore.toFixed(1)}/10</p>
+            </div>
+            <div class="stat-box">
+              <h3>Completion</h3>
+              <p>${data.completionPercentage.toFixed(0)}%</p>
+            </div>
+          </div>
+          
+          ${responsesHtml}
+          
+          <div class="footer">
+            <p>This assessment was submitted through the Curve AI Solutions assessment system.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `
 }
