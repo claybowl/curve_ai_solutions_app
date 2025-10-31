@@ -70,3 +70,10 @@ export async function requireAdmin() {
   return user
 }
 
+/**
+ * Verify admin role (alias for isUserAdmin for backward compatibility)
+ */
+export async function verifyAdminRole(): Promise<boolean> {
+  return await isUserAdmin()
+}
+

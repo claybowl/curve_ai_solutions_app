@@ -1,91 +1,55 @@
 "use client"
 
-import { createClient } from '@supabase/supabase-js'
+/**
+ * DEPRECATED: This project uses Stack Auth for authentication and Neon PostgreSQL for database.
+ * This file exists only for backward compatibility with legacy imports.
+ * 
+ * Please migrate to:
+ * - Stack Auth: import from '@/lib/stack-auth-client' or '@/stack/client'
+ * - Database: import from '@/lib/db.ts' (Neon PostgreSQL)
+ */
 
-// Get Supabase URL and anon key from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables are not set. Supabase client will not work properly.')
+// Create a minimal mock that won't break during build
+const mockClient = {
+  auth: {
+    getUser: async () => ({ data: { user: null }, error: null }),
+    getSession: async () => ({ data: { session: null }, error: null }),
+    signInWithPassword: async () => ({ data: null, error: { message: 'Use Stack Auth instead' } }),
+    signOut: async () => ({ error: null }),
+  },
+  from: () => ({
+    select: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
+    insert: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
+    update: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
+    delete: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
+  }),
+  channel: () => ({
+    on: () => ({ subscribe: () => {} }),
+    subscribe: () => {},
+  }),
 }
 
-// Create a browser Supabase client
-export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        storageKey: 'supabase.auth.token',
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        flowType: 'pkce',
-      },
-    })
-  : (() => {
-      // Return a mock client in case of missing env vars (for build-time)
-      return {
-        auth: {
-          getUser: async () => ({ data: { user: null }, error: { message: 'Supabase not configured' } }),
-          getSession: async () => ({ data: { session: null }, error: { message: 'Supabase not configured' } }),
-          signInWithPassword: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
-          signOut: async () => ({ error: { message: 'Supabase not configured' } }),
-        },
-        from: () => ({
-          select: () => ({ data: null, error: { message: 'Supabase not configured' } }),
-          insert: () => ({ data: null, error: { message: 'Supabase not configured' } }),
-          update: () => ({ data: null, error: { message: 'Supabase not configured' } }),
-          delete: () => ({ data: null, error: { message: 'Supabase not configured' } }),
-        }),
-        channel: () => ({
-          on: () => ({ subscribe: () => {} }),
-          subscribe: () => {},
-        }),
-      } as any
-    })()
+export const supabase = mockClient as any
 
-/**
- * Get the current authenticated user
- */
 export async function getCurrentUser() {
-  try {
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return null
-    }
-    
-    const { data: { user }, error } = await supabase.auth.getUser()
-    
-    if (error || !user) {
-      return null
-    }
-    
-    return user
-  } catch (error) {
-    console.error('Error getting current user:', error)
-    return null
-  }
+  const { getCurrentUserClient } = await import('@/lib/stack-auth-client')
+  return getCurrentUserClient()
 }
 
-/**
- * Update user metadata
- */
 export async function updateUserMetadata(updates: Record<string, any>) {
-  try {
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error('Supabase not configured')
-    }
-    
-    const { data, error } = await supabase.auth.updateUser({
-      data: updates,
-    })
-    
-    if (error) {
-      throw error
-    }
-    
-    return data
-  } catch (error) {
-    console.error('Error updating user metadata:', error)
-    throw error
-  }
+  throw new Error('Supabase is not used. Please use Stack Auth user management APIs instead.')
 }
 
+export async function signInWithEmail(email: string, password: string) {
+  const { signInWithEmail: stackSignIn } = await import('@/lib/stack-auth-client')
+  return stackSignIn(email, password)
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  metadata: Record<string, any> = {}
+) {
+  const { signUpWithEmail: stackSignUp } = await import('@/lib/stack-auth-client')
+  return stackSignUp(email, password, metadata.displayName)
+}

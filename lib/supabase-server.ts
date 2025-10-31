@@ -1,47 +1,44 @@
-import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+/**
+ * DEPRECATED: This project uses Stack Auth for authentication and Neon PostgreSQL for database.
+ * This file exists only for backward compatibility with legacy imports.
+ * 
+ * Please migrate to:
+ * - Stack Auth Server: import from '@/lib/stack-auth-server'
+ * - Database: import from '@/lib/db.ts' (Neon PostgreSQL)
+ */
 
 /**
  * Create a Supabase client for server-side operations
- * This client uses cookies to maintain authentication state
+ * DEPRECATED: Use Stack Auth or Neon PostgreSQL instead
  */
 export async function createServerSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables')
-  }
-
-  const cookieStore = await cookies()
-  
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-      // Get session from cookies if available
-      getSession: async () => {
-        const accessToken = cookieStore.get('sb-access-token')?.value
-        const refreshToken = cookieStore.get('sb-refresh-token')?.value
-        
-        if (!accessToken) {
-          return { data: { session: null }, error: null }
-        }
-        
-        // Return a session-like object (simplified - you may need to adjust this)
-        return {
-          data: {
-            session: {
-              access_token: accessToken,
-              refresh_token: refreshToken,
-              expires_at: Date.now() + 3600 * 1000, // 1 hour from now
-            },
-          },
-          error: null,
-        }
-      },
-    },
-  })
+  throw new Error(
+    'Supabase is not used in this project. ' +
+    'Please use Stack Auth server APIs (from "@/lib/stack-auth-server") ' +
+    'or Neon PostgreSQL (from "@/lib/db.ts") for database operations.'
+  )
 }
 
+/**
+ * Backward-compatible alias expected by server actions
+ * DEPRECATED: Use Stack Auth or Neon PostgreSQL instead
+ */
+export async function createClient() {
+  throw new Error(
+    'Supabase is not used. Please use Stack Auth server APIs or Neon PostgreSQL instead.'
+  )
+}
+
+/**
+ * Verify that the current authenticated user has admin role.
+ * DEPRECATED: Use Stack Auth admin checks instead
+ */
+export async function verifyAdminRole(): Promise<boolean> {
+  try {
+    const { verifyAdminRole: stackVerifyAdmin } = await import('@/lib/stack-auth-server')
+    return await stackVerifyAdmin()
+  } catch {
+    // Fallback to false if Stack Auth not available
+    return false
+  }
+}

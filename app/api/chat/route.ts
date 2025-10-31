@@ -152,7 +152,8 @@ export async function POST(req: Request) {
       aiResponse = String(aiResponse)
     }
     
-    console.log('Final aiResponse type:', typeof aiResponse, 'Length:', aiResponse.length)
+    // Debug: keep type only to avoid accessing length on unexpected values
+    console.log('Final aiResponse type:', typeof aiResponse)
 
     // Format as AI SDK data stream format that useChat expects
     // The AI SDK expects a data stream with format: "0:{"text":"..."}\n"
