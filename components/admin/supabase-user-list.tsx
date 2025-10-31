@@ -16,7 +16,7 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabase } from '@/lib/supabase-client'
 
 // Updated type to match V2 schema (profiles table)
 type User = {
@@ -50,8 +50,6 @@ export function SupabaseUserList() {
     setError(null)
     try {
       console.log('Fetching users from Supabase...')
-      
-      const supabase = createClientComponentClient()
       
       // Check if current user is authenticated and is admin
       const { data: { session } } = await supabase.auth.getSession()
@@ -94,8 +92,6 @@ export function SupabaseUserList() {
   // Update user role
   const updateUserRole = async (userId: string, role: 'admin' | 'client' | 'consultant') => {
     try {
-      const supabase = createClientComponentClient()
-      
       // Update role in profiles table
       const { error } = await supabase
         .from('profiles')

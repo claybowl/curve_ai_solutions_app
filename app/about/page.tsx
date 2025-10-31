@@ -2,7 +2,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SkyBackground } from "@/components/sky-background"
-import { VideoAvatar } from "@/components/video-avatar"
 import {
   Check,
   Calendar,
@@ -17,8 +16,8 @@ import {
 } from "lucide-react"
 
 export const metadata = {
-  title: "About Curve AI Solutions",
-  description: "Learn about our mission to transform businesses with AI agent infrastructure solutions.",
+  title: "About Donjon Intelligence Systems",
+  description: "Learn about our mission to build resilient AI intelligence platforms that think, adapt, and endure.",
 }
 
 export default function AboutPage() {
@@ -27,16 +26,8 @@ export default function AboutPage() {
     {
       name: "Clayton Christian",
       role: "Founder & CTO",
-      bio: "Machine Learning Engineering diploma holder with extreme creativity and dedication to development. AI visionary with extensive experience in building agent-based systems and trading infrastructure.",
+      bio: "Machine Learning Engineering diploma holder with extreme creativity and dedication to development. AI visionary with extensive experience in building agent-based systems, trading infrastructure, and resilient intelligence platforms. Passionate about creating AI systems that think, adapt, and endure.",
       image: "/images/clayton_christian.png",
-      video: "/videos/austin_belcheff.mp4",
-    },
-    {
-      name: "Austin Belcheff",
-      role: "Founder & CEO",
-      bio: "Business graduate from Oklahoma State University and a creative force driving innovation within the company.",
-      image: "/images/austin_belcheff.png",
-      video: "/videos/clayton_christian.mp4",
     },
   ]
 
@@ -129,10 +120,10 @@ export default function AboutPage() {
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white mb-6">
-              About Curve AI Solutions
+              About Donjon Intelligence Systems
             </h1>
             <p className="max-w-[800px] mx-auto text-gray-100 md:text-xl mb-8">
-              Transforming Business Through Accessible AI
+              Where We Keep Intelligence Secure
             </p>
           </div>
         </div>
@@ -156,7 +147,7 @@ export default function AboutPage() {
               <div className="mt-6 text-center">
                 <h3 className="text-xl font-semibold text-[#1A365D] dark:text-blue-300">See Our Vision in Action</h3>
                 <p className="text-gray-600 dark:text-gray-300 mt-2">
-                  Watch how Curve AI Solutions is transforming businesses with accessible AI technology
+                  Watch how Donjon Intelligence Systems is building resilient AI platforms that think, adapt, and endure
                 </p>
               </div>
             </div>
@@ -170,9 +161,9 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto">
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="lead text-xl text-gray-700 dark:text-gray-300">
-                At Curve AI Solutions, we're not just another tech company. We're a team of innovators, problem-solvers,
-                and business enthusiasts who believe that artificial intelligence should be accessible, practical, and
-                valuable for businesses of all sizes—including yours.
+                At Donjon Intelligence Systems, we engineer resilient intelligence platforms that integrate knowledge, 
+                automation, and reasoning into architectures built to scale and evolve. We're not just building AI systems—we're 
+                creating secure, adaptable intelligence that endures.
               </p>
             </div>
           </div>
@@ -186,15 +177,18 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Our Story</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                Founded in Tulsa with a simple yet powerful vision: to demystify AI and make it work for real businesses
-                facing real challenges. We saw too many small business owners feeling left behind by the AI
-                revolution—either intimidated by the technical complexity or unsure how this technology could actually
-                improve their bottom line.
+                Founded with a vision to build AI systems that don't just process information—they understand context, 
+                learn from experience, and adapt to changing conditions. The Donjon represents our commitment to securing 
+                intelligence: creating platforms that protect knowledge while making it accessible and actionable.
               </p>
               <p className="dark:text-gray-300">
-                That's when we asked ourselves: What if AI could be both powerful AND approachable? What if we could
-                translate the complex world of artificial intelligence into solutions that any business owner could
-                understand, implement, and benefit from immediately?
+                We recognized that modern AI systems need more than raw computational power. They need architecture that 
+                endures, knowledge systems that evolve, and security that protects what matters most. The Donjon is where 
+                we keep intelligence secure—not locked away, but carefully guarded and intelligently deployed.
+              </p>
+              <p className="dark:text-gray-300">
+                Our approach combines cutting-edge machine learning with robust engineering principles, creating systems 
+                that think critically, adapt dynamically, and operate reliably in production environments.
               </p>
             </div>
           </div>
@@ -207,10 +201,10 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">What We Do</h2>
           <div className="max-w-3xl mx-auto mb-12">
             <p className="text-lg text-center text-gray-700 dark:text-gray-300">
-              We create custom AI chatbots and workflow solutions (we call them Agentic AI Solutions) that handle the
-              mundane, repetitive tasks consuming your valuable time. Our CurveAI technology doesn't just process
-              data—it understands context, learns your business needs, and communicates with a personality tailored to
-              your company culture.
+              We engineer intelligent platforms that integrate knowledge graphs, automated reasoning, and secure data 
+              architectures. Our systems don't just execute tasks—they build understanding, maintain context across 
+              interactions, and evolve with your mission. We specialize in agent-based AI systems, workflow orchestration, 
+              and knowledge management infrastructure.
             </p>
           </div>
 
@@ -234,24 +228,20 @@ export default function AboutPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Why Small Business Owners Choose Us</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Why Organizations Choose Us</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                Unlike large corporate AI solutions that require teams of engineers to implement, or basic chatbots that
-                can only follow simple scripts, our technology strikes the perfect balance: sophisticated enough to
-                deliver real results, simple enough that you don't need a computer science degree to use it.
+                In a world where AI systems are often fragile, opaque, or resource-intensive, we build intelligence platforms 
+                that are resilient, transparent, and efficient. Our systems are designed for production environments where 
+                reliability and security matter as much as capability.
               </p>
-              <p className="dark:text-gray-300">When you work with Curve AI Solutions, you get:</p>
+              <p className="dark:text-gray-300">When you work with Donjon Intelligence Systems, you get:</p>
               <ul className="dark:text-gray-300">
-                <li>Practical AI tools designed for your specific business challenges—not theoretical capabilities</li>
-                <li>Solutions that speak human—no technical jargon, no endless documentation</li>
-                <li>
-                  Measurable results with clear ROI—we're about improving your business, not just showcasing fancy
-                  technology
-                </li>
-                <li>
-                  A partner who understands your business needs and translates them into effective AI implementations
-                </li>
+                <li><strong>Resilient Architecture:</strong> Systems built to handle edge cases, recover from failures, and adapt to changing conditions</li>
+                <li><strong>Secure Intelligence:</strong> Knowledge systems that protect sensitive information while remaining accessible and actionable</li>
+                <li><strong>Evolutionary Design:</strong> Platforms that learn and improve over time, not static solutions that become obsolete</li>
+                <li><strong>Production-Ready:</strong> Engineered for reliability, scalability, and maintainability in real-world environments</li>
+                <li><strong>Integrated Solutions:</strong> Seamless integration of knowledge management, workflow automation, and AI reasoning</li>
               </ul>
             </div>
           </div>
@@ -265,14 +255,14 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Our Approach</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                We believe in starting with your business problems, not with technology. Our process is straightforward:
+                We build intelligence systems through a rigorous engineering process focused on resilience and security:
               </p>
               <ol className="dark:text-gray-300">
-                <li>Listen to understand your specific challenges and goals</li>
-                <li>Design a customized AI solution that addresses your unique needs</li>
-                <li>Implement the technology seamlessly into your existing workflows</li>
-                <li>Measure the results to ensure you're getting real value</li>
-                <li>Refine the solution based on feedback and changing business needs</li>
+                <li><strong>Architecture Design:</strong> Design robust system architectures that can scale and adapt</li>
+                <li><strong>Knowledge Integration:</strong> Integrate knowledge management, memory systems, and reasoning capabilities</li>
+                <li><strong>Secure Implementation:</strong> Build with security and privacy as foundational principles</li>
+                <li><strong>Testing & Validation:</strong> Rigorous testing under real-world conditions to ensure reliability</li>
+                <li><strong>Continuous Evolution:</strong> Systems that learn, adapt, and improve over time based on experience</li>
               </ol>
             </div>
           </div>
@@ -283,13 +273,13 @@ export default function AboutPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">The Magic Behind Our Solutions</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">The Technology Behind Our Solutions</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                While we keep the technical talk to a minimum when working with clients, rest assured that under the
-                hood, our solutions leverage cutting-edge AI frameworks and advanced software engineering. Our team
-                brings expertise in machine learning, natural language processing, and data integration—all so you don't
-                have to.
+                Our platforms leverage advanced AI and software engineering principles: knowledge graph architectures for 
+                persistent memory, agent-based systems for autonomous operation, workflow orchestration for complex 
+                processes, and secure data architectures for protecting sensitive information. We combine state-of-the-art 
+                machine learning with robust engineering practices to create systems that are both powerful and reliable.
               </p>
             </div>
           </div>
@@ -300,17 +290,15 @@ export default function AboutPage() {
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Community Commitment</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Open Development & Knowledge Sharing</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                We're deeply invested in the Tulsa business community and beyond. Through our AI Literacy Program, we're
-                helping local business leaders, professionals, and interested parties understand and leverage AI
-                technologies. Our seminars, online content, and collaborations with local businesses bring AI education
-                closer to where people live and work.
+                We believe in transparent development practices and contributing to the broader AI and software engineering 
+                communities. Our work is grounded in open-source principles, rigorous documentation, and knowledge sharing.
               </p>
               <p className="dark:text-gray-300">
-                By building strategic partnerships with other tech companies, educational institutions, and industry
-                leaders, we're creating an ecosystem where businesses of all sizes can thrive in the digital age.
+                Through partnerships with research institutions, technology companies, and the developer community, we're 
+                helping advance the state of resilient AI systems and secure intelligence platforms.
               </p>
             </div>
           </div>
@@ -324,16 +312,18 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">What Sets Us Apart</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                The difference is in our philosophy: we believe AI should work for you, not the other way around. Many
-                AI companies make you adapt to their technology; we adapt our technology to fit your business.
+                The difference is in our engineering philosophy: we build systems that endure. Many AI solutions are 
+                prototypes that work in demos but fail in production. We engineer systems for reliability, security, and 
+                long-term operation.
               </p>
               <p className="dark:text-gray-300">
-                Our solutions don't require you to learn new systems, hire technical staff, or completely overhaul your
-                operations. Instead, we meet you where you are and enhance what you're already doing.
+                Our platforms integrate knowledge management with agent-based reasoning, creating systems that remember, 
+                learn, and adapt. Unlike stateless APIs or simple chatbots, our solutions maintain context, build 
+                understanding over time, and evolve with experience.
               </p>
               <p className="dark:text-gray-300">
-                And unlike impersonal chatbots or generic AI tools, our solutions come with personalities that reflect
-                your brand and create engaging experiences for both your team and your customers.
+                Security isn't an afterthought—it's foundational. We design systems that protect intelligence while 
+                making it accessible and actionable. The Donjon keeps your intelligence secure, not locked away.
               </p>
             </div>
           </div>
@@ -345,25 +335,17 @@ export default function AboutPage() {
         <div className="container px-4 md:px-6 mx-auto">
           <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-12 text-center">Meet Our Team</h2>
 
-          <div className="max-w-3xl mx-auto mb-12">
-            <img src="/path/to/builders+backers_shirt.jpg" alt="Founders Austin and Clayton" className="w-full h-auto" />
-          </div>
-
           <div className="flex flex-wrap justify-center gap-16 max-w-5xl mx-auto">
             {teamMembers.map((member, index) => (
               <div key={index} className="text-center max-w-xs">
                 <div className="mb-4 relative mx-auto w-48 h-48 overflow-hidden">
-                  {member.video ? (
-                    <VideoAvatar src={member.video} alt={member.name} className="w-48 h-48" />
-                  ) : (
-                    <div className="rounded-full overflow-hidden w-48 h-48">
-                      <img
-                        src={member.image || "/placeholder.svg"}
-                        alt={member.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
+                  <div className="rounded-full overflow-hidden w-48 h-48 border-4 border-[#4169E1] dark:border-[#4169E1] shadow-lg">
+                    <img
+                      src={member.image || "/placeholder.svg"}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
                 <h3 className="text-xl font-bold text-[#1A365D] dark:text-blue-300">{member.name}</h3>
                 <p className="text-[#0076FF] dark:text-blue-400 font-medium mb-2">{member.role}</p>
@@ -399,22 +381,22 @@ export default function AboutPage() {
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Ready to Transform Your Business?</h2>
+            <h2 className="text-3xl font-bold text-[#1A365D] dark:text-white mb-6 text-center">Ready to Build Resilient Intelligence?</h2>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="dark:text-gray-300">
-                Imagine significantly reducing your workload, automating data analysis, and integrating information
-                across your systems—all while maintaining the human touch that makes your business special.
-              </p>
-              <p className="dark:text-gray-300">That's not just a dream; it's what we deliver every day to businesses like yours.</p>
-              <p className="dark:text-gray-300">
-                Whether you're looking to streamline customer service, automate administrative tasks, or gain insights
-                from your business data without the headache, we have the expertise, tools, and approach to make it
-                happen.
+                Imagine AI systems that remember context, learn from experience, and adapt to changing conditions. 
+                Systems that integrate knowledge management with autonomous reasoning, creating intelligence that endures 
+                and evolves.
               </p>
               <p className="dark:text-gray-300">
-                Let's take the first step together toward a more efficient, productive, and profitable future for your
-                business. The AI revolution doesn't have to be complicated or confusing—with Curve AI Solutions as your
-                partner, it can be the competitive advantage you've been looking for.
+                Whether you're building agent-based systems, workflow orchestration platforms, or secure knowledge 
+                management infrastructure, we have the expertise to help you create solutions that are both powerful 
+                and production-ready.
+              </p>
+              <p className="dark:text-gray-300">
+                Let's discuss how Donjon Intelligence Systems can help you build resilient AI platforms that think, 
+                adapt, and endure. The future of intelligence isn't just about processing power—it's about architecture 
+                that secures knowledge and systems that evolve.
               </p>
             </div>
           </div>
@@ -454,9 +436,9 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-6">Connect With Us</h2>
             <p className="mb-8 text-xl text-gray-100">
-              Take the first step toward transforming your business with AI that works for you, not against you.
-              Schedule a consultation today, and let's explore how Curve AI Solutions can address your specific business
-              challenges with practical, effective AI tools.
+              Take the first step toward building resilient intelligence platforms that endure. Schedule a consultation 
+              to explore how Donjon Intelligence Systems can help you create AI systems that think, adapt, and secure your 
+              knowledge.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white" asChild>
