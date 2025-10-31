@@ -149,6 +149,10 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap items-center gap-4 md:gap-8">
               <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">Customer Site Template</span>
+                <span className="text-xs bg-donjon-ember text-white px-2 py-0.5 rounded-full">LIVE</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">AiGent® System</span>
                 <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">May 2025</span>
               </div>
@@ -161,13 +165,21 @@ export default function Home() {
                 <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">June 28, 2025</span>
               </div>
             </div>
-            <Button
-              asChild
-              variant="outline"
-              className="text-donjon-indigo border-donjon-indigo dark:text-donjon-indigo dark:border-donjon-indigo dark:hover:bg-donjon-indigo/10"
-            >
-              <Link href="/about">View Full Roadmap</Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                asChild
+                className="bg-donjon-ember text-white hover:bg-donjon-ember/90 font-semibold"
+              >
+                <Link href="/template">See Template</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="text-donjon-indigo border-donjon-indigo dark:text-donjon-indigo dark:border-donjon-indigo dark:hover:bg-donjon-indigo/10"
+              >
+                <Link href="/about">View Full Roadmap</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

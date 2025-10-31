@@ -6,7 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Bot, Send, User, X } from "lucide-react"
 
 export function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: '/api/chat',
+    onError: (error) => {
+      console.error('Chat error:', error)
+    }
+  })
 
   if (!isOpen) return null
 
@@ -28,6 +33,11 @@ export function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
           </CardDescription>
         </CardHeader>
         <CardContent className="p-4 h-[400px] overflow-y-auto flex flex-col gap-4">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg">
+              <p className="text-sm font-medium">Error: {error.message}</p>
+            </div>
+          )}
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
               <Bot className="h-12 w-12 mb-4 text-[#0076FF]" />
@@ -50,7 +60,11 @@ export function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                   <div className="flex-shrink-0 mt-1">
                     {message.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                   </div>
-                  <div className="whitespace-pre-wrap">{message.content}</div>
+                  <div className="whitespace-pre-wrap">
+                    {typeof message.content === 'string' 
+                      ? message.content 
+                      : JSON.stringify(message.content, null, 2)}
+                  </div>
                 </div>
               </div>
             ))

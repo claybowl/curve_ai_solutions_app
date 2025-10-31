@@ -71,10 +71,10 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-lg font-bold text-[#1A365D] dark:text-blue-300 mb-2">Email</h3>
                 <a
-                  href="mailto:info@curveai.com"
+                  href="mailto:donjon.systems@gmail.com"
                   className="text-gray-600 dark:text-gray-300 hover:text-[#0076FF] dark:hover:text-blue-400 transition"
                 >
-                  info@curveai.com
+                  donjon.systems@gmail.com
                 </a>
               </CardContent>
             </Card>
@@ -86,10 +86,10 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-lg font-bold text-[#1A365D] dark:text-blue-300 mb-2">Phone</h3>
                 <a
-                  href="tel:+19181234567"
+                  href="tel:+15397149375"
                   className="text-gray-600 dark:text-gray-300 hover:text-[#0076FF] dark:hover:text-blue-400 transition"
                 >
-                  (918) 123-4567
+                  (539) 714-9375
                 </a>
               </CardContent>
             </Card>
