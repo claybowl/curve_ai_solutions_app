@@ -1,7 +1,7 @@
 import type React from "react"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { redirect } from "next/navigation"
-import { createServerSupabaseClient } from "@/lib/supabase-server"
+import { requireAdmin } from "@/lib/stack-auth-server"
 
 export default async function AdminLayout({
   children,
@@ -9,25 +9,18 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   // SERVER-SIDE AUTH CHECK - CRITICAL SECURITY!
-  const supabase = await createServerSupabaseClient()
-
-  // Check authentication
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    redirect('/login?message=Please log in to access the admin area&callbackUrl=/admin')
-  }
-
-  // Check if user is admin
-  // Users can read their own profile, so use the authenticated client
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('user_id', user.id)
-    .single()
-
-  if (profileError || !profile || profile.role !== 'admin') {
-    redirect('/dashboard?message=Unauthorized - Admin access required')
+  // Stack Auth handles authentication and admin permission checking
+  try {
+    await requireAdmin()
+  } catch (error) {
+    // If not authenticated, redirect to login
+    // If authenticated but not admin, redirect to dashboard
+    const isAuthError = error instanceof Error && error.message.includes('authentication required')
+    if (isAuthError) {
+      redirect('/login?message=Please log in to access the admin area&callbackUrl=/admin')
+    } else {
+      redirect('/dashboard?message=Unauthorized - Admin access required')
+    }
   }
 
   return (

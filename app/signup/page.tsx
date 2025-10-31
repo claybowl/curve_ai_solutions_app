@@ -1,55 +1,54 @@
 /**
- * Login Page using Stack Auth
+ * Sign Up Page using Stack Auth
  * 
- * Custom login form using Stack Auth SDK.
+ * Custom signup form using Stack Auth SDK.
  */
 
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-react'
-import { signInWithEmail, signInWithOAuth } from '@/lib/stack-auth-client'
+import { signUpWithEmail, signInWithOAuth } from '@/lib/stack-auth-client'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams?.get('callbackUrl') || '/dashboard'
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
-      await signInWithEmail(email, password)
+      await signUpWithEmail(email, password, displayName || undefined)
       // Refresh page to update auth state in provider
-      window.location.href = callbackUrl
+      window.location.href = '/dashboard'
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+      setError(err.message || 'Failed to create account')
       setLoading(false)
     }
   }
 
-  const handleOAuthLogin = async (provider: string) => {
+  const handleOAuthSignUp = async (provider: string) => {
     setLoading(true)
     setError(null)
 
     try {
       await signInWithOAuth(provider)
-      // OAuth redirects automatically, so we don't need to navigate
+      // OAuth redirects automatically
     } catch (err: any) {
-      setError(err.message || `Failed to sign in with ${provider}`)
+      setError(err.message || `Failed to sign up with ${provider}`)
       setLoading(false)
     }
   }
@@ -58,9 +57,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Sign in to your account</CardTitle>
+          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
           <CardDescription>
-            Enter your email and password or use a social provider to sign in.
+            Enter your information to create a new account.
           </CardDescription>
           {error && (
             <div className="mt-2 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded">
@@ -69,7 +68,18 @@ export default function LoginPage() {
           )}
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleEmailLogin} className="space-y-4">
+          <form onSubmit={handleSignUp} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="displayName">Name (Optional)</Label>
+              <Input
+                id="displayName"
+                type="text"
+                placeholder="Your name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                disabled={loading}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -87,10 +97,11 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Your password"
+                placeholder="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={8}
                 disabled={loading}
               />
             </div>
@@ -98,10 +109,10 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  Creating account...
                 </>
               ) : (
-                'Sign in'
+                'Create account'
               )}
             </Button>
           </form>
@@ -119,7 +130,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleOAuthLogin('google')}
+                onClick={() => handleOAuthSignUp('google')}
                 disabled={loading}
               >
                 Google
@@ -127,7 +138,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleOAuthLogin('github')}
+                onClick={() => handleOAuthSignUp('github')}
                 disabled={loading}
               >
                 GitHub
@@ -136,9 +147,9 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-blue-500 hover:underline">
-              Sign up
+            Already have an account?{' '}
+            <Link href="/login" className="text-blue-500 hover:underline">
+              Sign in
             </Link>
           </div>
         </CardContent>

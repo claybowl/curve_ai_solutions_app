@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CLAUDE.md</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+html,footer,header{
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Custom MD PDF CSS
+ */
+html,footer,header{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+
+ }
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///r%3A/2.Travail/1.Enseignement/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css"><link rel="stylesheet" href="file:///d%3A/rdaros/Cours/_1.Outils/2.Developpement/1.SCSS/main.css" type="text/css">
+</head>
+
+<body>
+    <h1 id="claudemd">CLAUDE.md</h1>
+<p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
+<h2 id="project-overview">Project Overview</h2>
+<p>Curve AI Solutions is a Next.js web application that offers AI consultation services, assessments, and tools. The platform includes user authentication, an admin dashboard, client-facing interfaces, and a blog section using Notion as a CMS.</p>
+<h2 id="development-commands">Development Commands</h2>
+<pre class="hljs"><code><div><span class="hljs-comment"># Install dependencies</span>
+pnpm install
+
+<span class="hljs-comment"># Start development server</span>
+pnpm dev
+
+<span class="hljs-comment"># Build for production</span>
+pnpm build
+
+<span class="hljs-comment"># Start production server</span>
+pnpm start
+
+<span class="hljs-comment"># Run linting</span>
+pnpm lint
+</div></code></pre>
+<h2 id="database-setup">Database Setup</h2>
+<p>The application uses PostgreSQL hosted on Neon.tech. To set up the database:</p>
+<ol>
+<li>Create a <code>.env.local</code> file with your database credentials:</li>
+</ol>
+<pre class="hljs"><code><div># Database connection 
+DATABASE_URL=postgres://username:password@hostname/database?sslmode=require
+DATABASE_URL_UNPOOLED=postgresql://username:password@hostname/database?sslmode=require
+
+# NextAuth
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+</div></code></pre>
+<ol start="2">
+<li>Initialize the database schema using the SQL in <code>db-schema.sql</code></li>
+</ol>
+<h2 id="core-architecture">Core Architecture</h2>
+<h3 id="1-nextjs-app-router-structure">1. Next.js App Router Structure</h3>
+<ul>
+<li>Routes and pages are defined in the <code>/app</code> directory</li>
+<li>API endpoints are in <code>/app/api/</code></li>
+</ul>
+<h3 id="2-authentication-system">2. Authentication System</h3>
+<ul>
+<li><strong>Primary</strong>: Supabase Authentication with row-level security</li>
+<li>Authentication logic in <code>/lib/auth.ts</code> and <code>/providers/auth-provider.tsx</code></li>
+<li>User roles: admin and client with role-based permissions stored in profiles table</li>
+<li>Middleware protection for admin routes and authenticated areas</li>
+<li>Admin creation via <code>/create-admin</code> page or <code>/api/setup</code> endpoint</li>
+</ul>
+<h3 id="3-database-layer">3. Database Layer</h3>
+<ul>
+<li><strong>Primary</strong>: Supabase PostgreSQL with profiles table for user management</li>
+<li><strong>Legacy</strong>: Neon PostgreSQL for backward compatibility (some features)</li>
+<li>Database utilities in <code>/lib/db.ts</code>, <code>/lib/db-safe.ts</code>, and Supabase clients</li>
+<li>Server actions for secure database operations</li>
+</ul>
+<h3 id="4-admin-dashboard">4. Admin Dashboard</h3>
+<ul>
+<li>Admin routes in <code>/app/admin/</code> with responsive design</li>
+<li>User, consultation, assessment, blog, and tools management</li>
+<li>Stats and activity tracking with visual analytics</li>
+<li>Role-based access control via middleware</li>
+</ul>
+<h3 id="5-client-facing-features">5. Client-Facing Features</h3>
+<ul>
+<li>AI assessments and consultation requests</li>
+<li>Solutions showcase and prompt library</li>
+<li>User profiles and dashboard</li>
+<li>Responsive design for all screen sizes</li>
+</ul>
+<h3 id="6-blog-integration-disabled">6. Blog Integration (Disabled)</h3>
+<ul>
+<li>Blog functionality temporarily disabled for build stability</li>
+<li>Previous Notion integration can be re-enabled if needed</li>
+<li>Static content management for now</li>
+</ul>
+<h2 id="environment-variables">Environment Variables</h2>
+<p><strong>Required for Supabase Authentication:</strong></p>
+<ul>
+<li><code>NEXT_PUBLIC_SUPABASE_URL</code>: Your Supabase project URL</li>
+<li><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>: Supabase anonymous key</li>
+<li><code>SUPABASE_SERVICE_ROLE_KEY</code>: Supabase service role key for admin operations</li>
+</ul>
+<p><strong>Legacy Database (for compatibility):</strong></p>
+<ul>
+<li><code>DATABASE_URL</code>: PostgreSQL connection string (Neon)</li>
+<li><code>NEXTAUTH_SECRET</code>: Secret for any remaining NextAuth compatibility</li>
+<li><code>NEXTAUTH_URL</code>: Application URL</li>
+</ul>
+<p><strong>Optional APIs:</strong></p>
+<ul>
+<li><code>XAI_API_KEY</code>: XAI API for AI features</li>
+<li><code>SENDGRID_API_KEY</code>: Email service integration</li>
+</ul>
+<h2 id="deployment-process">Deployment Process</h2>
+<p>The application is deployed on Vercel. Key deployment requirements:</p>
+<ul>
+<li>Node.js v18+</li>
+<li>Set all environment variables in Vercel project settings</li>
+<li>Database must be accessible from Vercel's deployment region</li>
+</ul>
+<hr>
+<hr>
+<h1 id="project-management">Project Management</h1>
+<p>This section organizes the work being done on this project using Claude Code.</p>
+<h2 id="completed-%E2%9C%85">Completed ✅</h2>
+<ul>
+<li>
+<p><input type="checkbox" id="checkbox0" checked="true"><label for="checkbox0"></label><strong>Switch Authentication System to Supabase Auth</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Migrated from NextAuth.js to Supabase Auth</li>
+<li>✅ Implemented role-based access control with profiles table</li>
+<li>✅ Created admin user management system</li>
+<li>✅ Built responsive login/signup forms with Supabase Auth UI</li>
+<li>✅ Configured middleware for route protection</li>
+<li>✅ Set up Row Level Security policies</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox1" checked="true"><label for="checkbox1"></label><strong>Fix Authentication System Conflicts</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Consolidated to single Supabase authentication system</li>
+<li>✅ Removed conflicting auth methods (NextAuth, simple-admin-auth, session-storage)</li>
+<li>✅ Cleaned up multiple login pages (kept only <code>/login</code>)</li>
+<li>✅ Removed legacy auth API routes and components</li>
+<li>✅ Activated working middleware for proper route protection</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox2" checked="true"><label for="checkbox2"></label><strong>Resolve Vercel Deployment Issues</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Fixed Supabase build-time initialization errors</li>
+<li>✅ Implemented mock client fallbacks for build environment</li>
+<li>✅ Removed blog functionality to resolve table reference errors</li>
+<li>✅ Updated database queries to use existing tables</li>
+<li>✅ Disabled problematic webpack experimental features</li>
+<li>✅ Simplified middleware to prevent build hanging</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox3" checked="true"><label for="checkbox3"></label><strong>Database Schema &amp; Server Actions</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Implemented Supabase profiles table with RLS policies</li>
+<li>✅ Created server actions for all admin operations</li>
+<li>✅ Added blog, prompt, tool, and user management actions</li>
+<li>✅ Implemented proper authorization checks</li>
+<li>✅ Set up permissions system with role-based access</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox4" checked="true"><label for="checkbox4"></label><strong>Admin Dashboard Implementation</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Created comprehensive admin dashboards for all areas</li>
+<li>✅ Implemented responsive design for mobile/tablet/desktop</li>
+<li>✅ Built user management with role assignment</li>
+<li>✅ Added consultation and assessment management</li>
+<li>✅ Integrated stats and analytics visualization</li>
+<li>✅ Created admin navigation with mobile sidebar</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox5" checked="true"><label for="checkbox5"></label><strong>Core Application Structure</strong> (COMPLETED)</p>
+<ul>
+<li>✅ Explored and documented app capabilities</li>
+<li>✅ Identified integration points for AI features</li>
+<li>✅ Researched existing AI tools and prompt library</li>
+<li>✅ Established development workflows and guidelines</li>
+</ul>
+</li>
+</ul>
+<h2 id="current-priority-tasks-%F0%9F%8E%AF">Current Priority Tasks 🎯</h2>
+<ul>
+<li>
+<p><input type="checkbox" id="checkbox6"><label for="checkbox6"></label><strong>Re-enable Blog Integration</strong> (when needed)</p>
+<ul>
+<li>Complete the setup for fetching and displaying blog content from Notion</li>
+<li>Ensure proper error handling and caching mechanisms are in place</li>
+<li>Update database queries to use Supabase instead of direct SQL</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox7"><label for="checkbox7"></label><strong>Enhance User Dashboard</strong></p>
+<ul>
+<li>Add features for users to view their activity, saved prompts, and consultation history</li>
+<li>Include visual analytics for user engagement with AI tools</li>
+<li>Implement user profile management features</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox8"><label for="checkbox8"></label><strong>Advanced Features Development</strong></p>
+<ul>
+<li>Design a custom AI agent using n8n for business process automation</li>
+<li>Develop a prompt engineering tool that integrates with the prompt library</li>
+<li>Create an AI assessment tool integration for evaluating business processes</li>
+</ul>
+</li>
+</ul>
+<h2 id="future-roadmap-%F0%9F%9A%80">Future Roadmap 🚀</h2>
+<ul>
+<li>
+<p><input type="checkbox" id="checkbox9"><label for="checkbox9"></label><strong>Solutions Showcase</strong></p>
+<ul>
+<li>Create a dedicated page to display successful AI solutions and case studies</li>
+<li>Allow users to filter by industry or AI model used</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox10"><label for="checkbox10"></label><strong>Enhanced Prompt Library</strong></p>
+<ul>
+<li>Design a searchable and categorized library of prompts for various AI tasks</li>
+<li>Enable user contributions with moderation for quality control</li>
+</ul>
+</li>
+<li>
+<p><input type="checkbox" id="checkbox11"><label for="checkbox11"></label><strong>Development Tools Integration</strong></p>
+<ul>
+<li>Link Aider with MCP, Claude Code, and Cursor (to save money on context output)</li>
+<li>Implement automated testing and deployment pipelines</li>
+</ul>
+</li>
+</ul>
+<h2 id="project-board">Project Board</h2>
+<table>
+<thead>
+<tr>
+<th>Backlog</th>
+<th>To Do</th>
+<th>In Progress</th>
+<th>Completed</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+<h2 id="session-summaries">Session Summaries</h2>
+<details>
+<summary>### 2025-10-23: N8N Integration (Option B) &amp; Knowledge Graph Setup</summary>
+</details><p>Implemented complete n8n workflow orchestration system and activated knowledge graph memory:</p>
+<ol>
+<li>
+<p><strong>Color Palette Harmonization</strong>:</p>
+<ul>
+<li>Fixed landing page bright orange-red gradient</li>
+<li>Replaced with harmonized donjon-graphite → donjon-indigo → donjon-graphite gradient</li>
+<li>Updated all accent colors to use donjon-ember and donjon-silver</li>
+<li>Result: Professional, on-brand appearance that matches existing design system</li>
+</ul>
+</li>
+<li>
+<p><strong>Knowledge Graph Memory MCP Server</strong>:</p>
+<ul>
+<li>Installed <code>@modelcontextprotocol/server-memory</code> MCP server</li>
+<li>Added to Claude Desktop configuration</li>
+<li>Designed comprehensive knowledge graph schema for Agent #1</li>
+<li>Created architecture document with entities, relations, and observations patterns</li>
+<li>Enables persistent memory across sessions for better context continuity</li>
+</ul>
+</li>
+<li>
+<p><strong>N8N Workflow Orchestration (Option B Implementation)</strong>:</p>
+<ul>
+<li>Created complete database schema with <code>n8n_workflows</code> and <code>n8n_workflow_executions</code> tables</li>
+<li>Implemented RLS policies for admin-only access</li>
+<li>Built n8n API client with webhook triggering and status checking</li>
+<li>Created server actions for workflow CRUD operations and execution</li>
+<li>Developed admin dashboard at <code>/admin/ai-agents</code> with:
+<ul>
+<li>Statistics cards (workflows, executions, activity)</li>
+<li>Color-coded workflow cards with emoji icons</li>
+<li>One-click workflow triggering with loading states</li>
+<li>Execution history table with status tracking</li>
+<li>Real-time updates and toast notifications</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Example N8N Workflows</strong>:</p>
+<ul>
+<li>Created 3 ready-to-import workflow templates:
+<ul>
+<li>Consultation Alert: Email notifications + database logging</li>
+<li>Lead Qualification Agent: AI-powered scoring with hot lead alerts</li>
+<li>Weekly Report Generator: Automated analytics reports</li>
+</ul>
+</li>
+<li>All workflows include proper error handling and response formatting</li>
+</ul>
+</li>
+<li>
+<p><strong>Documentation</strong>:</p>
+<ul>
+<li>Comprehensive deployment guide in <code>N8N_INTEGRATION_COMPLETE.md</code></li>
+<li>Quick-start guide in <code>START_HERE_CLAY.md</code></li>
+<li>Architecture diagrams and troubleshooting guides</li>
+<li>Path to Option C (Agent Marketplace) outlined</li>
+</ul>
+</li>
+</ol>
+<p><strong>Result</strong>: Production-ready n8n workflow orchestration system that serves as foundation for future Agent Marketplace (Option C). Complete with admin UI, execution tracking, example workflows, and full documentation. System ready for testing after database migration.</p>
+<p><strong>Files Created</strong>:</p>
+<ul>
+<li><code>supabase/migrations/20251023_n8n_workflows.sql</code></li>
+<li><code>lib/n8n-client.ts</code></li>
+<li><code>app/actions/workflow-actions.ts</code></li>
+<li><code>app/admin/ai-agents/page.tsx</code></li>
+<li><code>components/admin/workflow-card.tsx</code></li>
+<li><code>components/admin/execution-history.tsx</code></li>
+<li><code>n8n-workflows/consultation-alert-workflow.json</code></li>
+<li><code>n8n-workflows/lead-qualification-workflow.json</code></li>
+<li><code>n8n-workflows/weekly-report-workflow.json</code></li>
+<li><code>.claude/knowledge-graph-architecture.md</code></li>
+<li><code>N8N_INTEGRATION_COMPLETE.md</code></li>
+<li><code>START_HERE_CLAY.md</code></li>
+</ul>
+
+<details>
+<summary>### 2025-06-15: Authentication System Cleanup &amp; Unification</summary>
+</details><p>Completed a major cleanup and unification of the authentication system:</p>
+<ol>
+<li>
+<p><strong>Authentication Analysis</strong>:</p>
+<ul>
+<li>Conducted comprehensive scan of all authentication functionality</li>
+<li>Identified multiple conflicting auth systems (NextAuth, simple-admin-auth, session-storage)</li>
+<li>Discovered disabled middleware causing broken route protection</li>
+<li>Verified Supabase environment variables were properly configured</li>
+</ul>
+</li>
+<li>
+<p><strong>System Consolidation</strong>:</p>
+<ul>
+<li>Activated working Supabase middleware (replaced disabled version)</li>
+<li>Removed all legacy authentication systems and conflicting files</li>
+<li>Deleted duplicate login pages (login-debug, login-minimal, login-simple)</li>
+<li>Cleaned up conflicting auth API routes and admin pages</li>
+<li>Removed session-storage.ts and updated auth-actions.ts</li>
+</ul>
+</li>
+<li>
+<p><strong>Admin User Management</strong>:</p>
+<ul>
+<li>Updated <code>/api/setup</code> route to work with Supabase instead of old database</li>
+<li>Fixed admin user creation to use Supabase Auth Admin API</li>
+<li>Ensured proper profile creation with role assignment</li>
+<li>Maintained <code>/create-admin</code> page for easy admin user setup</li>
+</ul>
+</li>
+<li>
+<p><strong>Testing &amp; Verification</strong>:</p>
+<ul>
+<li>Verified environment variables are loaded correctly</li>
+<li>Confirmed middleware protects admin and dashboard routes</li>
+<li>Tested authentication flow with proper redirects</li>
+<li>Ensured role-based access control works correctly</li>
+</ul>
+</li>
+</ol>
+<p><strong>Result</strong>: Single, unified Supabase authentication system with clean codebase, proper route protection, and working admin user creation. Login system is now fully functional with admin@curveai.com / admin123 credentials.</p>
+
+<details>
+<summary>### 2025-06-14: Vercel Deployment Issues Resolution</summary>
+</details><p>Resolved critical Vercel deployment failures and build-time errors:</p>
+<ol>
+<li>
+<p><strong>Build-Time Initialization Fixes</strong>:</p>
+<ul>
+<li>Fixed module-level Supabase imports causing &quot;Missing environment variables&quot; errors</li>
+<li>Updated <code>lib/supabase-migration.ts</code> to use dynamic imports</li>
+<li>Added comprehensive mock client fallbacks in <code>lib/supabase-client.ts</code></li>
+<li>Implemented build-time safety patterns across all Supabase files</li>
+</ul>
+</li>
+<li>
+<p><strong>Database Query Cleanup</strong>:</p>
+<ul>
+<li>Removed references to deleted blog_posts table in <code>lib/db-stats.ts</code></li>
+<li>Updated stats queries to use ai_tools instead of blog_posts</li>
+<li>Fixed mock data to match database changes</li>
+<li>Ensured all database operations work without blog functionality</li>
+</ul>
+</li>
+<li>
+<p><strong>Build Optimization</strong>:</p>
+<ul>
+<li>Disabled problematic <code>webpackBuildWorker</code> experimental feature</li>
+<li>Added <code>output: 'standalone'</code> and <code>trailingSlash: true</code> for better build performance</li>
+<li>Simplified middleware to prevent complex auth logic during build</li>
+<li>Added comprehensive error handling and timeout management</li>
+</ul>
+</li>
+<li>
+<p><strong>Blog Functionality Removal</strong>:</p>
+<ul>
+<li>Temporarily disabled all blog-related functionality for build stability</li>
+<li>Removed Notion integration that was causing build failures</li>
+<li>Updated components to handle missing blog data gracefully</li>
+<li>Maintained ability to re-enable blog features when needed</li>
+</ul>
+</li>
+</ol>
+<p><strong>Result</strong>: Stable Vercel deployments with successful builds, no environment variable errors, and optimized build performance.</p>
+
+<details>
+<summary>### 2025-05-20: Supabase Authentication Implementation</summary>
+</details><p>Implemented a comprehensive migration from NextAuth to Supabase Auth:</p>
+<ol>
+<li>
+<p><strong>Supabase Setup</strong>:</p>
+<ul>
+<li>Created client configuration in <code>lib/supabase.ts</code></li>
+<li>Added admin functions in <code>lib/supabase-admin.ts</code></li>
+<li>Updated package.json with Supabase dependencies</li>
+<li>Created environment variables template</li>
+</ul>
+</li>
+<li>
+<p><strong>Auth Components</strong>:</p>
+<ul>
+<li>Created <code>supabase-auth-ui.tsx</code> for Supabase UI integration</li>
+<li>Developed custom login form in <code>supabase-login-form.tsx</code></li>
+<li>Implemented signup form in <code>supabase-signup-form.tsx</code></li>
+<li>Added auth callback route handler</li>
+</ul>
+</li>
+<li>
+<p><strong>Role Management</strong>:</p>
+<ul>
+<li>Implemented role storage in Supabase user metadata</li>
+<li>Added admin role verification in middleware</li>
+<li>Created admin user management functions</li>
+</ul>
+</li>
+<li>
+<p><strong>Updated Admin Dashboard</strong>:</p>
+<ul>
+<li>Modified admin components to use Supabase auth</li>
+<li>Updated sidebar authentication</li>
+<li>Enhanced dashboard layout to check admin role</li>
+<li>Made all changes compatible with previous responsive design work</li>
+</ul>
+</li>
+<li>
+<p><strong>Migration Support</strong>:</p>
+<ul>
+<li>Created SUPABASE_MIGRATION.md documentation</li>
+<li>Included detailed setup and troubleshooting steps</li>
+<li>Maintained backward compatibility during transition</li>
+</ul>
+</li>
+</ol>
+<p>All authentication flows now use Supabase while maintaining the existing UI and role-based access controls. The implementation enables social logins, email verification, and better security features.</p>
+
+<details>
+<summary>### 2025-05-18: Responsive Admin Dashboard Implementation</summary>
+</details><p>Implemented comprehensive responsive design improvements across the admin dashboard:</p>
+<ol>
+<li>
+<p><strong>User Management Dashboard</strong>:</p>
+<ul>
+<li>Improved form dialogs for mobile devices</li>
+<li>Enhanced table layouts with proper truncation</li>
+<li>Made filters and search responsive</li>
+</ul>
+</li>
+<li>
+<p><strong>Prompt Library Dashboard</strong>:</p>
+<ul>
+<li>Created responsive category sidebar</li>
+<li>Optimized table for small screens</li>
+<li>Improved prompt tag display</li>
+</ul>
+</li>
+<li>
+<p><strong>Blog Management Dashboard</strong>:</p>
+<ul>
+<li>Enhanced table responsiveness</li>
+<li>Optimized tag display</li>
+<li>Improved dialog layouts</li>
+</ul>
+</li>
+<li>
+<p><strong>AI Tools Dashboard</strong>:</p>
+<ul>
+<li>Made tools listing mobile-friendly</li>
+<li>Improved category cards</li>
+<li>Enhanced filter controls</li>
+</ul>
+</li>
+<li>
+<p><strong>Admin Navigation</strong>:</p>
+<ul>
+<li>Created mobile slide-out sidebar with Sheet component</li>
+<li>Maintained desktop sidebar for larger screens</li>
+<li>Added hamburger menu toggle for mobile</li>
+</ul>
+</li>
+<li>
+<p><strong>Admin Layout</strong>:</p>
+<ul>
+<li>Improved padding for mobile devices</li>
+<li>Enhanced breadcrumb display</li>
+<li>Better responsive spacing</li>
+</ul>
+</li>
+</ol>
+<p>All improvements follow mobile-first design principles and ensure a consistent user experience across desktop, tablet, and mobile devices.</p>
+
+<h2 id="ideasbacklog">Ideas/Backlog</h2>
+<h2 id="workflowsguidelines">Workflows/Guidelines</h2>
+<h3 id="how-to-mark-a-task-as-complete">How to Mark a Task as Complete</h3>
+<p>To mark a task as complete, change the checkbox from <code>[ ]</code> to <code>[x]</code>. For example:</p>
+<pre class="hljs"><code><div><span class="hljs-bullet">- </span>[x] Completed task
+</div></code></pre>
+<h3 id="moving-tasks-between-sections">Moving Tasks Between Sections</h3>
+<p>When moving a task, cut the entire task item (including sub-bullets) from its current section and paste it under the appropriate new heading (e.g., from &quot;To Do&quot; to &quot;In Progress&quot;).</p>
+<h3 id="adding-new-tasks">Adding New Tasks</h3>
+<p>Add new tasks under the &quot;To Do&quot; section using the <input type="checkbox" id="checkbox12"><label for="checkbox12"></label> format.</p>
+<h3 id="about-us">About Us</h3>
+<p>t Curve AI Solutions, we're not just another tech company. We're a team of innovators, problem-solvers, and business enthusiasts who believe that artificial intelligence should be accessible, practical, and valuable for businesses of all sizes—including yours.</p>
+<p>Our Story<br>
+Founded in Tulsa with a simple yet powerful vision: to demystify AI and make it work for real businesses facing real challenges. We saw too many small business owners feeling left behind by the AI revolution—either intimidated by the technical complexity or unsure how this technology could actually improve their bottom line.</p>
+<p>That's when we asked ourselves: What if AI could be both powerful AND approachable? What if we could translate the complex world of artificial intelligence into solutions that any business owner could understand, implement, and benefit from immediately?</p>
+<p>What We Do<br>
+We create custom AI chatbots and workflow solutions (we call them Agentic AI Solutions) that handle the mundane, repetitive tasks consuming your valuable time. Our CurveAI technology doesn't just process data—it understands context, learns your business needs, and communicates with a personality tailored to your company culture.</p>
+<p>Simplify Complex Processes<br>
+We translate technical concepts into everyday language that anyone can understand.</p>
+<p>Automate Data Analysis<br>
+We automate data analysis and integration that would otherwise take hours of manual work.</p>
+<p>Reduce Operational Costs<br>
+We streamline workflows and eliminate inefficiencies to reduce your operational costs.</p>
+<p>Free Up Your Time<br>
+We help you focus on what truly matters—growing your business and serving your customers.</p>
+<p>Why Small Business Owners Choose Us<br>
+Unlike large corporate AI solutions that require teams of engineers to implement, or basic chatbots that can only follow simple scripts, our technology strikes the perfect balance: sophisticated enough to deliver real results, simple enough that you don't need a computer science degree to use it.</p>
+<p>When you work with Curve AI Solutions, you get:</p>
+<p>Practical AI tools designed for your specific business challenges—not theoretical capabilities<br>
+Solutions that speak human—no technical jargon, no endless documentation<br>
+Measurable results with clear ROI—we're about improving your business, not just showcasing fancy technology<br>
+A partner who understands your business needs and translates them into effective AI implementations<br>
+Our Approach<br>
+We believe in starting with your business problems, not with technology. Our process is straightforward:</p>
+<p>Listen to understand your specific challenges and goals<br>
+Design a customized AI solution that addresses your unique needs<br>
+Implement the technology seamlessly into your existing workflows<br>
+Measure the results to ensure you're getting real value<br>
+Refine the solution based on feedback and changing business needs<br>
+The Magic Behind Our Solutions<br>
+While we keep the technical talk to a minimum when working with clients, rest assured that under the hood, our solutions leverage cutting-edge AI frameworks and advanced software engineering. Our team brings expertise in machine learning, natural language processing, and data integration—all so you don't have to.</p>
+<p>Community Commitment<br>
+We're deeply invested in the Tulsa business community and beyond. Through our AI Literacy Program, we're helping local business leaders, professionals, and interested parties understand and leverage AI technologies. Our seminars, online content, and collaborations with local businesses bring AI education closer to where people live and work.</p>
+<p>By building strategic partnerships with other tech companies, educational institutions, and industry leaders, we're creating an ecosystem where businesses of all sizes can thrive in the digital age.</p>
+<p>What Sets Us Apart<br>
+The difference is in our philosophy: we believe AI should work for you, not the other way around. Many AI companies make you adapt to their technology; we adapt our technology to fit your business.</p>
+<p>Our solutions don't require you to learn new systems, hire technical staff, or completely overhaul your operations. Instead, we meet you where you are and enhance what you're already doing.</p>
+<p>And unlike impersonal chatbots or generic AI tools, our solutions come with personalities that reflect your brand and create engaging experiences for both your team and your customers.</p>
+<p>Meet Our Team<br>
+Founders Austin and Clayton<br>
+Clayton Christian<br>
+Founder &amp; CTO</p>
+<p>Machine Learning Engineering diploma holder with extreme creativity and dedication to development. AI visionary with extensive experience in building agent-based systems and trading infrastructure.</p>
+<p>Austin Belcheff<br>
+Founder &amp; CEO</p>
+<p>Business graduate from Oklahoma State University and a creative force driving innovation within the company.</p>
+<p>Our Core Values<br>
+Innovation<br>
+We constantly push the boundaries of what's possible with AI agent technology.</p>
+<p>Accessibility<br>
+We make advanced AI solutions accessible to businesses of all sizes.</p>
+<p>Transparency<br>
+We believe in transparent, data-driven solutions with clear insights and measurable results.</p>
+<p>Excellence<br>
+We strive for excellence in every aspect of our products and services.</p>
+<p>Ready to Transform Your Business?<br>
+Imagine significantly reducing your workload, automating data analysis, and integrating information across your systems—all while maintaining the human touch that makes your business special.</p>
+<p>That's not just a dream; it's what we deliver every day to businesses like yours.</p>
+<p>Whether you're looking to streamline customer service, automate administrative tasks, or gain insights from your business data without the headache, we have the expertise, tools, and approach to make it happen.</p>
+<p>Let's take the first step together toward a more efficient, productive, and profitable future for your business. The AI revolution doesn't have to be complicated or confusing—with Curve AI Solutions as your partner, it can be the competitive advantage you've been looking for.</p>
+<p>Our Roadmap<br>
+February 28, 2025<br>
+Databases Complete<br>
+Core database infrastructure with bot_metric table implementation<br>
+March 29, 2025<br>
+AiGent® System Launch<br>
+Release of our proprietary AI agent orchestration system<br>
+April 11, 2025<br>
+Lead Supervisor Orchestration Agent<br>
+Deployment of our advanced AI orchestration capabilities<br>
+April 24, 2025<br>
+Industry Expansion<br>
+Onboarding of new clients and industry partners<br>
+May 9th, 2025<br>
+AiPex Launch<br>
+Official launch of our AI Platform Exchange<br>
+June 28, 2025<br>
+Curve AI Official Launch<br>
+Full public launch with stock market integration and real money accounts</p>
+
+</body>
+
+</html>

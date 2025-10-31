@@ -7,56 +7,31 @@ import { Menu, X, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useAuth } from "@/providers/stack-auth-provider"
 
 export function MainNav() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
   const [dashboardUrl, setDashboardUrl] = useState("/dashboard")
   const pathname = usePathname()
-  const supabase = createClientComponentClient()
+  const { user, loading, signOut } = useAuth()
+
+  // Check admin permission from Stack Auth user
+  const isAdmin = user?.permissions?.includes('admin') || false
+  const isLoggedIn = !!user
 
   useEffect(() => {
-    // Check Supabase auth session and user role
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setIsLoggedIn(!!session)
-      
-      if (session?.user) {
-        // Check if user is admin by looking at profiles table
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single()
-        
-        const userIsAdmin = profile?.role === 'admin'
-        setIsAdmin(userIsAdmin)
-        setDashboardUrl(userIsAdmin ? "/admin" : "/dashboard")
-      }
+    // Update dashboard URL based on admin status
+    if (isAdmin) {
+      setDashboardUrl("/admin")
+    } else {
+      setDashboardUrl("/dashboard")
     }
-    
-    checkAuth()
-    
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsLoggedIn(!!session)
-      if (!session) {
-        setIsAdmin(false)
-        setDashboardUrl("/dashboard")
-      } else {
-        checkAuth() // Re-check role when session changes
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [isAdmin])
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut()
+      await signOut()
       router.push("/")
     } catch (error) {
       console.error("Error during logout:", error)

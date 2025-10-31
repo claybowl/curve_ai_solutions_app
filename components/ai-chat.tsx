@@ -29,7 +29,7 @@ export function AIChat({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             </Button>
           </div>
           <CardDescription className="text-gray-100">
-            Powered by Grok-3 - Ask me anything about AI solutions
+            Powered by Donjon AI Agent - Ask me anything about AI solutions
           </CardDescription>
         </CardHeader>
         <CardContent className="p-4 h-[400px] overflow-y-auto flex flex-col gap-4">

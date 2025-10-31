@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
@@ -14,70 +13,37 @@ import {
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { User, Settings, LogOut, CreditCard, HelpCircle } from "lucide-react"
+import { useAuth } from "@/providers/stack-auth-provider"
 
 export function UserProfileDropdown() {
   const router = useRouter()
-  const [user, setUser] = useState<{
-    email: string
-    firstName?: string
-    lastName?: string
-    role?: string
-  } | null>(null)
+  const { user, signOut, loading } = useAuth()
 
-  useEffect(() => {
-    // Get token from localStorage
-    const token = localStorage.getItem("admin-token")
-
-    if (token) {
-      // In a real app, we would fetch user data from an API
-      // For now, we'll use a mock user or extract from token
-      const [userId, role] = token.split(":")
-
-      // Try to get user from sessionStorage if available
-      const sessionUser = sessionStorage.getItem("user-data")
-      if (sessionUser) {
-        try {
-          setUser(JSON.parse(sessionUser))
-          return
-        } catch (e) {
-          console.error("Failed to parse user data from session", e)
-        }
-      }
-
-      // Fallback to mock data
-      setUser({
-        email: "demo@curveai.com",
-        firstName: "Demo",
-        lastName: "User",
-        role: role || "client",
-      })
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      router.push("/")
+    } catch (error) {
+      console.error("Error during logout:", error)
+      router.push("/")
     }
-  }, [])
-
-  const handleLogout = () => {
-    // Clear authentication data
-    localStorage.removeItem("admin-token")
-    sessionStorage.removeItem("user-data")
-
-    // Call the logout API to clear cookies
-    fetch("/api/logout", { method: "POST" })
-      .catch((err) => console.error("Error during logout:", err))
-      .finally(() => {
-        // Redirect to home page
-        router.push("/")
-      })
   }
 
-  // If no user is found, don't render anything
-  if (!user) return null
+  // If no user is found or still loading, don't render anything
+  if (loading || !user) return null
 
   // Get user initials for avatar
   const getInitials = () => {
-    if (user.firstName && user.lastName) {
-      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    const displayName = user.displayName || user.email || ''
+    const nameParts = displayName.split(' ')
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase()
     }
-    return user.email.substring(0, 2).toUpperCase()
+    return user.email?.substring(0, 2).toUpperCase() || 'U'
   }
+  
+  // Get user display name
+  const displayName = user.displayName || user.email || 'User'
 
   return (
     <DropdownMenu>
@@ -94,12 +60,12 @@ export function UserProfileDropdown() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none dark:text-white">
-              {user.firstName ? `${user.firstName} ${user.lastName}` : "User"}
+              {displayName}
             </p>
             <p className="text-xs leading-none text-gray-500 dark:text-gray-400">{user.email}</p>
-            {user.role && (
+            {user.permissions?.includes('admin') && (
               <p className="text-xs text-[#0076FF] dark:text-[#3b82f6] font-medium mt-1">
-                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                Administrator
               </p>
             )}
           </div>
@@ -112,7 +78,7 @@ export function UserProfileDropdown() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={user.role === "admin" ? "/admin" : "/dashboard"} className="cursor-pointer flex items-center">
+          <Link href={user.permissions?.includes('admin') ? "/admin" : "/dashboard"} className="cursor-pointer flex items-center">
             <Settings className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
           </Link>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { getCurrentUser, isUserAdmin } from "@/lib/supabase-client"
+import { useAuth } from "@/providers/stack-auth-provider"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -25,40 +25,30 @@ const DashboardLayout = ({
   actions,
 }: DashboardLayoutProps) => {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
+  const { user, loading: authLoading } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    async function checkAdminStatus() {
-      try {
-        // Get the current user from Supabase
-        const { user, error } = await getCurrentUser()
-        
-        if (error || !user) {
-          console.error("Error fetching user:", error)
-          router.push("/login")
-          return
-        }
-
-        // Check if user is an admin using the proper function
-        const adminStatus = await isUserAdmin()
-        setIsAdmin(adminStatus)
-        
-        if (!adminStatus) {
-          router.push("/dashboard")
-        }
-      } catch (err) {
-        console.error("Error checking admin status:", err)
-        router.push("/login")
-      } finally {
-        setLoading(false)
-      }
+    // Check admin status from Stack Auth user permissions
+    if (authLoading) {
+      return // Still loading
     }
 
-    checkAdminStatus()
-  }, [router])
+    if (!user) {
+      router.push("/login")
+      return
+    }
 
-  if (loading) {
+    const permissions = (user as any).permissions || []
+    const adminStatus = Array.isArray(permissions) && permissions.includes('admin')
+    setIsAdmin(adminStatus)
+    
+    if (!adminStatus) {
+      router.push("/dashboard")
+    }
+  }, [user, authLoading, router])
+
+  if (authLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

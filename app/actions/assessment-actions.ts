@@ -1,7 +1,16 @@
 "use server"
 
-import { createServerSupabaseClient } from "@/lib/supabase-server"
-import { getCurrentSupabaseUser } from "@/lib/db-v2"
+/**
+ * MIGRATION NOTE: This file has been partially migrated to Stack Auth.
+ * 
+ * Authentication/user references need to be updated to use Stack Auth.
+ * Business data queries (assessments, assessment_questions tables) need database migration.
+ * 
+ * TODO: All database queries need to be migrated to Stack Auth database or separate database.
+ */
+
+import { getCurrentUserServer } from "@/lib/stack-auth-server"
+// TODO: Import business database client when implemented
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import type { 
@@ -15,10 +24,12 @@ import type {
 // Get all assessment questions
 export async function getAssessmentQuestions() {
   try {
-    const supabase = await createServerSupabaseClient()
+    // TODO: Replace with business database client when implemented
+    // const db = await getBusinessDatabaseClient()
+    // const { data: questions, error } = await db.from('assessment_questions')
     
-    const { data: questions, error } = await supabase
-      .from('assessment_questions')
+    console.warn("getAssessmentQuestions: Business database integration needed")
+    return []
       .select(`
         *,
         assessment_categories(
@@ -46,10 +57,12 @@ export async function getAssessmentQuestions() {
 // Get assessment questions by category
 export async function getAssessmentQuestionsByCategory(categoryId?: string) {
   try {
-    const supabase = await createServerSupabaseClient()
+    // TODO: Replace with business database client when implemented
+    // const db = await getBusinessDatabaseClient()
+    // let query = db.from('assessment_questions')
     
-    let query = supabase
-      .from('assessment_questions')
+    console.warn("getAssessmentQuestionsByCategory: Business database integration needed")
+    return []
       .select(`
         *,
         assessment_categories(
@@ -83,10 +96,12 @@ export async function getAssessmentQuestionsByCategory(categoryId?: string) {
 // Get all assessment categories
 export async function getAssessmentCategories() {
   try {
-    const supabase = await createServerSupabaseClient()
+    // TODO: Replace with business database client when implemented
+    // const db = await getBusinessDatabaseClient()
+    // const { data: categories, error } = await db.from('assessment_categories')
     
-    const { data: categories, error } = await supabase
-      .from('assessment_categories')
+    console.warn("getAssessmentCategories: Business database integration needed")
+    return []
       .select('*')
       .eq('is_active', true)
       .order('sort_order')

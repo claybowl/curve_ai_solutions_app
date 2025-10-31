@@ -8,47 +8,21 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { supabase } from "@/lib/supabase-client"
+import { useAuth } from "@/providers/stack-auth-provider"
 
-// Updated useAuth function to use Supabase
-function useAuth() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userRole, setUserRole] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    // Check current session
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (session?.user) {
-        setIsLoggedIn(true)
-        setUser(session.user)
-        setUserRole(session.user.user_metadata?.role || 'client')
-      }
-    }
-
-    checkSession()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setIsLoggedIn(true)
-          setUser(session.user)
-          setUserRole(session.user.user_metadata?.role || 'client')
-        } else {
-          setIsLoggedIn(false)
-          setUser(null)
-          setUserRole(null)
-        }
-      }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  return { isLoggedIn, userRole, user }
+// Helper hook for navbar-specific auth data
+function useNavbarAuth() {
+  const { user, loading } = useAuth()
+  
+  // Check admin permission from Stack Auth user
+  const isAdmin = user?.permissions?.includes('admin') || false
+  
+  return {
+    isLoggedIn: !!user,
+    userRole: isAdmin ? 'admin' : (user ? 'client' : null),
+    user: user,
+    loading
+  }
 }
 
 // Update the Navbar component to include the UserProfileDropdown
@@ -56,7 +30,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { isLoggedIn, userRole, user } = useAuth()
+  const { isLoggedIn, userRole, user, loading } = useNavbarAuth()
 
   const navigation = [
     { name: "Home", href: "/" },

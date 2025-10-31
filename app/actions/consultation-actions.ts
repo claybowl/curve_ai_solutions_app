@@ -1,7 +1,21 @@
 "use server"
 
-import { createServerSupabaseClient } from "@/lib/supabase-server"
-import { getCurrentSupabaseUser } from "@/lib/db-v2"
+/**
+ * MIGRATION NOTE: This file has been partially migrated to Stack Auth.
+ * 
+ * Authentication/user references have been updated to use Stack Auth.
+ * Business data queries (consultations table) still need database migration.
+ * 
+ * TODO: All database queries need to be migrated to:
+ * 1. Stack Auth's database (if it supports custom tables), OR
+ * 2. A separate database with foreign keys to Stack Auth user IDs
+ * 
+ * All functions with database queries will return empty arrays/errors until database is configured.
+ */
+
+import { getCurrentUserServer, isUserAdmin } from "@/lib/stack-auth-server"
+// TODO: Import business database client when implemented
+// import { getBusinessDatabaseClient } from "@/lib/db-business"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
@@ -42,26 +56,17 @@ const consultationUpdateSchema = z.object({
  * Check if the user is authorized to manage consultations
  */
 async function checkConsultationAuthorization() {
-  const user = await getCurrentSupabaseUser()
+  const user = await getCurrentUserServer()
   
   if (!user) {
     throw new Error("Authentication required")
   }
 
-  const supabase = await createServerSupabaseClient()
-  
-  // Get user profile to check role
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('user_id', user.id)
-    .single()
+  // TODO: Replace with Stack Auth permission check when SDK is integrated
+  // const isAdmin = await isUserAdmin()
+  const isAdmin = false // Placeholder until Stack Auth SDK is integrated
 
-  if (error || !profile) {
-    throw new Error("User profile not found")
-  }
-
-  return { authorized: true, userId: user.id, role: profile.role }
+  return { authorized: true, userId: user.id, role: isAdmin ? 'admin' : 'client' }
 }
 
 /**
@@ -69,13 +74,15 @@ async function checkConsultationAuthorization() {
  */
 export async function createConsultation(formData: FormData) {
   try {
-    const user = await getCurrentSupabaseUser()
+    const user = await getCurrentUserServer()
     
     if (!user) {
       throw new Error("Authentication required")
     }
 
-    const supabase = await createServerSupabaseClient()
+    // TODO: Replace with Stack Auth database or separate database connection
+    // Business data tables (consultations) may need separate database if Stack Auth doesn't support custom tables
+    // const db = await getDatabaseClient() // Will need to implement based on Stack Auth capabilities
 
     // Parse form data
     const consultationData: ConsultationFormData = {
@@ -122,23 +129,23 @@ export async function createConsultation(formData: FormData) {
     if (consultationData.consultation_type === 'strategy') priorityScore += 2
     if (consultationData.consultation_type === 'implementation') priorityScore += 1
 
-    // Create the consultation
-    const { data: newConsultation, error } = await supabase
-      .from('consultations')
-      .insert({
-        ...consultationData,
-        user_id: user.id,
-        status: 'pending',
-        priority_score: priorityScore,
-        follow_up_required: false
-      })
-      .select('id')
-      .single()
-
-    if (error) {
-      console.error("Error creating consultation:", error)
-      throw new Error("Failed to create consultation request")
-    }
+    // TODO: Replace with business database client when implemented
+    // Business data tables need separate database or Stack Auth database integration
+    // const db = await getBusinessDatabaseClient()
+    // const { data: newConsultation, error } = await db
+    //   .from('consultations')
+    //   .insert({
+    //     ...consultationData,
+    //     user_id: user.id, // Stack Auth user ID
+    //     status: 'pending',
+    //     priority_score: priorityScore,
+    //     follow_up_required: false
+    //   })
+    //   .select('id')
+    //   .single()
+    
+    console.warn("createConsultation: Business database integration needed")
+    throw new Error("Consultation creation requires business database setup")
 
     revalidatePath("/consultation")
     revalidatePath("/admin/consultations")
@@ -157,27 +164,18 @@ export async function createConsultation(formData: FormData) {
 export async function getConsultations(filter?: ConsultationFilter) {
   try {
     const { authorized, userId, role } = await checkConsultationAuthorization()
-    const supabase = await createServerSupabaseClient()
-
-    let query = supabase
-      .from('consultations')
-      .select(`
-        *,
-        profiles!consultations_user_id_fkey(
-          id,
-          first_name,
-          last_name,
-          email,
-          company_name,
-          phone
-        ),
-        assigned_consultant:profiles!consultations_assigned_consultant_id_fkey(
-          id,
-          first_name,
-          last_name,
-          email
-        )
-      `)
+    
+    // TODO: Replace with business database client when implemented
+    // const db = await getBusinessDatabaseClient()
+    // let query = db.from('consultations')
+    
+    // TODO: Complete database query implementation
+    // const db = await getBusinessDatabaseClient()
+    // let query = db.from('consultations').select(...)
+    // Note: User lookups will need to use Stack Auth user IDs, not profiles table
+    
+    console.warn("getConsultations: Business database integration needed")
+    return []
 
     // Apply user-specific filtering
     if (role !== 'admin') {

@@ -17,7 +17,7 @@ import {
   LogOut,
   Menu,
 } from "lucide-react"
-import { signOut, getCurrentUser } from "@/lib/supabase-client"
+import { useAuth } from "@/providers/stack-auth-provider"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
@@ -94,12 +94,15 @@ function SidebarContent({
   router: any
   onClose?: () => void
 }) {
+  const { signOut } = useAuth()
+  
   const handleLogout = async () => {
     try {
       await signOut()
-      router.push("/logout")
+      router.push("/")
     } catch (error) {
       console.error("Error logging out:", error)
+      router.push("/")
     }
   }
 

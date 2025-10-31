@@ -9,7 +9,7 @@ import {
   UserCog, Lock, LogOut, Lightbulb, BarChart3, 
   Library, Bot, Shield, MessageSquare, Menu, RefreshCw
 } from "lucide-react"
-import { signOut, getCurrentUser } from "@/lib/supabase-client"
+import { useAuth } from "@/providers/stack-auth-provider"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
@@ -103,12 +103,15 @@ const navItems = [
 
 // Main Sidebar Component content for reuse
 function SidebarContent({ pathname, router, onClose }: { pathname: string, router: any, onClose?: () => void }) {
+  const { signOut } = useAuth()
+  
   const handleLogout = async () => {
     try {
       await signOut()
-      router.push("/logout")
+      router.push("/")
     } catch (error) {
       console.error("Error logging out:", error)
+      router.push("/")
     }
   }
 
@@ -211,25 +214,22 @@ function MobileSidebar({ pathname, router }: { pathname: string, router: any }) 
 export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { user, loading } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    async function checkAdminStatus() {
-      try {
-        const { user } = await getCurrentUser()
-        setIsAdmin(user?.user_metadata?.role === "admin")
-      } catch (error) {
-        console.error("Error checking admin status:", error)
-      } finally {
-        setIsLoading(false)
-      }
+    // Check admin status from Stack Auth user permissions
+    if (user) {
+      const permissions = (user as any).permissions || []
+      setIsAdmin(Array.isArray(permissions) && permissions.includes('admin'))
+    } else {
+      setIsAdmin(false)
     }
-
+    setIsLoading(loading)
     setIsMounted(true)
-    checkAdminStatus()
-  }, [])
+  }, [user, loading])
 
   // Redirect non-admin users to dashboard
   useEffect(() => {

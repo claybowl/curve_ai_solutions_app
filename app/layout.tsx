@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { MainNav } from "@/components/main-nav"
 import { ChatButton } from "@/components/chat-button"
 import { Footer } from "@/components/footer"
-import { AuthProvider } from "@/providers/auth-provider"
+import { StackAuthProvider } from "@/providers/stack-auth-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <AuthProvider>
+        <StackAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
             <div className="flex min-h-screen flex-col">
               <MainNav />
@@ -32,7 +32,7 @@ export default function RootLayout({
               <ChatButton />
             </div>
           </ThemeProvider>
-        </AuthProvider>
+        </StackAuthProvider>
       </body>
     </html>
   )

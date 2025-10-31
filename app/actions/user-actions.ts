@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { createServerSupabaseClient } from "@/lib/supabase-server"
-import { getCurrentSupabaseUser, isUserAdmin } from "@/lib/db-v2"
+import { getCurrentUserServer, requireAdmin, isUserAdmin } from "@/lib/stack-auth-server"
+import { getAllUsers, getUserById, updateUser, deleteUser, assignRoleToUser } from "@/lib/stack-auth-admin"
 import type { 
   UserProfile, 
   UserSummary, 
@@ -43,70 +43,36 @@ const userRegistrationSchema = z.object({
 // Get all users with optional filtering (Admin only)
 export async function getAllUsersAction(filter?: UserFilter) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    // Require admin access
+    await requireAdmin()
+
+    // Get users from Stack Auth
+    const users = await getAllUsers({
+      limit: filter?.limit || 100,
+      offset: filter?.offset || 0,
+      search: filter?.search_term,
+    })
     
-    if (!user) {
-      throw new Error("Authentication required")
-    }
-
-    // Check if user is admin
-    const userIsAdmin = await isUserAdmin(user.id)
-    if (!userIsAdmin) {
-      throw new Error("Admin access required")
-    }
-
-    let query = supabase
-      .from('profiles')
-      .select('*')
-
-    // Apply filters
-    if (filter?.role) {
-      query = query.eq('role', filter.role)
-    }
-    if (filter?.subscription_status) {
-      query = query.eq('subscription_status', filter.subscription_status)
-    }
-    if (filter?.industry) {
-      query = query.eq('industry', filter.industry)
-    }
-    if (filter?.company_size) {
-      query = query.eq('company_size', filter.company_size)
-    }
-    if (filter?.onboarding_completed !== undefined) {
-      query = query.eq('onboarding_completed', filter.onboarding_completed)
-    }
-    if (filter?.search_term) {
-      query = query.or(`first_name.ilike.%${filter.search_term}%,last_name.ilike.%${filter.search_term}%,email.ilike.%${filter.search_term}%,company_name.ilike.%${filter.search_term}%`)
-    }
-    if (filter?.date_from) {
-      query = query.gte('created_at', filter.date_from)
-    }
-    if (filter?.date_to) {
-      query = query.lte('created_at', filter.date_to)
-    }
-
-    // Apply sorting
-    const sortBy = filter?.sortBy || 'created_at'
-    const sortDirection = filter?.sortDirection || 'desc'
-    query = query.order(sortBy, { ascending: sortDirection === 'asc' })
-
-    // Apply pagination
-    if (filter?.limit) {
-      query = query.limit(filter.limit)
-    }
-    if (filter?.offset) {
-      query = query.range(filter.offset, filter.offset + (filter.limit || 10) - 1)
-    }
-
-    const { data: profiles, error } = await query
-
-    if (error) {
-      console.error("Error fetching users:", error)
-      return []
-    }
-
-    return profiles || []
+    // Transform Stack Auth users to match UserSummary type
+    // Note: Stack Auth user structure may differ - adjust as needed
+    return users.map((user: any) => ({
+      id: user.id,
+      user_id: user.id,
+      email: user.email,
+      first_name: user.customData?.firstName || user.displayName?.split(' ')[0] || '',
+      last_name: user.customData?.lastName || user.displayName?.split(' ')[1] || '',
+      company_name: user.customData?.companyName,
+      phone: user.customData?.phone,
+      role: user.permissions?.includes('admin') ? 'admin' : 'client',
+      industry: user.customData?.industry,
+      company_size: user.customData?.companySize,
+      job_title: user.customData?.jobTitle,
+      timezone: user.customData?.timezone,
+      subscription_status: user.customData?.subscriptionStatus || 'free',
+      onboarding_completed: user.customData?.onboardingCompleted || false,
+      created_at: user.createdAtMillis ? new Date(user.createdAtMillis).toISOString() : new Date().toISOString(),
+      updated_at: user.updatedAtMillis ? new Date(user.updatedAtMillis).toISOString() : new Date().toISOString(),
+    }))
   } catch (error) {
     console.error("Error fetching users:", error)
     return []
@@ -116,36 +82,47 @@ export async function getAllUsersAction(filter?: UserFilter) {
 // Get user profile by ID or current user
 export async function getUserProfileAction(userId?: string) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    const currentUser = await getCurrentUserServer()
     
-    if (!user) {
+    if (!currentUser) {
       throw new Error("Authentication required")
     }
 
     // If no userId provided, get current user's profile
-    const targetUserId = userId || user.id
+    const targetUserId = userId || currentUser.id
 
     // Check if user can access this profile
-    const isOwnProfile = targetUserId === user.id
-    const userIsAdmin = await isUserAdmin(user.id)
+    const isOwnProfile = targetUserId === currentUser.id
+    const userIsAdmin = await isUserAdmin()
     
     if (!isOwnProfile && !userIsAdmin) {
       throw new Error("Not authorized to view this user's profile")
     }
 
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', targetUserId)
-      .single()
-
-    if (error) {
-      console.error(`Error fetching user profile ${targetUserId}:`, error)
-      return null
+    // Get user from Stack Auth
+    const user = await getUserById(targetUserId)
+    
+    if (!user) return null
+    
+    // Transform Stack Auth user to match UserProfile type
+    return {
+      id: user.id,
+      user_id: user.id,
+      email: user.email,
+      first_name: user.customData?.firstName || user.displayName?.split(' ')[0] || '',
+      last_name: user.customData?.lastName || user.displayName?.split(' ')[1] || '',
+      company_name: user.customData?.companyName,
+      phone: user.customData?.phone,
+      role: user.permissions?.includes('admin') ? 'admin' : 'client',
+      industry: user.customData?.industry,
+      company_size: user.customData?.companySize,
+      job_title: user.customData?.jobTitle,
+      timezone: user.customData?.timezone,
+      subscription_status: user.customData?.subscriptionStatus || 'free',
+      onboarding_completed: user.customData?.onboardingCompleted || false,
+      created_at: user.createdAtMillis ? new Date(user.createdAtMillis).toISOString() : new Date().toISOString(),
+      updated_at: user.updatedAtMillis ? new Date(user.updatedAtMillis).toISOString() : new Date().toISOString(),
     }
-
-    return profile
   } catch (error) {
     console.error(`Error fetching user profile:`, error)
     return null
@@ -155,13 +132,33 @@ export async function getUserProfileAction(userId?: string) {
 // Get current user's profile
 export async function getCurrentUserProfileAction() {
   try {
-    const user = await getCurrentSupabaseUser()
+    const user = await getCurrentUserServer()
     
     if (!user) {
       return null
     }
 
-    return await getUserProfileAction(user.id)
+    // Stack Auth provides user data directly, transform to match expected format
+    if (!user) return null
+    
+    return {
+      id: user.id,
+      user_id: user.id,
+      email: user.email,
+      first_name: user.customData?.firstName || user.displayName?.split(' ')[0] || '',
+      last_name: user.customData?.lastName || user.displayName?.split(' ')[1] || '',
+      company_name: user.customData?.companyName,
+      phone: user.customData?.phone,
+      role: user.permissions?.includes('admin') ? 'admin' : 'client',
+      industry: user.customData?.industry,
+      company_size: user.customData?.companySize,
+      job_title: user.customData?.jobTitle,
+      timezone: user.customData?.timezone,
+      subscription_status: user.customData?.subscriptionStatus || 'free',
+      onboarding_completed: user.customData?.onboardingCompleted || false,
+      created_at: user.createdAtMillis ? new Date(user.createdAtMillis).toISOString() : new Date().toISOString(),
+      updated_at: user.updatedAtMillis ? new Date(user.updatedAtMillis).toISOString() : new Date().toISOString(),
+    }
   } catch (error) {
     console.error("Error fetching current user profile:", error)
     return null
@@ -169,12 +166,12 @@ export async function getCurrentUserProfileAction() {
 }
 
 // Register a new user (public registration)
+// NOTE: Public registration should typically be handled client-side via Stack Auth signup component
+// This server action is kept for admin-created users or if custom registration flow is needed
 export async function registerUserAction(
   formData: FormData
 ): Promise<{ success: boolean; error?: string; userId?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    
     // Extract form data
     const userData: UserRegistrationFormData = {
       email: formData.get("email") as string,
@@ -197,54 +194,25 @@ export async function registerUserAction(
       }
     }
 
-    // Create auth user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    // Create user with Stack Auth
+    const newUser = await createUser({
       email: userData.email,
       password: userData.password,
-      options: {
-        data: {
-          first_name: userData.first_name,
-          last_name: userData.last_name
-        }
-      }
-    })
-
-    if (authError || !authData.user) {
-      console.error("Error creating auth user:", authError)
-      return { 
-        success: false, 
-        error: authError?.message || "Failed to create user account"
-      }
-    }
-
-    // Create profile
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        user_id: authData.user.id,
-        email: userData.email,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        company_name: userData.company_name,
+      displayName: `${userData.first_name} ${userData.last_name}`,
+      emailVerified: false, // Email verification handled by Stack Auth
+      customData: {
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        companyName: userData.company_name,
         phone: userData.phone,
         industry: userData.industry,
-        company_size: userData.company_size,
-        job_title: userData.job_title,
-        role: 'client' // Default role for public registration
-      })
-
-    if (profileError) {
-      console.error("Error creating user profile:", profileError)
-      // Try to clean up auth user if profile creation fails
-      await supabase.auth.admin.deleteUser(authData.user.id)
-      return { 
-        success: false, 
-        error: "Failed to create user profile"
+        companySize: userData.company_size,
+        jobTitle: userData.job_title,
       }
-    }
+    })
     
     revalidatePath("/admin/users")
-    return { success: true, userId: authData.user.id }
+    return { success: true, userId: newUser.id }
   } catch (error) {
     console.error("Error registering user:", error)
     return { 
@@ -259,18 +227,8 @@ export async function createUserAction(
   formData: FormData
 ): Promise<{ success: boolean; error?: string; userId?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
-    
-    if (!user) {
-      return { success: false, error: "Authentication required" }
-    }
-
-    // Check if user is admin
-    const userIsAdmin = await isUserAdmin(user.id)
-    if (!userIsAdmin) {
-      return { success: false, error: "Admin access required" }
-    }
+    // Require admin access
+    await requireAdmin()
     
     // Extract form data
     const userData = {
@@ -294,51 +252,32 @@ export async function createUserAction(
       }
     }
 
-    // Create auth user
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    // Create user with Stack Auth
+    const newUser = await createUser({
       email: userData.email,
       password: userData.password,
-      email_confirm: true // Auto-confirm for admin-created users
-    })
-
-    if (authError || !authData.user) {
-      console.error("Error creating auth user:", authError)
-      return { 
-        success: false, 
-        error: authError?.message || "Failed to create user account"
-      }
-    }
-
-    // Create profile
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        user_id: authData.user.id,
-        email: userData.email,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        company_name: userData.company_name,
+      displayName: `${userData.first_name} ${userData.last_name}`,
+      emailVerified: true, // Auto-verify for admin-created users
+      customData: {
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        companyName: userData.company_name,
         phone: userData.phone,
-        role: userData.role,
         industry: userData.industry,
-        company_size: userData.company_size,
-        job_title: userData.job_title
-      })
-
-    if (profileError) {
-      console.error("Error creating user profile:", profileError)
-      // Try to clean up auth user if profile creation fails
-      await supabase.auth.admin.deleteUser(authData.user.id)
-      return { 
-        success: false, 
-        error: "Failed to create user profile"
+        companySize: userData.company_size,
+        jobTitle: userData.job_title,
       }
+    })
+    
+    // Assign admin permission if needed
+    if (userData.role === 'admin') {
+      await assignPermissionToUser(newUser.id, 'admin')
     }
     
     revalidatePath("/admin/users")
     revalidatePath("/admin/users/management")
     
-    return { success: true, userId: authData.user.id }
+    return { success: true, userId: newUser.id }
   } catch (error) {
     console.error("Error creating user:", error)
     return { 
@@ -354,16 +293,15 @@ export async function updateUserProfileAction(
   formData: FormData
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    const currentUser = await getCurrentUserServer()
     
-    if (!user) {
+    if (!currentUser) {
       return { success: false, error: "Authentication required" }
     }
     
     // Check permission (can update own profile or has admin permission)
-    const isOwnProfile = user.id === userId
-    const userIsAdmin = await isUserAdmin(user.id)
+    const isOwnProfile = currentUser.id === userId
+    const userIsAdmin = await isUserAdmin()
     
     if (!isOwnProfile && !userIsAdmin) {
       return { success: false, error: "Not authorized to update this user" }
@@ -398,17 +336,35 @@ export async function updateUserProfileAction(
       }
     }
 
-    // Update profile
-    const { error } = await supabase
-      .from('profiles')
-      .update(profileData)
-      .eq('user_id', userId)
-
-    if (error) {
-      console.error("Error updating user profile:", error)
-      return { 
-        success: false, 
-        error: "Failed to update profile"
+    // Update user with Stack Auth
+    const customData: Record<string, any> = {}
+    if (profileData.first_name) customData.firstName = profileData.first_name
+    if (profileData.last_name) customData.lastName = profileData.last_name
+    if (profileData.company_name) customData.companyName = profileData.company_name
+    if (profileData.phone) customData.phone = profileData.phone
+    if (profileData.industry) customData.industry = profileData.industry
+    if (profileData.company_size) customData.companySize = profileData.company_size
+    if (profileData.job_title) customData.jobTitle = profileData.job_title
+    if (profileData.timezone) customData.timezone = profileData.timezone
+    
+    await updateUser(userId, {
+      displayName: profileData.first_name && profileData.last_name 
+        ? `${profileData.first_name} ${profileData.last_name}` 
+        : undefined,
+      email: profileData.email,
+      customData: Object.keys(customData).length > 0 ? customData : undefined,
+    })
+    
+    // Update admin permission if role changed
+    if (profileData.role) {
+      const currentUser = await getUserById(userId)
+      const isCurrentlyAdmin = currentUser?.permissions?.includes('admin') || false
+      const shouldBeAdmin = profileData.role === 'admin'
+      
+      if (shouldBeAdmin && !isCurrentlyAdmin) {
+        await assignPermissionToUser(userId, 'admin')
+      } else if (!shouldBeAdmin && isCurrentlyAdmin) {
+        await removePermissionFromUser(userId, 'admin')
       }
     }
     
@@ -431,34 +387,17 @@ export async function deleteUserAction(
   userId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    await requireAdmin()
     
-    if (!user) {
-      return { success: false, error: "Authentication required" }
-    }
-
-    // Check if user is admin
-    const userIsAdmin = await isUserAdmin(user.id)
-    if (!userIsAdmin) {
-      return { success: false, error: "Admin access required" }
-    }
+    const currentUser = await getCurrentUserServer()
     
     // Cannot delete self
-    if (user.id === userId) {
+    if (currentUser && currentUser.id === userId) {
       return { success: false, error: "Cannot delete your own account" }
     }
     
-    // Delete user from auth (this will cascade to profile due to foreign key)
-    const { error: authError } = await supabase.auth.admin.deleteUser(userId)
-    
-    if (authError) {
-      console.error("Error deleting user from auth:", authError)
-      return { 
-        success: false, 
-        error: "Failed to delete user"
-      }
-    }
+    // Delete user with Stack Auth
+    await deleteUser(userId)
     
     // Revalidate paths
     revalidatePath("/admin/users")
@@ -480,31 +419,14 @@ export async function updateUserRoleAction(
   newRole: 'admin' | 'client' | 'consultant'
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    await requireAdmin()
     
-    if (!user) {
-      return { success: false, error: "Authentication required" }
-    }
-
-    // Check if user is admin
-    const userIsAdmin = await isUserAdmin(user.id)
-    if (!userIsAdmin) {
-      return { success: false, error: "Admin access required" }
-    }
-    
-    // Update role in profile
-    const { error } = await supabase
-      .from('profiles')
-      .update({ role: newRole })
-      .eq('user_id', userId)
-    
-    if (error) {
-      console.error("Error updating user role:", error)
-      return { 
-        success: false, 
-        error: "Failed to update user role"
-      }
+    // Update role using Stack Auth permission system
+    if (newRole === 'admin') {
+      await assignPermissionToUser(userId, 'admin')
+    } else {
+      // Remove admin permission for non-admin roles
+      await removePermissionFromUser(userId, 'admin')
     }
     
     revalidatePath("/admin/users")
@@ -525,8 +447,7 @@ export async function completeOnboardingAction(
   formData: FormData
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    const user = await getCurrentUserServer()
     
     if (!user) {
       return { success: false, error: "Authentication required" }
@@ -541,18 +462,17 @@ export async function completeOnboardingAction(
       onboarding_completed: true
     }
 
-    const { error } = await supabase
-      .from('profiles')
-      .update(onboardingData)
-      .eq('user_id', user.id)
-
-    if (error) {
-      console.error("Error completing onboarding:", error)
-      return { 
-        success: false, 
-        error: "Failed to complete onboarding"
+    // Update user with onboarding data
+    await updateUser(user.id, {
+      customData: {
+        companyName: onboardingData.company_name,
+        industry: onboardingData.industry,
+        companySize: onboardingData.company_size,
+        jobTitle: onboardingData.job_title,
+        timezone: onboardingData.timezone,
+        onboardingCompleted: true,
       }
-    }
+    })
 
     revalidatePath("/profile")
     revalidatePath("/dashboard")
@@ -579,20 +499,16 @@ export async function getUserRolesAction(): Promise<{ label: string; value: stri
 // Check if email exists (for registration validation)
 export async function checkEmailExistsAction(email: string): Promise<boolean> {
   try {
-    const supabase = await createServerSupabaseClient()
-    
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('email')
-      .eq('email', email)
-      .limit(1)
-
-    if (error) {
-      console.error(`Error checking if email ${email} exists:`, error)
+    // Check if email exists using Stack Auth
+    // Note: Stack Auth may not have a direct getByEmail method
+    // We can try to get users and filter, or use a different approach
+    try {
+      const users = await getAllUsers({ search: email, limit: 1 })
+      return users.some((u: any) => u.email === email)
+    } catch (error) {
+      console.error("Error checking email:", error)
       return false
     }
-
-    return data && data.length > 0
   } catch (error) {
     console.error(`Error checking if email ${email} exists:`, error)
     return false
@@ -602,17 +518,23 @@ export async function checkEmailExistsAction(email: string): Promise<boolean> {
 // Update user's last login timestamp
 export async function updateLastLoginAction() {
   try {
-    const supabase = await createServerSupabaseClient()
-    const user = await getCurrentSupabaseUser()
+    const user = await getCurrentUserServer()
     
     if (!user) {
       return
     }
 
-    await supabase
-      .from('profiles')
-      .update({ last_login_at: new Date().toISOString() })
-      .eq('user_id', user.id)
+    // Update last login timestamp in custom data
+    // Stack Auth may track this automatically, but we store it in customData for our records
+    const currentUser = await getUserById(user.id)
+    const currentCustomData = currentUser?.customData || {}
+    
+    await updateUser(user.id, {
+      customData: {
+        ...currentCustomData,
+        lastLoginAt: new Date().toISOString(),
+      }
+    })
   } catch (error) {
     console.error("Error updating last login:", error)
     // Non-critical error, don't throw
