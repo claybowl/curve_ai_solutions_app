@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/providers/stack-auth-provider"
+import { supabase } from "@/lib/supabase"
 
 // Helper hook for navbar-specific auth data
 function useNavbarAuth() {
@@ -37,7 +38,6 @@ export function Navbar() {
     { name: "Solutions", href: "/solutions" },
     { name: "Assessments", href: "/assessments" },
     { name: "About", href: "/about" },
-    { name: "Consultation", href: "/consultation" },
   ]
 
   // Updated logout handler for Supabase
@@ -78,28 +78,18 @@ export function Navbar() {
             ))}
             <div className="ml-4 flex items-center gap-2">
               <ThemeToggle />
-              {isLoggedIn ? (
-                <UserProfileDropdown />
-              ) : (
-                <>
-                  <Button asChild className="bg-[#0076FF] hover:bg-[#0076FF]/90 text-white">
-                    <Link href="/login">Get Started</Link>
-                  </Button>
-                  <Link
-                    href="/login"
-                    className="px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-                  >
-                    Sign In
-                  </Link>
-                </>
-              )}
+              <Button asChild className="bg-gradient-to-r from-[#0076FF] to-[#0056CC] hover:from-[#0056CC] hover:to-[#004499] text-white font-semibold px-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Link href="/consultation">Schedule Consultation</Link>
+              </Button>
             </div>
           </nav>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
-            {isLoggedIn && <UserProfileDropdown />}
+            <Button asChild className="bg-gradient-to-r from-[#0076FF] to-[#0056CC] hover:from-[#0056CC] hover:to-[#004499] text-white text-sm px-4 py-1">
+              <Link href="/consultation">Consultation</Link>
+            </Button>
             <button
               type="button"
               className="p-2 rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
@@ -135,26 +125,13 @@ export function Navbar() {
                 {item.name}
               </Link>
             ))}
-            {!isLoggedIn && (
-              <>
-                <div className="pt-2">
-                  <Button asChild className="w-full bg-[#0076FF] hover:bg-[#0076FF]/90 text-white">
-                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                      Get Started
-                    </Link>
-                  </Button>
-                </div>
-                <div className="pt-2">
-                  <Link
-                    href="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign In
-                  </Link>
-                </div>
-              </>
-            )}
+            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+              <Button asChild className="w-full bg-gradient-to-r from-[#0076FF] to-[#0056CC] hover:from-[#0056CC] hover:to-[#004499] text-white">
+                <Link href="/consultation" onClick={() => setIsMenuOpen(false)}>
+                  Schedule Consultation
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}
