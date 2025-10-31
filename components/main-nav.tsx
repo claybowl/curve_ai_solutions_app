@@ -164,14 +164,13 @@ export function MainNav() {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
-                </Button>
                 <Button
-                  className="bg-donjon-indigo hover:bg-donjon-indigo/90 dark:bg-donjon-indigo dark:hover:bg-donjon-indigo/90"
+                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
                   asChild
                 >
-                  <Link href="/login">Sign Up</Link>
+                  <Link href="/consultation" className="flex items-center gap-2">
+                    🔥 FREE 30-Min Session
+                  </Link>
                 </Button>
               </>
             )}
@@ -237,15 +236,14 @@ export function MainNav() {
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/login">Sign In</Link>
-                  </Button>
                   <Button
-                    className="bg-donjon-indigo hover:bg-donjon-indigo/90 dark:bg-donjon-indigo dark:hover:bg-donjon-indigo/90"
+                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
                     asChild
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Link href="/login">Sign Up</Link>
+                    <Link href="/consultation" className="flex items-center justify-center gap-2">
+                      🔥 FREE 30-Min Session
+                    </Link>
                   </Button>
                 </>
               )}
