@@ -3,6 +3,7 @@ import { ConsultationForm } from "@/components/consultation-form"
 import { ConsultationProcess } from "@/components/consultation-process"
 import { ConsultationFAQ } from "@/components/consultation-faq"
 import { Testimonials } from "@/components/testimonials"
+import { CalendlyPromotion } from "@/components/calendly-promotion"
 
 export const metadata = {
   title: "Consultation | Curve AI Solutions",
@@ -12,6 +13,8 @@ export const metadata = {
 export default function ConsultationPage() {
   return (
     <main className="min-h-screen">
+      <CalendlyPromotion />
+
       {/* Hero Section */}
       <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599]">
         <div className="container px-4 md:px-6 mx-auto">

@@ -23,7 +23,12 @@
       "Bash(wmic process where ProcessId=19868 delete /nointeractive)",
       "Bash(powershell:*)",
       "Bash(npm install:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npx pnpm install:*)",
+      "Bash(vercel:*)"
     ],
     "deny": [],
     "ask": []
