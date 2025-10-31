@@ -21,7 +21,9 @@
       "Bash(tasklist)",
       "Bash(cmd /c \"taskkill /PID 8896 /F & taskkill /PID 25576 /F & taskkill /PID 19868 /F\")",
       "Bash(wmic process where ProcessId=19868 delete /nointeractive)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
