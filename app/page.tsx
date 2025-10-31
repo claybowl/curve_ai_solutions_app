@@ -1,9 +1,9 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, BarChart2, Database, Shield, Zap, Bot, LineChart, Workflow, Calendar, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/custom-card"
-import DonjonLogoVisualization from "@/components/donjon-logo-visualization"
 import { CastleBackground } from "@/components/castle-background"
 
 export default function Home() {
@@ -51,7 +51,16 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <DonjonLogoVisualization />
+              <div className="relative w-full max-w-[600px] aspect-square">
+                <Image
+                  src="https://i.ibb.co/MQJTLsY/donjon-logo.png"
+                  alt="Donjon Intelligence Systems Logo"
+                  fill
+                  className="object-contain rounded-lg"
+                  priority
+                  unoptimized
+                />
+              </div>
             </div>
           </div>
         </div>
