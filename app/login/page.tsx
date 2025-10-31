@@ -41,16 +41,49 @@ export default function LoginPage() {
     }
   }
 
-  const handleOAuthLogin = async (provider: string) => {
+  const handleOAuthLogin = async (provider: string, event?: React.MouseEvent<HTMLButtonElement>) => {
     setLoading(true)
     setError(null)
 
     try {
+      // Show loading state
+      const button = event?.currentTarget
+      if (button) {
+        button.disabled = true
+        button.textContent = `Connecting to ${provider}...`
+      }
+
+      // Initiate OAuth flow
       await signInWithOAuth(provider)
-      // OAuth redirects automatically, so we don't need to navigate
+
+      // OAuth should redirect automatically. If we reach here, something went wrong.
+      console.warn(`OAuth redirect for ${provider} did not occur`)
+      setError(`Failed to connect to ${provider}. Please try again.`)
+
+      // Reset button state
+      if (button) {
+        button.disabled = false
+        button.textContent = provider
+      }
+      setLoading(false)
+
     } catch (err: any) {
+      console.error(`OAuth login error for ${provider}:`, err)
       setError(err.message || `Failed to sign in with ${provider}`)
       setLoading(false)
+
+      // Reset button state after a delay
+      setTimeout(() => {
+        const buttons = document.querySelectorAll('[onclick*="handleOAuthLogin"]')
+        buttons.forEach(btn => {
+          const btnElement = btn as HTMLButtonElement
+          if (btnElement.textContent?.includes('Connecting')) {
+            btnElement.disabled = false
+            const providerName = btnElement.getAttribute('onclick')?.match(/'([^']+)'/)?.[1]
+            if (providerName) btnElement.textContent = providerName
+          }
+        })
+      }, 2000)
     }
   }
 
@@ -119,7 +152,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleOAuthLogin('google')}
+                onClick={(e) => handleOAuthLogin('google', e)}
                 disabled={loading}
               >
                 Google
@@ -127,7 +160,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleOAuthLogin('github')}
+                onClick={(e) => handleOAuthLogin('github', e)}
                 disabled={loading}
               >
                 GitHub

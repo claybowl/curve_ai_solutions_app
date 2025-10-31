@@ -152,46 +152,54 @@ export async function signInWithOAuth(provider: string) {
     if (!stackClientApp) {
       throw new Error('Stack Auth client not initialized. Please check your environment variables.')
     }
-    
+
     const client = stackClientApp as any
-    
-    // Check if method exists - try multiple possible method names
-    const oauthMethod = client.signInWithOAuth || client.signInWithOAuthProvider || client.signInWithProvider
-    
+
+    // Stack Auth uses signInWithOAuthProvider for OAuth flows
+    if (typeof client.signInWithOAuthProvider === 'function') {
+      // Debug: Log available OAuth providers
+      console.log(`Attempting OAuth sign-in with ${provider}`)
+      console.log('Available methods:', Object.getOwnPropertyNames(client).filter(name => typeof client[name] === 'function'))
+
+      // This method should trigger a redirect automatically
+      // Don't await the result as it will redirect the page
+      const result = client.signInWithOAuthProvider(provider)
+
+      // Log result for debugging (might be undefined due to redirect)
+      console.log('OAuth method called, result:', result)
+      return
+    }
+
+    // Fallback to other possible method names
+    const oauthMethod = client.signInWithOAuth || client.signInWithProvider
+
     if (!oauthMethod || typeof oauthMethod !== 'function') {
-      throw new Error('Stack Auth OAuth sign-in method not available. Please check Stack Auth SDK version.')
+      throw new Error(`Stack Auth OAuth sign-in method not available for ${provider}. Please check Stack Auth SDK version.`)
     }
-    
-    // Stack Auth OAuth typically redirects automatically
-    // Call the method but don't expect a return value since it redirects
-    try {
-      const result = await oauthMethod.call(client, provider)
-      
-      // Only check result if it's actually returned (some OAuth flows don't return)
-      // Safely check result without using 'in' operator on potentially undefined values
-      if (result != null && typeof result === 'object' && !Array.isArray(result)) {
-        if ('status' in result && result.status === 'error') {
-          throw new Error((result as any).error?.message || `OAuth sign-in with ${provider} failed`)
-        }
-      }
-      
-      // If we get here, OAuth didn't redirect (which is unusual)
-      // This might mean the provider isn't configured or there's an issue
-      return result
-    } catch (oauthError: any) {
-      // If error is about accessToken or redirect, it might be expected behavior
-      // Stack Auth OAuth should redirect, so errors might be normal
-      if (oauthError.message?.includes('accessToken') || oauthError.message?.includes('redirect')) {
-        // This might be expected - OAuth redirects don't always return normally
-        console.log('OAuth redirect initiated (error may be expected):', oauthError.message)
-        return
-      }
-      throw oauthError
-    }
+
+    // Call OAuth method - this should redirect automatically
+    // Don't await as OAuth redirects typically don't return
+    oauthMethod.call(client, provider)
+
+    // Add a small delay to allow redirect to initiate
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    // If we're still here, the redirect didn't happen
+    console.warn(`OAuth redirect for ${provider} may not have initiated properly`)
+
   } catch (error: any) {
     console.error("Error signing in with OAuth:", error)
-    const errorMessage = error?.message || `Failed to sign in with ${provider}. Please check your Stack Auth configuration.`
-    throw new Error(errorMessage)
+
+    // Check for specific error messages
+    if (error.message?.includes('not configured') || error.message?.includes('not enabled')) {
+      throw new Error(`${provider} is not configured in Stack Auth. Please enable it in your Stack Auth dashboard.`)
+    }
+
+    if (error.message?.includes('redirect_uri')) {
+      throw new Error(`Invalid redirect URL for ${provider}. Please check your Stack Auth OAuth configuration.`)
+    }
+
+    throw new Error(`Failed to sign in with ${provider}. Please check your Stack Auth configuration.`)
   }
 }
 
