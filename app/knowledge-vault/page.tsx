@@ -44,10 +44,12 @@ export default function KnowledgeVaultPage() {
               Everything you need to evaluate, implement, and optimize your AI operations.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
-              <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white">
-                <Calculator className="h-5 w-5 mr-2" />
-                Calculate ROI
-              </Button>
+              <Link href="/roi-calculator">
+                <Button size="lg" className="bg-[#FF7F00] hover:bg-[#FF7F00]/90 text-white">
+                  <Calculator className="h-5 w-5 mr-2" />
+                  Calculate ROI
+                </Button>
+              </Link>
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-[#1A365D]">
                 <BookOpen className="h-5 w-5 mr-2" />
                 Browse Documentation
@@ -134,18 +136,40 @@ export default function KnowledgeVaultPage() {
                 </div>
 
                 <Card className="p-8">
-                  <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-                    <iframe
-                      src="https://donjon-roi-calculator.netlify.app"
-                      className="w-full h-full border-0"
-                      title="Donjon ROI Calculator"
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-top-navigation"
-                      loading="lazy"
-                    />
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-8 text-center">
+                    <Calculator className="w-16 h-16 mx-auto mb-4 text-emerald-400" />
+                    <h3 className="text-2xl font-bold mb-4 text-white">ROI Calculator</h3>
+                    <p className="text-gray-300 mb-6">
+                      Calculate your potential savings with Donjon AiGency Suite
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      <div className="bg-slate-700/50 p-3 rounded">
+                        <p className="text-emerald-400 font-bold">327%</p>
+                        <p className="text-xs text-gray-400">Avg ROI</p>
+                      </div>
+                      <div className="bg-slate-700/50 p-3 rounded">
+                        <p className="text-emerald-400 font-bold">42 days</p>
+                        <p className="text-xs text-gray-400">Payback</p>
+                      </div>
+                      <div className="bg-slate-700/50 p-3 rounded">
+                        <p className="text-emerald-400 font-bold">18 hrs</p>
+                        <p className="text-xs text-gray-400">Saved/week</p>
+                      </div>
+                      <div className="bg-slate-700/50 p-3 rounded">
+                        <p className="text-emerald-400 font-bold">$10k+</p>
+                        <p className="text-xs text-gray-400">Monthly</p>
+                      </div>
+                    </div>
+                    <Link href="/roi-calculator">
+                      <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                        Launch Calculator
+                        <ArrowRight className="h-5 w-5 ml-2" />
+                      </Button>
+                    </Link>
                   </div>
                   <div className="mt-6 text-center">
                     <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                      ✓ Captain's Original ROI Calculator - Calculate Your Savings
+                      ✓ Interactive ROI Calculator - Calculate Your Savings
                     </Badge>
                   </div>
                 </Card>
