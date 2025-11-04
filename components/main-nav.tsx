@@ -41,12 +41,12 @@ export function MainNav() {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Solutions", href: "/solutions" },
+    { name: "Knowledge Vault", href: "/knowledge-vault" },
     { name: "Assessments", href: "/assessments" },
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
     { name: "AiGency Workbench", href: "/aigency-platform" },
     { name: "Knowledge Studio", href: "/donjon-chat" },
-    { name: "Fundraising", href: "/fundraising" },
     { name: "About", href: "/about" },
     { name: "Consultation", href: "/consultation" },
   ]

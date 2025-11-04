@@ -29,7 +29,12 @@
       "Bash(git push:*)",
       "Bash(npx pnpm install:*)",
       "Bash(vercel:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(mkdir:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git clone:*)",
+      "Bash(npx vercel:*)",
+      "Bash(npx netlify:*)"
     ],
     "deny": [],
     "ask": []

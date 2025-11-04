@@ -10,6 +10,9 @@ export const metadata = {
   description: "Schedule a consultation with our AI experts to discuss your business needs and solutions.",
 }
 
+// Force dynamic rendering to avoid build-time issues
+export const dynamic = 'force-dynamic'
+
 export default function ConsultationPage() {
   return (
     <main className="min-h-screen">
