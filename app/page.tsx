@@ -26,9 +26,9 @@ export default function Home() {
                 We engineer resilient intelligence platforms—integrating knowledge, automation, and reasoning into architectures built to scale and evolve with your mission.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" className="bg-donjon-ember hover:bg-donjon-ember/90 text-white" asChild>
-                  <Link href="/products">
-                    View Products & Pricing
+                <Button size="lg" className="bg-donjon-ember hover:bg-donjon-ember/90 text-white whitespace-nowrap" asChild>
+                  <Link href="/solutions">
+                    Solutions & Products
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>

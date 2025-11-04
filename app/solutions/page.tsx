@@ -67,22 +67,22 @@ const packageBundles: PackageBundle[] = [
   },
   {
     id: "aigency-suite",
-    name: "AiGency Suite",
-    headline: "Complete AI platform: Knowledge, Workbench & Automation",
-    price: "Package Pricing Available",
+    name: "Donjon AiGency Suite",
+    headline: "Complete AI Agent Platform: Knowledge • Agents • Automation",
+    price: "From $199/mo • $2,500 pilot program",
     description:
-      "Three powerful platforms that work seamlessly together: Knowledge Studio for learning and exploration, AiGency Workbench for agent creation and management, and AiPex Platform for workflow automation. Share knowledge, deploy agents, and automate processes all in one integrated ecosystem.",
+      "The complete Donjon AiGency Suite integrating Knowledge Studio, AiGency Workbench, and AiPex Platform. Build, deploy, and orchestrate AI agents that transform how your team works. From solo operators to enterprise deployments—scale your AI workforce with confidence.",
     features: [
-      "Knowledge Studio: Learn, explore, and access AI capabilities with our comprehensive knowledge platform",
-      "AiGency Workbench: Design, deploy, and manage AI agents with visual tools and lifecycle management",
-      "AiPex Platform: Automate workflows and orchestrate processes across your entire business",
-      "Seamless integration: Knowledge flows into agents, agents deploy to workflows, workflows feed insights back to knowledge",
-      "Unified authentication and data sharing across all three platforms",
-      "Single dashboard to monitor and manage your entire AI ecosystem",
+      "🧠 Knowledge Studio: Centralized intelligence hub with semantic search and knowledge management",
+      "⚡ AiGency Workbench: Visual agent builder with 5-10 concurrent agents per tier",
+      "🚀 AiPex Platform: Advanced workflow orchestration with multi-agent handoffs",
+      "Agent Library: Pre-built templates for support, sales, ops, research, and analysis",
+      "Seamless Integration: Connects to Gmail, Slack, Notion, databases, and custom APIs",
+      "Unified Dashboard: Monitor performance, track ROI, and manage your entire agent ecosystem",
     ],
     href: "/solutions#aigency-suite",
-    highlight: false,
-    cta: "Explore AiGency Suite",
+    highlight: true,
+    cta: "Explore Donjon AiGency Suite",
     icon: Layers,
   },
   {
@@ -117,22 +117,22 @@ const individualTools: IndividualTool[] = [
   {
     name: "AI Chatbot",
     coverage: "24/7 lead capture, FAQs, warm hand-offs to your team",
-    price: "$49/mo or $499/yr",
+    price: "$79/mo or $799/yr",
   },
   {
     name: "Booking System",
     coverage: "Self-serve scheduling, reminders, calendar sync, deposits",
-    price: "$39/mo or $399/yr",
+    price: "$69/mo or $699/yr",
   },
   {
     name: "Simple CRM",
     coverage: "Pipeline tracking, customer notes, follow-up sequences",
-    price: "$59/mo or $599/yr",
+    price: "$89/mo or $899/yr",
   },
   {
     name: "Analytics",
     coverage: "Dashboards for leads, bookings, revenue, and campaign ROI",
-    price: "$29/mo or $299/yr",
+    price: "$49/mo or $499/yr",
   },
 ]
 
@@ -166,18 +166,37 @@ const customPackages: CustomPackage[] = [
     checkoutUrl: "https://buy.stripe.com/dRm4gzdNH9Eq1XFg087AI0B",
   },
   {
+    name: "Business Custom",
+    tagline: "Growing Teams Solution",
+    price: 4500,
+    monthlyFee: 149,
+    timeline: "3-4 weeks",
+    description: "Advanced custom build with multi-user support and integrations",
+    features: [
+      "Everything in Quick Start",
+      "Multi-user accounts",
+      "Custom integrations (2 systems)",
+      "Advanced automation workflows",
+      "60-day support",
+      "Team training",
+    ],
+    checkoutUrl: "https://buy.stripe.com/bJe6oH4d7dUGgSzg087AI0A",
+  },
+  {
     name: "Professional Custom",
-    tagline: "Full Custom Build",
-    price: 8500,
+    tagline: "Enterprise-Grade Solution",
+    price: 7500,
     monthlyFee: 199,
     timeline: "4-6 weeks",
     description: "Complete custom implementation with advanced features",
     features: [
+      "Everything in Business",
       "Full custom CRM",
-      "Advanced automation",
-      "Custom integrations",
-      "Team training",
+      "Unlimited integrations",
+      "API access",
+      "White-label options",
       "90-day support",
+      "Dedicated project manager",
     ],
     checkoutUrl: "https://buy.stripe.com/28E6oHcJDg2Obyf29i7AI0C",
   },
@@ -202,21 +221,23 @@ type DonjonTier = {
 const donjonTiers: DonjonTier[] = [
   {
     id: "donjon-starter",
-    name: "Donjon Starter",
-    tagline: "Get Smart, Fast",
-    price: "$149/mo",
-    bestFor: "Solo operators and small teams getting their first AI lift",
-    description: "Get started with AI-powered knowledge and Q&A for your documents. Perfect for teams who want faster answers without the complexity.",
+    name: "Donjon AiGency Suite - Starter",
+    tagline: "Your First AI Agent Team",
+    price: "$199/mo",
+    bestFor: "Teams ready to deploy their first AI agents",
+    description: "Complete Donjon AiGency Suite with Knowledge Studio, AiGency Workbench, and AiPex Platform. Perfect for getting started with intelligent automation.",
     features: [
-      "Donjon Knowledge Studio Lite",
-      "Upload up to 1 GB of docs",
-      "Smart Q&A with semantic search",
-      "1 specialty agent template",
+      "🧠 Knowledge Studio: 10 GB ingestion, semantic search, collections",
+      "⚡ AiGency Workbench: 5 active agents, 10 agent templates",
+      "🚀 AiPex Platform: Basic workflow automation (500 runs/mo)",
+      "Core integrations: Gmail, Slack, webhooks",
+      "Team collaboration (up to 5 users)",
       "Email support",
     ],
     outcomes: [
-      "Faster answers from your own docs",
-      "Fewer repeat questions and context-hunting",
+      "Deploy your first AI agents in hours, not weeks",
+      "Automate routine tasks across support and ops",
+      "Centralized knowledge base for the entire team",
     ],
     cta: "Start 14-day trial",
     ctaLink: "https://buy.stripe.com/6oU4gzbFzaIuaubaFO7AI0q",
@@ -225,22 +246,25 @@ const donjonTiers: DonjonTier[] = [
   },
   {
     id: "donjon-pro",
-    name: "Donjon Pro",
-    tagline: "Agents That Do Real Work",
-    price: "$399/mo",
-    bestFor: "Growing teams who want automation, not just answers",
-    description: "Move beyond Q&A to actual automation. Deploy agents that draft, summarize, and update—giving your team hours back each week.",
+    name: "Donjon AiGency Suite - Pro",
+    tagline: "Scale Your Agent Workforce",
+    price: "$499/mo",
+    bestFor: "Growing teams automating multiple workflows",
+    description: "Expanded agent capacity with advanced orchestration. Power your entire operation with a coordinated team of AI agents working together.",
     features: [
       "Everything in Starter",
-      "10 GB data ingestion",
-      "3 specialty agents with workflow actions",
-      "Shared collections and saved prompts",
-      "Analytics dashboard (accuracy, usage)",
-      "Priority support",
+      "🧠 Knowledge Studio: 50 GB ingestion, advanced analytics",
+      "⚡ AiGency Workbench: 8 active agents, 25+ agent templates",
+      "🚀 AiPex Platform: Advanced orchestration (2,000 runs/mo)",
+      "Multi-agent workflows & handoffs",
+      "All integrations + custom API access",
+      "Team collaboration (up to 20 users)",
+      "Priority support + monthly strategy calls",
     ],
     outcomes: [
-      "Drafts, summaries, and updates done on autopilot",
-      "Team-wide knowledge reuse",
+      "Full department automation (support, sales, ops)",
+      "Agents collaborating on complex workflows",
+      "Measurable ROI with detailed analytics",
     ],
     cta: "See it on your data",
     ctaLink: "https://buy.stripe.com/cNi00jbFzbMycCjeW47AI0r",
@@ -249,22 +273,25 @@ const donjonTiers: DonjonTier[] = [
   },
   {
     id: "donjon-business",
-    name: "Donjon Business",
-    tagline: "Knowledge + Ops Automation",
+    name: "Donjon AiGency Suite - Business",
+    tagline: "Enterprise-Grade Agent Operations",
     price: "$899/mo",
-    bestFor: "SMBs with processes to automate across teams",
-    description: "Complete automation platform with integrations and multi-agent orchestration. Automate workflows across your entire organization.",
+    bestFor: "Organizations deploying AI at scale",
+    description: "Maximum agent capacity with enterprise controls. Orchestrate hundreds of workflows across your entire organization with full governance.",
     features: [
       "Everything in Pro",
-      "100 GB data ingestion",
-      "Multi-agent orchestration",
-      "Integrations: Gmail, Slack, GDrive, Notion, Webhooks",
-      "Role-based access, audit log",
-      "Guided setup with our team",
+      "🧠 Knowledge Studio: 200 GB ingestion, enterprise search",
+      "⚡ AiGency Workbench: 10 active agents, 50+ agent templates",
+      "🚀 AiPex Platform: Unlimited orchestration, SLA guaranteed",
+      "Advanced security: SSO, audit logs, role-based access",
+      "Custom integrations & private deployments",
+      "Unlimited users + white-label options",
+      "Dedicated success manager + 24/7 support",
     ],
     outcomes: [
-      "Hours back each week across support, ops, and research",
-      "Consistent outputs with traceability",
+      "Transform entire business processes with AI",
+      "Scale agents across departments with governance",
+      "Competitive advantage through automation",
     ],
     cta: "Start a 2-week pilot",
     ctaLink: "https://buy.stripe.com/14A6oHcJD7wiaubaFO7AI0s",
@@ -317,151 +344,50 @@ const donjonTiers: DonjonTier[] = [
   },
 ]
 
-// Donjon Product Modules
-type DonjonModule = {
+// Specialized Agent Templates (Included with AiGency Workbench)
+type AgentTemplate = {
   id: string
   name: string
-  price: string
+  category: string
   description: string
-  features: string[]
-  outcomes: string[]
-  cta: string
-  ctaLink: string
   icon: LucideIcon
 }
 
-const donjonModules: DonjonModule[] = [
-  {
-    id: "qa-console",
-    name: "Donjon Q&A Console",
-    price: "$99/mo",
-    description: "A secure AI answer box trained on your docs. Perfect for adding instant answers to your website or internal knowledge base.",
-    features: [
-      "1 GB ingestion",
-      "Semantic search + citations",
-      "Web widget embed",
-      "Email support",
-    ],
-    outcomes: [
-      "Instant answers from your own content",
-      "Fewer repetitive questions to your team",
-    ],
-    cta: "Add to site in 10 minutes",
-    ctaLink: "https://buy.stripe.com/eVq28r9xr4k67hZaFO7AI0u",
-    icon: MessageSquare,
-  },
-  {
-    id: "knowledge-studio",
-    name: "Donjon Knowledge Studio",
-    price: "$249/mo",
-    description: "Turn files and links into an intelligent, searchable knowledge base. Build a central source of truth for your team.",
-    features: [
-      "10 GB ingestion",
-      "Collections, tags, saved answers",
-      "Source upload: PDF, DOCX, URLs",
-      "Versioning and change tracking",
-    ],
-    outcomes: [
-      "Fast research and drafting",
-      "Team-wide knowledge reuse",
-    ],
-    cta: "Start a free workspace",
-    ctaLink: "https://buy.stripe.com/5kQ7sLaBv17U59R15e7AI0v",
-    icon: Database,
-  },
+const agentTemplates: AgentTemplate[] = [
   {
     id: "support-copilot",
-    name: "Donjon Support Copilot",
-    price: "$349/mo",
-    description: "An AI teammate that answers customer questions from your policies and help docs. Reduce support ticket volume and improve response times.",
-    features: [
-      "Help Center sync",
-      "Tone controls and response limits",
-      "Suggested replies for agents",
-      "Conversation analytics",
-    ],
-    outcomes: [
-      "Faster first response time",
-      "Higher self-service rate",
-    ],
-    cta: "Connect your help docs",
-    ctaLink: "https://buy.stripe.com/6oUdR93935oa6dV15e7AI0w",
+    name: "Support Copilot",
+    category: "Customer Service",
+    description: "Answers customer questions from your knowledge base with suggested replies and tone controls",
     icon: MessageSquare,
   },
   {
     id: "sales-writer",
-    name: "Donjon Sales Writer",
-    price: "$299/mo",
-    description: "An AI content partner for outbound and follow-ups. Generate personalized sequences and consistent messaging at scale.",
-    features: [
-      "First-line personalization from public signals",
-      "Snippet and reply drafting",
-      "Case study generator from your notes",
-      "A/B subject testing dashboard",
-    ],
-    outcomes: [
-      "More replies and tighter follow-through",
-      "Consistent tone and message control",
-    ],
-    cta: "Generate your first sequence",
-    ctaLink: "https://buy.stripe.com/00w9ATfVPcQC0TB6py7AI0x",
+    name: "Sales Writer",
+    category: "Sales & Marketing",
+    description: "Generates personalized outreach, follow-ups, and case studies from public signals",
     icon: FileText,
   },
   {
     id: "research-agent",
-    name: "Donjon Research Agent",
-    price: "$399/mo",
-    description: "Deep-dive synthesis across PDFs, web pages, and notes. Surface relationships and insights across your research materials.",
-    features: [
-      "Multi-doc compare and summarize",
-      "Relationship discovery across sources",
-      "Export to brief or slide outline",
-      "Inline citations",
-    ],
-    outcomes: [
-      "Hours saved on literature and market reviews",
-      "Clear, defensible summaries",
-    ],
-    cta: "Run a research brief",
-    ctaLink: "https://buy.stripe.com/eVq6oH7pjeYKcCj4hq7AI0y",
+    name: "Research Agent",
+    category: "Research & Analysis",
+    description: "Synthesizes information across documents, finds relationships, and generates briefs",
     icon: Search,
   },
   {
     id: "ops-automator",
-    name: "Donjon Ops Automator",
-    price: "$449/mo",
-    description: "Triggered agents that tag, route, summarize, and update systems. Automate routine workflows and handoffs between teams.",
-    features: [
-      "Email and webhook triggers",
-      "Integrations: Gmail, Slack, Google Drive, Notion",
-      "Policy-based actions and guardrails",
-      "Run history and audit trail",
-    ],
-    outcomes: [
-      "Fewer manual updates",
-      "Cleaner, faster handoffs",
-    ],
-    cta: "Automate your first workflow",
-    ctaLink: "https://buy.stripe.com/9B600j8tn2bY1XFeW47AI0z",
+    name: "Ops Automator",
+    category: "Operations",
+    description: "Routes, tags, and processes routine updates with webhook and email triggers",
     icon: Zap,
   },
   {
-    id: "private-edge",
-    name: "Donjon Private Edge",
-    price: "$1,250/mo + setup",
-    description: "A private deployment of Donjon for security-sensitive teams. Self-hosted or VPC deployment with enterprise controls.",
-    features: [
-      "Self-host or VPC",
-      "SSO and role-based access",
-      "Data residency options",
-      "Dedicated success engineer",
-    ],
-    outcomes: [
-      "Enterprise control with the same Donjon experience",
-    ],
-    cta: "Request a technical scoping",
-    ctaLink: "https://buy.stripe.com/bJe6oH4d7dUGgSzg087AI0A",
-    icon: Cpu,
+    id: "data-analyst",
+    name: "Data Analyst",
+    category: "Data & Analytics",
+    description: "Analyzes datasets, creates visualizations, and generates insights from your business metrics",
+    icon: Database,
   },
 ]
 
@@ -513,9 +439,15 @@ export default function SolutionsPage() {
           <div className="mx-auto max-w-3xl text-center">
             <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30">Bundles First</Badge>
             <h2 className="text-4xl font-bold mb-4">Start with the Package That Fits</h2>
-            <p className="text-lg text-white/80">
+            <p className="text-lg text-white/80 mb-4">
               Packages bundle our highest-impact automations so you see ROI faster. Mix and match tools later; start
               with the offer that gets your team live this week.
+            </p>
+            <p className="text-sm text-white/70">
+              Looking for ServicePro?{" "}
+              <Link href="/solutions#servicepro-suite" className="underline hover:text-white transition-colors font-medium">
+                View ServicePro pricing and details
+              </Link>
             </p>
           </div>
 
@@ -526,6 +458,7 @@ export default function SolutionsPage() {
               return (
                 <Card
                   key={bundle.id}
+                  id={bundle.id}
                   className={`relative flex h-full flex-col border-2 bg-white text-slate-900 shadow-xl dark:bg-slate-900 dark:text-gray-100 ${
                     bundle.highlight
                       ? "border-[#3F8CFF] shadow-[#3F8CFF]/20"
@@ -697,78 +630,54 @@ export default function SolutionsPage() {
             </div>
           </div>
 
-          {/* Donjon Modules */}
+          {/* Agent Templates Included */}
           <div className="mb-16">
             <div className="text-center mb-12">
-              <Badge className="mb-4 bg-[#0076FF] text-white hover:bg-[#0076FF]/90">
-                Standalone Modules
+              <Badge className="mb-4 bg-[#FF7F00] text-white hover:bg-[#FF7F00]/90">
+                Agent Templates
               </Badge>
               <h3 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">
-                Product Modules & Add-Ons
+                Pre-Built Agent Templates
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                Mix and match modules to build your perfect AI stack. Each module works standalone or integrates with Donjon tiers.
+                All agent templates are included with the AiGency Workbench. Deploy specialized agents instantly or customize them for your specific workflows.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {donjonModules.map((module) => {
-                const Icon = module.icon
+              {agentTemplates.map((template) => {
+                const Icon = template.icon
                 return (
                   <Card
-                    key={module.id}
-                    className="flex flex-col border-2 border-gray-200 dark:border-gray-700 hover:border-[#0076FF]/50 transition-all hover:shadow-md"
+                    key={template.id}
+                    className="flex flex-col border-2 border-gray-200 dark:border-gray-700 hover:border-[#FF7F00]/50 transition-all hover:shadow-md"
                   >
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F1FF] text-[#1A365D] dark:bg-[#1A365D] dark:text-white">
                           <Icon className="h-5 w-5" />
                         </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-[#1A365D] dark:text-blue-300">
-                            {module.price}
-                          </div>
-                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          {template.category}
+                        </Badge>
                       </div>
                       <CardTitle className="text-xl mb-2 text-[#1A365D] dark:text-blue-100">
-                        {module.name}
+                        {template.name}
                       </CardTitle>
                       <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
-                        {module.description}
+                        {template.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-grow space-y-3">
-                      <div>
-                        <h4 className="font-semibold text-[#1A365D] dark:text-blue-200 mb-2 text-xs">Includes:</h4>
-                        <ul className="space-y-1.5">
-                          {module.features.map((feature, i) => (
-                            <li key={i} className="flex items-start text-xs">
-                              <Check className="h-3 w-3 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                              <span className="text-gray-700 dark:text-gray-200">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="bg-blue-50 dark:bg-gray-800 p-2 rounded border border-[#0076FF]/20">
-                        <h4 className="font-semibold text-[#1A365D] dark:text-blue-200 mb-1 text-xs">Outcomes:</h4>
-                        <ul className="space-y-1">
-                          {module.outcomes.map((outcome, i) => (
-                            <li key={i} className="text-xs text-gray-700 dark:text-gray-200">
-                              • {outcome}
-                            </li>
-                          ))}
-                        </ul>
+                    <CardContent className="flex-grow">
+                      <div className="bg-gradient-to-r from-[#FF7F00]/10 to-[#1A365D]/10 p-3 rounded-lg border border-[#FF7F00]/20">
+                        <p className="text-sm font-semibold text-[#1A365D] dark:text-blue-200 mb-1">
+                          ✅ Included with all tiers
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          Ready to deploy in 1-click
+                        </p>
                       </div>
                     </CardContent>
-                    <CardFooter>
-                      <Button
-                        className="w-full bg-[#0076FF] hover:bg-[#0076FF]/90 text-white"
-                        size="sm"
-                        asChild
-                      >
-                        <Link href={module.ctaLink}>{module.cta}</Link>
-                      </Button>
-                    </CardFooter>
                   </Card>
                 )
               })}

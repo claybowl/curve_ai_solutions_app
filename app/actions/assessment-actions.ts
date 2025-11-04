@@ -1031,44 +1031,20 @@ async function sendAssessmentEmail(data: {
   submittedAt: string
 }) {
   try {
+    // Import the shared email functions
+    const { sendNotificationEmail, formatAssessmentEmail } = await import('@/lib/email')
+    
     // Format the assessment data for email
-    const emailContent = formatAssessmentEmailContent(data)
+    const emailContent = formatAssessmentEmail(data)
     
-    // Try using Resend API first (preferred)
-    if (process.env.RESEND_API_KEY) {
-      const { Resend } = await import('resend')
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      
-      await resend.emails.send({
-        from: 'assessments@curveai.com',
-        to: 'donjon.systems@gmail.com',
-        subject: `New Assessment Submitted: ${data.title}`,
-        html: emailContent
-      })
-      return
-    }
-    
-    // Fallback to SendGrid
-    if (process.env.SENDGRID_API_KEY) {
-      const sgMail = await import('@sendgrid/mail')
-      sgMail.default.setApiKey(process.env.SENDGRID_API_KEY)
-      
-      await sgMail.default.send({
-        to: 'donjon.systems@gmail.com',
-        from: 'assessments@curveai.com',
-        subject: `New Assessment Submitted: ${data.title}`,
-        html: emailContent
-      })
-      return
-    }
-    
-    // If no email service is configured, log a warning
-    console.warn("No email service configured. Assessment data:", {
-      userId: data.userId,
-      title: data.title,
-      score: data.overallScore,
-      completionPercentage: data.completionPercentage
+    // Send to both email addresses
+    await sendNotificationEmail({
+      subject: `New AI Readiness Assessment: ${data.title}`,
+      html: emailContent,
+      from: 'assessments@curveai.com'
     })
+    
+    console.log('✅ Assessment notification email sent successfully')
   } catch (error) {
     console.error("Error in sendAssessmentEmail:", error)
     throw error

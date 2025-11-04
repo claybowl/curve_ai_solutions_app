@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { SkyBackground } from "@/components/sky-background"
 import { CheckCircle, Mail, Phone, MapPin, Send } from "lucide-react"
+import { submitContactMessage } from "@/app/actions/contact-actions"
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -30,18 +31,15 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    // In a real implementation, you would send the form data to your backend
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formState),
-    // });
-
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    try {
+      await submitContactMessage(formState)
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+    } catch (error) {
+      console.error('Error submitting contact form:', error)
+      alert('There was an error submitting your message. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   return (

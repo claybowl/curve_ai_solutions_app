@@ -7,7 +7,6 @@ import { Menu, X } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { PromotionButton } from "@/components/promotion-button"
 import { useAuth } from "@/providers/stack-auth-provider"
 import { supabase } from "@/lib/supabase"
@@ -52,12 +51,12 @@ export function Navbar() {
   }
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 dark:bg-gray-800 dark:border-gray-700">
+    <header className="bg-gray-800 shadow-sm sticky top-0 z-50 border-gray-700">
       <div className="container">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <span className="text-xl font-bold text-[#1A365D] dark:text-white">Curve AI Solutions</span>
+              <span className="text-xl font-bold text-white">Curve AI Solutions</span>
             </Link>
           </div>
 
@@ -71,25 +70,23 @@ export function Navbar() {
                   "px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   pathname === item.href
                     ? "bg-[#0076FF]/10 text-[#0076FF]"
-                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
+                    : "text-gray-200 hover:bg-gray-700",
                 )}
               >
                 {item.name}
               </Link>
             ))}
             <div className="ml-4 flex items-center gap-2">
-              <ThemeToggle />
               <PromotionButton variant="desktop" />
             </div>
           </nav>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
             <PromotionButton variant="mobile" />
             <button
               type="button"
-              className="p-2 rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+              className="p-2 rounded-md text-gray-200 hover:bg-gray-700"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
@@ -115,14 +112,14 @@ export function Navbar() {
                   "block px-3 py-2 rounded-md text-base font-medium",
                   pathname === item.href
                     ? "bg-[#0076FF]/10 text-[#0076FF]"
-                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
+                    : "text-gray-200 hover:bg-gray-700",
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-2 border-t border-gray-700">
               <PromotionButton variant="desktop" />
             </div>
           </div>

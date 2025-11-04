@@ -3,6 +3,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { getCurrentSupabaseUser } from "@/lib/db-v2"
 import { revalidatePath } from "next/cache"
+import { sendNotificationEmail, formatContactEmail } from "@/lib/email"
 
 export interface ContactFormData {
   name: string
@@ -25,6 +26,30 @@ export async function submitContactMessage(formData: ContactFormData) {
       userId = user?.id || null
     } catch {
       // Not logged in, that's okay for contact messages
+    }
+
+    // Send notification email
+    try {
+      const emailHtml = formatContactEmail({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        subject: formData.subject,
+        message: formData.message,
+        submittedAt: new Date().toISOString()
+      })
+
+      await sendNotificationEmail({
+        subject: `Contact Form: ${formData.subject}`,
+        html: emailHtml,
+        from: 'contact@curveai.com'
+      })
+
+      console.log('✅ Contact form notification email sent successfully')
+    } catch (emailError) {
+      console.error('❌ Error sending contact email:', emailError)
+      // Don't fail the entire request if email fails
     }
 
     const { data, error } = await supabase

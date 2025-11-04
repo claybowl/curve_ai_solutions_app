@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { sendNotificationEmail, formatConsultationEmail } from "@/lib/email"
 
 export async function POST(request: Request) {
   try {
@@ -9,8 +10,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 })
     }
 
-    // In a real implementation, you would store the consultation request in your database
-    // For example:
+    // Send notification email
+    try {
+      const emailHtml = formatConsultationEmail({
+        firstName,
+        lastName,
+        email,
+        phone,
+        companyName,
+        industry,
+        employeeCount,
+        message,
+        submittedAt: new Date().toISOString()
+      })
+
+      await sendNotificationEmail({
+        subject: `New Consultation Request from ${firstName} ${lastName}`,
+        html: emailHtml,
+        from: 'consultations@curveai.com'
+      })
+
+      console.log('✅ Consultation notification email sent successfully')
+    } catch (emailError) {
+      console.error('❌ Error sending consultation email:', emailError)
+      // Don't fail the entire request if email fails
+    }
+
+    // TODO: Store in database when ready
     // const result = await sql`
     //   INSERT INTO consultation_requests (
     //     first_name,
@@ -36,19 +62,6 @@ export async function POST(request: Request) {
     //   )
     //   RETURNING id
     // `
-
-    // You might also want to send notification emails
-    // await sendNotificationEmail({
-    //   to: "team@curveai.com",
-    //   subject: "New Consultation Request",
-    //   text: `New consultation request from ${firstName} ${lastName} at ${companyName}`
-    // });
-
-    // await sendConfirmationEmail({
-    //   to: email,
-    //   subject: "We've Received Your Consultation Request",
-    //   text: `Thank you for your interest in Curve AI Solutions. We'll be in touch shortly.`
-    // });
 
     return NextResponse.json({
       success: true,

@@ -28,7 +28,8 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npx pnpm install:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

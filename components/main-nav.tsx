@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/providers/stack-auth-provider"
 
 export function MainNav() {
@@ -53,7 +52,7 @@ export function MainNav() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white dark:bg-gray-950 dark:border-gray-800">
+    <header className="sticky top-0 z-50 w-full border-b bg-gray-950 border-gray-800">
       <div className="container flex h-16 items-center px-4 sm:px-6">
         <Link href="/" className="flex items-center space-x-3">
           {/* Castle Icon */}
@@ -62,7 +61,7 @@ export function MainNav() {
               width="32"
               height="32"
               viewBox="0 0 64 64"
-              className="text-donjon-graphite dark:text-white"
+              className="text-donjon-graphite text-white"
               fill="currentColor"
             >
               {/* Left Tower */}
@@ -104,8 +103,8 @@ export function MainNav() {
           </div>
           {/* Company Name */}
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-donjon-graphite dark:text-white leading-tight">DONJON</span>
-            <span className="text-xs text-donjon-indigo dark:text-donjon-indigo leading-tight">INTELLIGENCE SYSTEMS</span>
+            <span className="text-lg font-bold text-donjon-graphite text-white leading-tight">DONJON</span>
+            <span className="text-xs text-donjon-indigo leading-tight">INTELLIGENCE SYSTEMS</span>
           </div>
         </Link>
         <nav className="ml-auto hidden md:flex gap-6">
@@ -118,8 +117,8 @@ export function MainNav() {
               className={cn(
                 "text-sm font-medium transition-colors flex items-center",
                 pathname === item.href
-                  ? "text-donjon-indigo dark:text-donjon-indigo"
-                  : "text-gray-700 hover:text-donjon-indigo dark:text-gray-300 dark:hover:text-donjon-indigo",
+                  ? "text-donjon-indigo"
+                  : "text-gray-300 hover:text-donjon-indigo",
               )}
             >
               {item.name}
@@ -146,7 +145,6 @@ export function MainNav() {
           ))}
         </nav>
         <div className="ml-auto md:ml-6 flex items-center gap-4">
-          <ThemeToggle />
           <div className="hidden md:flex gap-4">
             {isLoggedIn ? (
               <>
@@ -155,7 +153,7 @@ export function MainNav() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-950"
+                  className="text-red-600 border-red-900 hover:bg-red-950 hover:text-red-700"
                   onClick={handleLogout}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -193,8 +191,8 @@ export function MainNav() {
                 className={cn(
                   "text-sm font-medium transition-colors flex items-center",
                   pathname === item.href
-                    ? "text-donjon-indigo dark:text-donjon-indigo"
-                    : "text-gray-700 hover:text-donjon-indigo dark:text-gray-300 dark:hover:text-donjon-indigo",
+                    ? "text-donjon-indigo"
+                    : "text-gray-300 hover:text-donjon-indigo",
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -220,14 +218,14 @@ export function MainNav() {
                 )}
               </Link>
             ))}
-            <div className="mt-4 pt-4 border-t dark:border-gray-800 flex flex-col gap-2">
+            <div className="mt-4 pt-4 border-t border-gray-800 flex flex-col gap-2">
               {isLoggedIn ? (
                 <>
                   <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
                     <Link href={dashboardUrl}>Dashboard</Link>
                   </Button>
                   <Button
-                    className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-950"
+                    className="text-red-600 border-red-900 hover:bg-red-950 hover:text-red-700"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

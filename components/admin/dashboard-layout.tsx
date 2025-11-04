@@ -78,7 +78,7 @@ const DashboardLayout = ({
   }
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-screen">
+    <div className="p-4 sm:p-6 bg-gray-50 bg-gray-900 overflow-y-auto min-h-screen">
       {breadcrumbs && breadcrumbs.length > 0 && (
         <div className="overflow-x-auto pb-2">
           <Breadcrumb className="mb-4">

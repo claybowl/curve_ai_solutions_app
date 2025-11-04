@@ -34,18 +34,26 @@ export function ConsultationForm() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch('/api/consultation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formState),
+      })
 
-    // In a real implementation, you would send the form data to your backend
-    // const response = await fetch('/api/consultation', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formState),
-    // });
+      const data = await response.json()
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to submit consultation request')
+      }
+
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+    } catch (error) {
+      console.error('Error submitting consultation:', error)
+      alert('There was an error submitting your request. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   if (isSubmitted) {
