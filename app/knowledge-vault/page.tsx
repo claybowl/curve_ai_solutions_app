@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ROICalculator } from "@/components/roi-calculator"
 import {
   BookOpen,
   Calculator,
@@ -134,7 +133,22 @@ export default function KnowledgeVaultPage() {
                   </p>
                 </div>
 
-                <ROICalculator />
+                <Card className="p-8">
+                  <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                    <iframe
+                      src="https://donjon-roi-calculator.netlify.app"
+                      className="w-full h-full border-0"
+                      title="Donjon ROI Calculator"
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-top-navigation"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-6 text-center">
+                    <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      ✓ Captain's Original ROI Calculator - Calculate Your Savings
+                    </Badge>
+                  </div>
+                </Card>
 
                 <div className="grid md:grid-cols-3 gap-6">
                   <Card>

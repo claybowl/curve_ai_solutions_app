@@ -15,10 +15,11 @@
 - **Status**: Production ready
 
 ### **2. Live ROI Calculator Integrated**
-- **Source**: Custom React component built for Donjon
-- **Deployment**: Integrated directly into Next.js app
-- **Location**: `/knowledge-vault` (embedded component)
-- **Integration**: Native React component with real-time calculations
+- **Source**: Captain's original calculator from https://github.com/claybowl/donjon_ROI_calc
+- **Deployment**: Embedded via iframe with full functionality
+- **Location**: `/knowledge-vault` (iframe embed)
+- **Integration**: Full calculator functionality with enhanced sandbox permissions
+- **URL**: https://donjon-roi-calculator.netlify.app
 
 ### **3. Knowledge Architecture Structure**
 ```
@@ -130,8 +131,8 @@ Donjon Knowledge Vault
 ## 🔗 Important Links
 
 - **Knowledge Vault**: `/knowledge-vault`
-- **ROI Calculator**: Integrated component (live calculations)
-- **GitHub Repository**: https://github.com/claybowl/donjon_ROI_calc (original reference)
+- **ROI Calculator**: https://donjon-roi-calculator.netlify.app (Captain's original)
+- **GitHub Repository**: https://github.com/claybowl/donjon_ROI_calc (source code)
 - **Build Log**: Available in terminal output
 
 ## 📝 Git Commands for Deployment
