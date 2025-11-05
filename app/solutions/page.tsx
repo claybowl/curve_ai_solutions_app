@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { LucideIcon } from "lucide-react"
-import { Shield, Rocket, Layers, Gem, Check, ArrowRight, BookOpen, Zap, MessageSquare, FileText, Search, Briefcase, Cpu, Database } from "lucide-react"
+import { Shield, Rocket, Layers, Gem, Check, ArrowRight, BookOpen, Zap, MessageSquare, FileText, Search, Briefcase, Cpu, Database, TrendingUp, Bell, BarChart3 } from "lucide-react"
 
 export const metadata = {
   title: "Donjon Intelligence Systems Breakdown | Donjon Intelligence Systems",
@@ -355,39 +355,25 @@ type AgentTemplate = {
 
 const agentTemplates: AgentTemplate[] = [
   {
-    id: "support-copilot",
-    name: "Support Copilot",
+    id: "lead-qualification",
+    name: "Lead Qualification Agent",
+    category: "Sales Automation",
+    description: "Automatically scores leads based on industry, budget, and timeline. Sends instant notifications for hot leads via email.",
+    icon: TrendingUp,
+  },
+  {
+    id: "consultation-alert",
+    name: "Consultation Alert System",
     category: "Customer Service",
-    description: "Answers customer questions from your knowledge base with suggested replies and tone controls",
-    icon: MessageSquare,
+    description: "Instant notifications for new consultation requests. Logs to database and sends email alerts with full client details.",
+    icon: Bell,
   },
   {
-    id: "sales-writer",
-    name: "Sales Writer",
-    category: "Sales & Marketing",
-    description: "Generates personalized outreach, follow-ups, and case studies from public signals",
-    icon: FileText,
-  },
-  {
-    id: "research-agent",
-    name: "Research Agent",
-    category: "Research & Analysis",
-    description: "Synthesizes information across documents, finds relationships, and generates briefs",
-    icon: Search,
-  },
-  {
-    id: "ops-automator",
-    name: "Ops Automator",
-    category: "Operations",
-    description: "Routes, tags, and processes routine updates with webhook and email triggers",
-    icon: Zap,
-  },
-  {
-    id: "data-analyst",
-    name: "Data Analyst",
-    category: "Data & Analytics",
-    description: "Analyzes datasets, creates visualizations, and generates insights from your business metrics",
-    icon: Database,
+    id: "weekly-report",
+    name: "Weekly Report Generator",
+    category: "Analytics",
+    description: "Automated weekly business reports with key metrics, KPIs, and actionable insights delivered via email.",
+    icon: BarChart3,
   },
 ]
 

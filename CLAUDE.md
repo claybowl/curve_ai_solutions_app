@@ -101,6 +101,7 @@ NEXTAUTH_URL=http://localhost:3000
 
 **Optional APIs:**
 
+- `OPENROUTER_API_KEY`: OpenRouter API key for AI business profile generation (ROI Calculator)
 - `XAI_API_KEY`: XAI API for AI features
 - `SENDGRID_API_KEY`: Email service integration
 

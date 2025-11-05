@@ -2,10 +2,11 @@ import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import { MainNav } from "@/components/main-nav"
+import { MainNavWrapper } from "@/components/main-nav-wrapper"
 import { ChatButton } from "@/components/chat-button"
 import { Footer } from "@/components/footer"
 import { StackAuthProvider } from "@/providers/stack-auth-provider"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,11 +27,12 @@ export default function RootLayout({
         <StackAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
             <div className="flex min-h-screen flex-col">
-              <MainNav />
+              <MainNavWrapper />
               <main className="flex-1">{children}</main>
               <Footer />
               <ChatButton />
             </div>
+            <Toaster />
           </ThemeProvider>
         </StackAuthProvider>
       </body>

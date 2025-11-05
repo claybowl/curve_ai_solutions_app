@@ -35,7 +35,8 @@
       "Bash(git clone:*)",
       "Bash(npx vercel:*)",
       "Bash(npx netlify:*)",
-      "Bash(gh repo list:*)"
+      "Bash(gh repo list:*)",
+      "Bash(cmd:*)"
     ],
     "deny": [],
     "ask": []

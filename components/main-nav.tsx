@@ -9,11 +9,26 @@ import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/stack-auth-provider"
 
 export function MainNav() {
-  const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dashboardUrl, setDashboardUrl] = useState("/dashboard")
-  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+  const [currentPath, setCurrentPath] = useState("")
   const { user, loading, signOut } = useAuth()
+
+  // Router hooks must be called unconditionally (Rules of Hooks)
+  // If they fail, the component will need to be dynamically imported with ssr: false
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Ensure component is mounted and sync pathname
+  useEffect(() => {
+    setMounted(true)
+    if (pathname) {
+      setCurrentPath(pathname)
+    } else if (typeof window !== "undefined") {
+      setCurrentPath(window.location.pathname)
+    }
+  }, [pathname])
 
   // Check admin permission from Stack Auth user
   const isAdmin = user?.permissions?.includes('admin') || false
@@ -31,10 +46,18 @@ export function MainNav() {
   const handleLogout = async () => {
     try {
       await signOut()
-      router.push("/")
+      if (router && mounted) {
+        router.push("/")
+      } else {
+        window.location.href = "/"
+      }
     } catch (error) {
       console.error("Error during logout:", error)
-      router.push("/")
+      if (router && mounted) {
+        router.push("/")
+      } else {
+        window.location.href = "/"
+      }
     }
   }
 
@@ -116,7 +139,7 @@ export function MainNav() {
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
                 "text-sm font-medium transition-colors flex items-center",
-                pathname === item.href
+                mounted && (pathname || currentPath) === item.href
                   ? "text-donjon-indigo"
                   : "text-gray-300 hover:text-donjon-indigo",
               )}

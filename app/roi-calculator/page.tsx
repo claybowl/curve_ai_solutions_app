@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,22 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import {
-  Calculator,
-  TrendingUp,
-  DollarSign,
-  Clock,
-  Users,
-  Zap,
-  ArrowRight,
   Bot,
   Calendar,
   Phone,
-  CreditCard,
+  Clock,
+  TrendingUp,
+  Zap,
   BarChart3,
-  ChevronRight,
-  Info,
-  Sparkles,
-  Target
+  Target,
+  Sparkles
 } from 'lucide-react';
 
 // Types
@@ -163,6 +156,7 @@ export default function ROICalculatorPage() {
   const [assumptions, setAssumptions] = useState<ModelAssumptions>(INITIAL_ASSUMPTIONS);
   const [selectedIds, setSelectedIds] = useState<string[]>(['crew']);
   const [businessType, setBusinessType] = useState('a small auto detailing shop');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const results = useMemo<CalculatedOutputs>(() => {
     const { monthlyBookings, avgJobValue, schedulingTime, hourlyRate, missedCallsPerWeek, noShowRate, conversionRate } = inputs;
@@ -248,6 +242,66 @@ export default function ROICalculatorPage() {
     }).format(value);
   };
 
+  const handleGenerateProfile = async () => {
+    if (!businessType.trim()) {
+      toast.error('Please describe your business first');
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/generate-business-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ businessDescription: businessType }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate profile');
+      }
+
+      const profile = await response.json();
+      
+      // Update inputs with AI-generated values
+      setInputs({
+        monthlyBookings: profile.inputs.monthlyBookings,
+        avgJobValue: profile.inputs.avgJobValue,
+        schedulingTime: profile.inputs.schedulingTime,
+        hourlyRate: profile.inputs.hourlyRate,
+        missedCallsPerWeek: profile.inputs.missedCallsPerWeek,
+        noShowRate: profile.inputs.noShowRate,
+        conversionRate: profile.inputs.conversionRate,
+      });
+
+      // Update assumptions with AI-generated values
+      setAssumptions({
+        callToBookingRate: profile.assumptions.callToBookingRate,
+        voicemailCallbackRate: profile.assumptions.voicemailCallbackRate,
+        monthlyLeads: profile.assumptions.monthlyLeads,
+        targetConversionRate: profile.assumptions.targetConversionRate,
+        serviceProCaptureRate: profile.assumptions.serviceProCaptureRate,
+        schedulingTimeReduction: profile.assumptions.schedulingTimeReduction,
+        targetNoShowRate: profile.assumptions.targetNoShowRate,
+        conversionLift: profile.assumptions.conversionLift,
+        afterHoursBookingRate: profile.assumptions.afterHoursBookingRate,
+      });
+
+      toast.success('Business profile generated successfully!', {
+        description: profile.reasoning || 'AI has populated your calculator with realistic values.',
+      });
+    } catch (error) {
+      console.error('Error generating profile:', error);
+      toast.error('Failed to generate profile', {
+        description: error instanceof Error ? error.message : 'Please try again or manually adjust the values.',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
@@ -285,10 +339,20 @@ export default function ROICalculatorPage() {
                 <Button
                   variant="outline"
                   className="w-full border-cyan-600 text-cyan-400 hover:bg-cyan-600 hover:text-white"
-                  disabled
+                  onClick={handleGenerateProfile}
+                  disabled={isGenerating || !businessType.trim()}
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generate Profile (AI Disabled)
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating Profile...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Profile (AI)
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
