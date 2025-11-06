@@ -36,7 +36,10 @@
       "Bash(npx vercel:*)",
       "Bash(npx netlify:*)",
       "Bash(gh repo list:*)",
-      "Bash(cmd:*)"
+      "Bash(cmd:*)",
+      "Bash(pandoc:*)",
+      "Bash(node:*)",
+      "Bash(npx md-to-pdf:*)"
     ],
     "deny": [],
     "ask": []
