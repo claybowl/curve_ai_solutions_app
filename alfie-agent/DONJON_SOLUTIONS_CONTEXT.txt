@@ -1,0 +1,53 @@
+DONJON SOLUTIONS - BRAND & DESIGN CONTEXT
+==========================================
+
+BRAND RELATIONSHIP
+------------------
+Donjon Solutions appears to be a brand identity or design system used within 
+Curve AI Solutions. The "Donjon" name is used in the color palette and design 
+system for the application.
+
+DESIGN SYSTEM - COLOR PALETTE
+------------------------------
+The application uses a harmonized color palette based on Donjon colors:
+
+Primary Colors:
+- donjon-graphite: Dark, professional base color
+- donjon-indigo: Mid-tone accent color
+- donjon-ember: Warm accent color (orange-red)
+- donjon-silver: Light accent/metallic color
+
+Color Usage:
+- Landing page gradients: donjon-graphite → donjon-indigo → donjon-graphite
+- Accent colors: donjon-ember and donjon-silver
+- Professional, on-brand appearance matching existing design system
+
+DESIGN PHILOSOPHY
+-----------------
+- Professional appearance
+- Harmonized color schemes
+- Modern, clean aesthetic
+- Consistent branding across all interfaces
+
+BRAND IDENTITY NOTES
+--------------------
+- "Donjon" may refer to a medieval castle keep or stronghold
+- Suggests strength, security, and reliability
+- Professional, enterprise-focused branding
+- May represent the technical infrastructure or platform layer
+
+INTEGRATION WITH CURVE AI
+-------------------------
+- Donjon Solutions design system is integrated into Curve AI Solutions platform
+- Used for consistent UI/UX across admin dashboards and client interfaces
+- Maintains professional appearance while being approachable
+- Supports the "sophisticated yet simple" brand promise
+
+TECHNICAL IMPLEMENTATION
+------------------------
+- Color palette defined in Tailwind CSS configuration
+- Used throughout Next.js application components
+- Responsive design system for mobile, tablet, and desktop
+- Maintains consistency across all user interfaces
+
+

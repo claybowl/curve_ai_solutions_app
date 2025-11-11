@@ -1,0 +1,106 @@
+CURVE AI SOLUTIONS - COMPANY OVERVIEW
+=====================================
+
+COMPANY INFORMATION
+-------------------
+Company Name: Curve AI Solutions
+Location: Tulsa, Oklahoma
+Founded: 2024
+Industry: AI Consultation Services & Custom AI Solutions
+
+MISSION & VISION
+----------------
+Curve AI Solutions demystifies AI and makes it accessible, practical, and valuable 
+for businesses of all sizes. We believe AI should work for businesses, not the 
+other way around.
+
+CORE PHILOSOPHY
+---------------
+- AI should be both powerful AND approachable
+- Translate complex AI concepts into solutions any business owner can understand
+- Focus on practical, measurable results with clear ROI
+- Meet businesses where they are and enhance existing operations
+- Solutions should reflect brand personality and create engaging experiences
+
+WHAT WE DO
+----------
+1. Custom AI Chatbots & Workflow Solutions (Agentic AI Solutions)
+   - Handle mundane, repetitive tasks
+   - Understand context and learn business needs
+   - Communicate with personality tailored to company culture
+
+2. AI Consultation Services
+   - Business assessments and strategy
+   - Process automation consulting
+   - AI implementation guidance
+
+3. AI Tools & Solutions
+   - ROI Calculator for AI investments
+   - Prompt Library for various AI tasks
+   - AI Assessment Tools for evaluating business processes
+
+4. Education & Community
+   - AI Literacy Program
+   - Seminars and online content
+   - Strategic partnerships with tech companies and educational institutions
+
+TARGET MARKET
+-------------
+- Small to medium-sized businesses
+- Business owners feeling left behind by the AI revolution
+- Companies intimidated by technical complexity
+- Businesses unsure how AI can improve their bottom line
+
+KEY DIFFERENTIATORS
+-------------------
+- Sophisticated enough to deliver real results
+- Simple enough that you don't need a computer science degree
+- Practical AI tools designed for specific business challenges
+- Solutions that speak human - no technical jargon
+- Measurable results with clear ROI
+- Partner who understands business needs
+
+TECHNICAL CAPABILITIES
+----------------------
+- Next.js web application platform
+- Supabase Authentication & Database
+- N8N workflow orchestration
+- Custom AI agent development
+- Integration with various AI models (OpenRouter, XAI, etc.)
+- Admin dashboard for managing users, consultations, assessments
+- Client-facing interfaces for assessments and consultations
+
+FOUNDERS
+--------
+Clayton Christian - Founder & CTO
+- Machine Learning Engineering diploma
+- Extreme creativity and dedication to development
+- AI visionary with extensive experience in building agent-based systems
+- Trading infrastructure expertise
+
+Austin Belcheff - Founder & CEO
+- Business graduate from Oklahoma State University
+- Creative force driving innovation within the company
+
+CORE VALUES
+-----------
+1. Innovation - Constantly push boundaries of AI agent technology
+2. Accessibility - Make advanced AI solutions accessible to all business sizes
+3. Transparency - Transparent, data-driven solutions with clear insights
+4. Excellence - Strive for excellence in every aspect of products and services
+
+ROADMAP HIGHLIGHTS
+------------------
+- February 28, 2025: Databases Complete
+- March 29, 2025: AiGent® System Launch
+- April 11, 2025: Lead Supervisor Orchestration Agent
+- April 24, 2025: Industry Expansion
+- May 9th, 2025: AiPex Launch
+- June 28, 2025: Curve AI Official Launch
+
+CONTACT & SUPPORT
+-----------------
+- Website: curveai.com
+- Email: info@curveai.com
+- Location: Tulsa, Oklahoma
+

@@ -162,16 +162,12 @@ export default function Home() {
                 <span className="text-xs bg-donjon-ember text-white px-2 py-0.5 rounded-full">LIVE</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">AiGent® System</span>
-                <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">May 2025</span>
+                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">ServicePro Launch</span>
+                <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">December 2025</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">AiPex Launch</span>
-                <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">June 2025</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">Official Launch</span>
-                <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">June 28, 2025</span>
+                <span className="text-sm font-medium text-donjon-graphite dark:text-gray-200">New Agent Line-up</span>
+                <span className="text-xs bg-donjon-indigo text-white px-2 py-0.5 rounded-full">January 2026</span>
               </div>
             </div>
             <div className="flex gap-2">

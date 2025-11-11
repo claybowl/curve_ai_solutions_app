@@ -1,0 +1,189 @@
+CURVE AI SOLUTIONS - PRODUCTS & SERVICES
+=========================================
+
+CORE PRODUCTS
+-------------
+
+1. AGENTIC AI SOLUTIONS (Custom AI Chatbots & Workflows)
+   Description: Custom AI chatbots and workflow solutions that handle mundane, 
+   repetitive tasks while understanding context and learning business needs.
+   
+   Features:
+   - Context-aware AI agents
+   - Personality customization to match company culture
+   - Workflow automation
+   - Integration with existing business systems
+   - Learning capabilities that adapt to business needs
+   
+   Use Cases:
+   - Customer service automation
+   - Administrative task handling
+   - Data analysis and integration
+   - Process automation
+
+2. AI CONSULTATION SERVICES
+   Description: Expert guidance on implementing AI solutions for businesses.
+   
+   Services Include:
+   - Business assessments
+   - AI strategy development
+   - Process automation consulting
+   - Implementation guidance
+   - ROI analysis
+   
+   Delivery Methods:
+   - Online consultation requests
+   - Email-based communication
+   - Assessment tools
+   - Follow-up support
+
+3. AI ASSESSMENT TOOLS
+   Description: AI-powered tools for evaluating business processes and 
+   identifying opportunities for AI implementation.
+   
+   Features:
+   - Automated business process evaluation
+   - Opportunity identification
+   - Customized recommendations
+   - Results tracking and reporting
+   - Email delivery of results
+
+4. ROI CALCULATOR
+   Description: Tool for calculating return on investment for AI implementations.
+   
+   Features:
+   - AI-powered business profile generation (via OpenRouter)
+   - Cost-benefit analysis
+   - Customized ROI projections
+   - Industry-specific calculations
+
+5. PROMPT LIBRARY
+   Description: Searchable library of AI prompts for various business tasks.
+   
+   Features:
+   - Categorized prompts by use case
+   - Search functionality
+   - Tag-based organization
+   - Best practices and examples
+   - (Planned) User contributions with moderation
+
+6. SOLUTIONS SHOWCASE
+   Description: Display of successful AI solutions and case studies.
+   
+   Features:
+   - Case study presentations
+   - Industry-specific examples
+   - Filter by industry or AI model
+   - Success metrics and results
+
+PLATFORM FEATURES
+-----------------
+
+ADMIN DASHBOARD
+- User management and role assignment
+- Consultation request management
+- Assessment tracking and results
+- Blog content management (when enabled)
+- AI tools catalog management
+- N8N workflow orchestration
+- Statistics and analytics visualization
+- Activity tracking
+
+CLIENT DASHBOARD
+- View consultation history
+- Access assessment results
+- Browse prompt library
+- View AI tools and solutions
+- Profile management
+- Activity tracking
+
+N8N WORKFLOW ORCHESTRATION
+- Pre-built workflow templates
+- Custom workflow creation
+- Workflow execution tracking
+- Webhook integration
+- Automated notifications
+- Database logging
+
+Example Workflows:
+- Consultation Alert: Email notifications + database logging
+- Lead Qualification Agent: AI-powered lead scoring with hot lead alerts
+- Weekly Report Generator: Automated analytics reports
+
+SERVICE APPROACH
+----------------
+
+PROCESS
+1. Listen: Understand specific challenges and goals
+2. Design: Create customized AI solution for unique needs
+3. Implement: Seamlessly integrate into existing workflows
+4. Measure: Track results to ensure real value
+5. Refine: Improve based on feedback and changing needs
+
+VALUE PROPOSITIONS
+------------------
+
+For Small Businesses:
+- No need for technical staff
+- No system overhauls required
+- Affordable AI solutions
+- Clear ROI demonstration
+- Ongoing support
+
+For All Businesses:
+- Practical, measurable results
+- Solutions that speak human (no jargon)
+- Brand-aligned AI personalities
+- Integration with existing systems
+- Focus on business outcomes, not technology
+
+EDUCATION & COMMUNITY
+---------------------
+
+AI LITERACY PROGRAM
+- Seminars for business leaders
+- Online educational content
+- Collaborations with local businesses
+- Partnerships with educational institutions
+- Industry leader collaborations
+
+COMMUNITY COMMITMENT
+- Tulsa business community investment
+- Strategic tech partnerships
+- Educational institution partnerships
+- Industry leader collaborations
+- Creating an AI ecosystem for businesses of all sizes
+
+UPCOMING PRODUCTS (ROADMAP)
+---------------------------
+
+AiGent® SYSTEM (March 29, 2025)
+- Proprietary AI agent orchestration system
+- Advanced agent capabilities
+- Enterprise-grade features
+
+LEAD SUPERVISOR ORCHESTRATION AGENT (April 11, 2025)
+- Advanced AI orchestration capabilities
+- Lead management automation
+- Intelligent routing and prioritization
+
+AiPex (May 9th, 2025)
+- AI Platform Exchange
+- Marketplace for AI solutions
+- Platform for AI tool discovery
+
+CURVE AI OFFICIAL LAUNCH (June 28, 2025)
+- Full public launch
+- Stock market integration
+- Real money accounts
+- Complete platform availability
+
+SUPPORT & MAINTENANCE
+---------------------
+- Ongoing support for implemented solutions
+- System maintenance and updates
+- Performance monitoring
+- User training and onboarding
+- Documentation and resources
+
+

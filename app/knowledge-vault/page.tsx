@@ -104,22 +104,28 @@ export default function KnowledgeVaultPage() {
         <div className="container">
           <div className="max-w-6xl mx-auto">
             <Tabs defaultValue="roi" className="space-y-8">
-              <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
                 <TabsTrigger value="roi" className="flex items-center gap-2">
                   <Calculator className="h-4 w-4" />
-                  ROI Calculator
+                  <span className="hidden sm:inline">ROI</span>
                 </TabsTrigger>
                 <TabsTrigger value="technical" className="flex items-center gap-2">
                   <Database className="h-4 w-4" />
-                  Technical
+                  <span className="hidden sm:inline">Technical</span>
                 </TabsTrigger>
                 <TabsTrigger value="business" className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
-                  Business
+                  <span className="hidden sm:inline">Business</span>
                 </TabsTrigger>
                 <TabsTrigger value="resources" className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
-                  Resources
+                  <span className="hidden sm:inline">Resources</span>
+                </TabsTrigger>
+                <TabsTrigger asChild className="flex items-center gap-2">
+                  <Link href="/knowledge-vault/documentation" className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    <span className="hidden sm:inline">Docs</span>
+                  </Link>
                 </TabsTrigger>
               </TabsList>
 

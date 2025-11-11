@@ -3,10 +3,17 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Menu, X, LogOut } from "lucide-react"
+import { Menu, X, LogOut, ChevronDown } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/stack-auth-provider"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
 
 export function MainNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -64,7 +71,7 @@ export function MainNav() {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Solutions", href: "/solutions" },
-    { name: "Knowledge Vault", href: "/knowledge-vault" },
+    { name: "Knowledge Vault", href: "/knowledge-vault", dropdown: true },
     { name: "Assessments", href: "/assessments" },
     { name: "Prompts", href: "/solutions/prompts" },
     { name: "AiPex Platform", href: "/aipex-platform-prototype" },
@@ -130,42 +137,151 @@ export function MainNav() {
             <span className="text-xs text-donjon-indigo leading-tight">INTELLIGENCE SYSTEMS</span>
           </div>
         </Link>
-        <nav className="ml-auto hidden md:flex gap-6">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              className={cn(
-                "text-sm font-medium transition-colors flex items-center",
-                mounted && (pathname || currentPath) === item.href
-                  ? "text-donjon-indigo"
-                  : "text-gray-300 hover:text-donjon-indigo",
-              )}
-            >
-              {item.name}
-              {item.external && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="w-3 h-3 ml-1"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
-                    clipRule="evenodd"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </Link>
-          ))}
+        <nav className="ml-auto hidden md:flex gap-6 items-center">
+          {navigation.map((item) => {
+            if (item.name === "Solutions") {
+              return (
+                <div key={item.name} className="relative">
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger
+                          className={cn(
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-donjon-indigo",
+                            mounted && ((pathname || currentPath) === "/solutions" || (pathname || currentPath) === "/products")
+                              ? "text-donjon-indigo"
+                              : "text-gray-300 hover:text-donjon-indigo"
+                          )}
+                        >
+                          Solutions
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <div className="w-[200px] p-2 bg-gray-900 border border-gray-800 rounded-lg shadow-xl">
+                            <Link
+                              href="/solutions"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/solutions"
+                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
+                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                              )}
+                            >
+                              Solutions
+                            </Link>
+                            <Link
+                              href="/products"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/products"
+                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
+                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                              )}
+                            >
+                              Products
+                            </Link>
+                          </div>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </div>
+              )
+            }
+            if (item.name === "Knowledge Vault") {
+              return (
+                <div key={item.name} className="relative">
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger
+                          className={cn(
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-donjon-indigo",
+                            mounted && (pathname || currentPath).includes("/knowledge-vault")
+                              ? "text-donjon-indigo"
+                              : "text-gray-300 hover:text-donjon-indigo"
+                          )}
+                        >
+                          Knowledge Vault
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <div className="w-[240px] p-2 bg-gray-900 border border-gray-800 rounded-lg shadow-xl">
+                            <Link
+                              href="/knowledge-vault"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/knowledge-vault"
+                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
+                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                              )}
+                            >
+                              Home
+                            </Link>
+                            <Link
+                              href="/knowledge-vault/documentation"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/knowledge-vault/documentation"
+                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
+                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                              )}
+                            >
+                              Documentation
+                            </Link>
+                            <Link
+                              href="/roi-calculator"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/roi-calculator"
+                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
+                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                              )}
+                            >
+                              ROI Calculator
+                            </Link>
+                          </div>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </div>
+              )
+            }
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                className={cn(
+                  "text-sm font-medium transition-colors flex items-center",
+                  mounted && (pathname || currentPath) === item.href
+                    ? "text-donjon-indigo"
+                    : "text-gray-300 hover:text-donjon-indigo",
+                )}
+              >
+                {item.name}
+                {item.external && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-3 h-3 ml-1"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                      clipRule="evenodd"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </Link>
+            )
+          })}
         </nav>
         <div className="ml-auto md:ml-6 flex items-center gap-4">
           <div className="hidden md:flex gap-4">
@@ -205,42 +321,118 @@ export function MainNav() {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="container py-4 px-4 sm:px-6 flex flex-col gap-4">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-                className={cn(
-                  "text-sm font-medium transition-colors flex items-center",
-                  pathname === item.href
-                    ? "text-donjon-indigo"
-                    : "text-gray-300 hover:text-donjon-indigo",
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-                {item.external && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="w-3 h-3 ml-1"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
-                      clipRule="evenodd"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              if (item.name === "Solutions") {
+                return (
+                  <div key={item.name} className="flex flex-col gap-2">
+                    <div className="text-sm font-semibold text-gray-400">Solutions</div>
+                    <Link
+                      href="/solutions"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/solutions"
+                          ? "text-donjon-indigo"
+                          : "text-gray-300 hover:text-donjon-indigo",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Solutions
+                    </Link>
+                    <Link
+                      href="/products"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/products"
+                          ? "text-donjon-indigo"
+                          : "text-gray-300 hover:text-donjon-indigo",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Products
+                    </Link>
+                  </div>
+                )
+              }
+              if (item.name === "Knowledge Vault") {
+                return (
+                  <div key={item.name} className="flex flex-col gap-2">
+                    <div className="text-sm font-semibold text-gray-400">Knowledge Vault</div>
+                    <Link
+                      href="/knowledge-vault"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/knowledge-vault"
+                          ? "text-donjon-indigo"
+                          : "text-gray-300 hover:text-donjon-indigo",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      href="/knowledge-vault/documentation"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/knowledge-vault/documentation"
+                          ? "text-donjon-indigo"
+                          : "text-gray-300 hover:text-donjon-indigo",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Documentation
+                    </Link>
+                    <Link
+                      href="/roi-calculator"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/roi-calculator"
+                          ? "text-donjon-indigo"
+                          : "text-gray-300 hover:text-donjon-indigo",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      ROI Calculator
+                    </Link>
+                  </div>
+                )
+              }
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className={cn(
+                    "text-sm font-medium transition-colors flex items-center",
+                    pathname === item.href
+                      ? "text-donjon-indigo"
+                      : "text-gray-300 hover:text-donjon-indigo",
+                  )}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                  {item.external && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-3 h-3 ml-1"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                        clipRule="evenodd"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
+                </Link>
+              )
+            })}
             <div className="mt-4 pt-4 border-t border-gray-800 flex flex-col gap-2">
               {isLoggedIn ? (
                 <>

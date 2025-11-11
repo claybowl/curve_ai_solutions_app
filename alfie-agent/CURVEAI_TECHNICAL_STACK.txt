@@ -1,0 +1,190 @@
+CURVE AI SOLUTIONS - TECHNICAL STACK & ARCHITECTURE
+===================================================
+
+FRONTEND FRAMEWORK
+------------------
+- Next.js 14+ (App Router)
+- React 18+
+- TypeScript
+- Tailwind CSS for styling
+- Shadcn/ui components
+
+AUTHENTICATION & SECURITY
+--------------------------
+Primary Authentication: Supabase Auth
+- Row-level security (RLS) policies
+- Role-based access control (admin/client)
+- User profiles stored in Supabase profiles table
+- Middleware protection for routes
+- Admin user creation via /create-admin page
+
+Legacy Support: Neon PostgreSQL (for backward compatibility)
+
+DATABASE ARCHITECTURE
+---------------------
+Primary Database: Supabase PostgreSQL
+- Profiles table for user management
+- Consultations table
+- Assessments table
+- AI Tools table
+- Prompt Library table
+- N8N Workflows table
+- N8N Workflow Executions table
+
+Database Utilities:
+- /lib/db.ts - Legacy database functions
+- /lib/db-safe.ts - Safe database operations
+- /lib/supabase-client.ts - Supabase client configuration
+- /lib/supabase-admin.ts - Admin operations
+- Server actions for secure database operations
+
+WORKFLOW ORCHESTRATION
+----------------------
+N8N Integration:
+- Workflow management system
+- Webhook triggering
+- Execution tracking
+- Admin dashboard at /admin/ai-agents
+- Example workflows:
+  * Consultation Alert (Email + Database logging)
+  * Lead Qualification Agent (AI-powered scoring)
+  * Weekly Report Generator (Automated analytics)
+
+API INTEGRATIONS
+----------------
+- OpenRouter API: AI business profile generation (ROI Calculator)
+- XAI API: AI features
+- SendGrid API: Email service integration
+- SERP API: Web search capabilities (for Alfie agent)
+- Bing API: Alternative web search
+
+AI CAPABILITIES
+---------------
+- Custom AI chatbots
+- Agent-based systems
+- Prompt engineering tools
+- AI assessment tools
+- Business process automation
+- Natural language processing
+- Machine learning integration
+
+DEPLOYMENT & INFRASTRUCTURE
+---------------------------
+Hosting: Vercel
+- Node.js v18+ runtime
+- Environment variables configured in Vercel
+- Automatic deployments from Git
+- Edge network for global performance
+
+Build Configuration:
+- Standalone output mode
+- Trailing slash enabled
+- Optimized webpack configuration
+- Build-time safety patterns for Supabase
+
+DEVELOPMENT TOOLS
+-----------------
+- Package Manager: pnpm
+- Type Checking: TypeScript
+- Linting: ESLint
+- Code Formatting: Prettier (implied)
+- Version Control: Git
+
+PROJECT STRUCTURE
+-----------------
+/app
+  /api          - API endpoints
+  /admin        - Admin dashboard pages
+  /dashboard    - Client dashboard
+  /login        - Authentication pages
+  /api/alfie    - Alfie AI agent endpoints
+
+/components
+  /admin        - Admin dashboard components
+  /ui           - Reusable UI components
+
+/lib
+  - Database utilities
+  - Supabase clients
+  - Authentication helpers
+  - N8N client
+  - Utility functions
+
+/types
+  - TypeScript type definitions
+
+ENVIRONMENT VARIABLES
+---------------------
+Required:
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+
+Optional:
+- DATABASE_URL (Legacy Neon)
+- NEXTAUTH_SECRET (Legacy)
+- OPENROUTER_API_KEY
+- XAI_API_KEY
+- SENDGRID_API_KEY
+- SERP_API_KEY
+- BING_API_KEY
+
+FEATURES & MODULES
+------------------
+1. User Management
+   - Admin user creation
+   - Role assignment
+   - Profile management
+
+2. Consultation System
+   - Request management
+   - Status tracking
+   - Email notifications
+
+3. Assessment System
+   - AI-powered assessments
+   - Results tracking
+   - Email delivery
+
+4. Prompt Library
+   - Categorized prompts
+   - Search functionality
+   - User contributions (planned)
+
+5. AI Tools Management
+   - Tool catalog
+   - Category organization
+   - Usage tracking
+
+6. Blog System (Currently Disabled)
+   - Previously integrated with Notion CMS
+   - Can be re-enabled when needed
+
+7. Admin Dashboard
+   - User management
+   - Consultation management
+   - Assessment management
+   - Blog management
+   - Tools management
+   - Statistics and analytics
+   - N8N workflow management
+
+SECURITY MEASURES
+-----------------
+- Row-level security policies
+- Role-based access control
+- Middleware route protection
+- Secure server actions
+- Environment variable protection
+- Build-time safety patterns
+
+PERFORMANCE OPTIMIZATIONS
+--------------------------
+- Server-side rendering (SSR)
+- Static site generation (SSG) where appropriate
+- Edge network deployment
+- Optimized database queries
+- Caching strategies
+- Responsive design for all devices
+
+
