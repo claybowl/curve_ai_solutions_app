@@ -82,16 +82,16 @@ export function MainNav() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-gray-950 border-gray-800">
+    <header className="sticky top-0 z-50 w-full glass-panel border-b border-white/5 transition-all duration-300">
       <div className="container flex h-16 items-center px-4 sm:px-6">
         <Link href="/" className="flex items-center space-x-3">
           {/* Castle Icon */}
           <div className="flex-shrink-0">
             <svg
-              width="32"
-              height="32"
+              width="24"
+              height="24"
               viewBox="0 0 64 64"
-              className="text-donjon-graphite text-white"
+              className="text-sky-400"
               fill="currentColor"
             >
               {/* Left Tower */}
@@ -131,10 +131,9 @@ export function MainNav() {
               <rect x="38" y="36" width="4" height="5" opacity="0.3" />
             </svg>
           </div>
-          {/* Company Name */}
-          <div className="flex flex-col">
-            <span className="text-lg font-bold text-donjon-graphite text-white leading-tight">DONJON</span>
-            <span className="text-xs text-donjon-indigo leading-tight">INTELLIGENCE SYSTEMS</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-lg font-extralight tracking-[0.4em] uppercase text-white">Donjon</span>
+            <span className="text-lg font-semibold text-sky-400">Systems</span>
           </div>
         </Link>
         <nav className="ml-auto hidden md:flex gap-6 items-center">
@@ -147,23 +146,23 @@ export function MainNav() {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger
                           className={cn(
-                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-donjon-indigo",
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
                             mounted && ((pathname || currentPath) === "/solutions" || (pathname || currentPath) === "/products")
-                              ? "text-donjon-indigo"
-                              : "text-gray-300 hover:text-donjon-indigo"
+                              ? "text-sky-400"
+                              : "text-slate-400 hover:text-sky-400"
                           )}
                         >
                           Solutions
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <div className="w-[200px] p-2 bg-gray-900 border border-gray-800 rounded-lg shadow-xl">
+                          <div className="w-[200px] p-2 glass-panel rounded-lg shadow-xl">
                             <Link
                               href="/solutions"
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/solutions"
-                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
-                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
                               Solutions
@@ -173,8 +172,8 @@ export function MainNav() {
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/products"
-                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
-                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
                               Products
@@ -195,23 +194,23 @@ export function MainNav() {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger
                           className={cn(
-                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-donjon-indigo",
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
                             mounted && (pathname || currentPath).includes("/knowledge-vault")
-                              ? "text-donjon-indigo"
-                              : "text-gray-300 hover:text-donjon-indigo"
+                              ? "text-sky-400"
+                              : "text-slate-400 hover:text-sky-400"
                           )}
                         >
                           Knowledge Vault
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <div className="w-[240px] p-2 bg-gray-900 border border-gray-800 rounded-lg shadow-xl">
+                          <div className="w-[240px] p-2 glass-panel rounded-lg shadow-xl">
                             <Link
                               href="/knowledge-vault"
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/knowledge-vault"
-                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
-                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
                               Home
@@ -221,8 +220,8 @@ export function MainNav() {
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/knowledge-vault/documentation"
-                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
-                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
                               Documentation
@@ -232,8 +231,8 @@ export function MainNav() {
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/roi-calculator"
-                                  ? "bg-donjon-indigo/20 text-donjon-indigo font-medium"
-                                  : "text-gray-300 hover:bg-gray-800 hover:text-donjon-indigo"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
                               ROI Calculator
@@ -255,8 +254,8 @@ export function MainNav() {
                 className={cn(
                   "text-sm font-medium transition-colors flex items-center",
                   mounted && (pathname || currentPath) === item.href
-                    ? "text-donjon-indigo"
-                    : "text-gray-300 hover:text-donjon-indigo",
+                    ? "text-sky-400"
+                    : "text-slate-400 hover:text-sky-400",
                 )}
               >
                 {item.name}
@@ -282,6 +281,7 @@ export function MainNav() {
               </Link>
             )
           })}
+          <span className="fira-label hidden lg:block text-xs tracking-wider">[STATUS: <span className="text-emerald-400">OPERATIONAL</span>]</span>
         </nav>
         <div className="ml-auto md:ml-6 flex items-center gap-4">
           <div className="hidden md:flex gap-4">
@@ -302,11 +302,11 @@ export function MainNav() {
             ) : (
               <>
                 <Button
-                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
+                  className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
                   asChild
                 >
-                  <Link href="/consultation" className="flex items-center gap-2">
-                    🔥 FREE 30-Min Session
+                  <Link href="/consultation">
+                    Schedule Consultation
                   </Link>
                 </Button>
               </>
@@ -320,19 +320,19 @@ export function MainNav() {
       </div>
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="container py-4 px-4 sm:px-6 flex flex-col gap-4">
+          <div className="container py-4 px-4 sm:px-6 flex flex-col gap-4 glass-panel border-t border-white/5">
             {navigation.map((item) => {
               if (item.name === "Solutions") {
                 return (
                   <div key={item.name} className="flex flex-col gap-2">
-                    <div className="text-sm font-semibold text-gray-400">Solutions</div>
+                    <div className="text-sm font-semibold text-slate-500">Solutions</div>
                     <Link
                       href="/solutions"
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
                         pathname === "/solutions"
-                          ? "text-donjon-indigo"
-                          : "text-gray-300 hover:text-donjon-indigo",
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -343,8 +343,8 @@ export function MainNav() {
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
                         pathname === "/products"
-                          ? "text-donjon-indigo"
-                          : "text-gray-300 hover:text-donjon-indigo",
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -356,14 +356,14 @@ export function MainNav() {
               if (item.name === "Knowledge Vault") {
                 return (
                   <div key={item.name} className="flex flex-col gap-2">
-                    <div className="text-sm font-semibold text-gray-400">Knowledge Vault</div>
+                    <div className="text-sm font-semibold text-slate-500">Knowledge Vault</div>
                     <Link
                       href="/knowledge-vault"
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
                         pathname === "/knowledge-vault"
-                          ? "text-donjon-indigo"
-                          : "text-gray-300 hover:text-donjon-indigo",
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -374,8 +374,8 @@ export function MainNav() {
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
                         pathname === "/knowledge-vault/documentation"
-                          ? "text-donjon-indigo"
-                          : "text-gray-300 hover:text-donjon-indigo",
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -386,8 +386,8 @@ export function MainNav() {
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
                         pathname === "/roi-calculator"
-                          ? "text-donjon-indigo"
-                          : "text-gray-300 hover:text-donjon-indigo",
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -405,8 +405,8 @@ export function MainNav() {
                   className={cn(
                     "text-sm font-medium transition-colors flex items-center",
                     pathname === item.href
-                      ? "text-donjon-indigo"
-                      : "text-gray-300 hover:text-donjon-indigo",
+                      ? "text-sky-400"
+                      : "text-slate-400 hover:text-sky-400",
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -433,7 +433,7 @@ export function MainNav() {
                 </Link>
               )
             })}
-            <div className="mt-4 pt-4 border-t border-gray-800 flex flex-col gap-2">
+            <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-2">
               {isLoggedIn ? (
                 <>
                   <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
@@ -450,12 +450,12 @@ export function MainNav() {
               ) : (
                 <>
                   <Button
-                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
+                    className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
                     asChild
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Link href="/consultation" className="flex items-center justify-center gap-2">
-                      🔥 FREE 30-Min Session
+                    <Link href="/consultation">
+                      Schedule Consultation
                     </Link>
                   </Button>
                 </>

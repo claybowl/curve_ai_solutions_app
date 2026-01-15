@@ -61,7 +61,7 @@ const packageBundles: PackageBundle[] = [
       "48-hour delivery for packages or instant access for SaaS subscriptions",
     ],
     href: "/products#servicepro",
-    highlight: true,
+    highlight: false,
     cta: "Explore ServicePro",
     icon: Rocket,
   },
@@ -417,7 +417,7 @@ const addons: Addon[] = [
 
 export default function SolutionsPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#030712]">
       <SolutionsHero />
 
       <section className="py-20 bg-gradient-to-br from-[#0D1F36] via-[#1A365D] to-[#004599] text-white">
@@ -429,12 +429,6 @@ export default function SolutionsPage() {
               Packages bundle our highest-impact automations so you see ROI faster. Mix and match tools later; start
               with the offer that gets your team live this week.
             </p>
-            <p className="text-sm text-white/70">
-              Looking for ServicePro?{" "}
-              <Link href="/solutions#servicepro-suite" className="underline hover:text-white transition-colors font-medium">
-                View ServicePro pricing and details
-              </Link>
-            </p>
           </div>
 
           <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -445,35 +439,35 @@ export default function SolutionsPage() {
                 <Card
                   key={bundle.id}
                   id={bundle.id}
-                  className={`relative flex h-full flex-col border-2 bg-white text-slate-900 shadow-xl dark:bg-slate-900 dark:text-gray-100 ${
+                  className={`relative flex h-full flex-col border-2 bg-white/5 text-slate-100 shadow-xl backdrop-blur-sm ${
                     bundle.highlight
-                      ? "border-[#3F8CFF] shadow-[#3F8CFF]/20"
-                      : "border-white/40 dark:border-slate-700/80"
+                      ? "border-sky-400 shadow-sky-400/20"
+                      : "border-white/10"
                   }`}
                 >
                   <CardHeader className="space-y-4 pb-4">
                     <div className="flex items-start justify-between">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F1FF] text-[#1A365D] dark:bg-[#1A365D] dark:text-white">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-500/20 text-sky-400">
                         <Icon className="h-6 w-6" />
                       </span>
-                      <span className="text-base font-semibold text-[#1A365D] dark:text-blue-200">{bundle.price}</span>
+                      <span className="text-base font-semibold text-sky-300">{bundle.price}</span>
                     </div>
                     <div>
-                      <CardTitle className="text-2xl font-semibold text-[#1A365D] dark:text-blue-100">
+                      <CardTitle className="text-2xl font-semibold text-white">
                         {bundle.name}
                       </CardTitle>
-                      <CardDescription className="text-base text-gray-600 dark:text-gray-300">
+                      <CardDescription className="text-base text-slate-400">
                         {bundle.headline}
                       </CardDescription>
                     </div>
                   </CardHeader>
 
                   <CardContent className="flex-1 space-y-4 pt-0">
-                    <p className="text-gray-600 dark:text-gray-300">{bundle.description}</p>
+                    <p className="text-slate-400">{bundle.description}</p>
                     <ul className="space-y-3">
                       {bundle.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3 text-gray-700 dark:text-gray-200">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-[#0076FF]" aria-hidden />
+                        <li key={feature} className="flex items-start gap-3 text-slate-300">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" aria-hidden />
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -486,8 +480,8 @@ export default function SolutionsPage() {
                       size="lg"
                       className={`w-full justify-center ${
                         bundle.highlight
-                          ? "bg-[#FF7F00] text-white hover:bg-[#FF7F00]/90"
-                          : "bg-[#1A365D] text-white hover:bg-[#1A365D]/90 dark:bg-[#3F8CFF] dark:hover:bg-[#3F8CFF]/90"
+                          ? "bg-sky-500 text-white hover:bg-sky-400"
+                          : "bg-sky-600 text-white hover:bg-sky-500"
                       }`}
                     >
                       <Link href={bundle.href}>{bundle.cta}</Link>
@@ -505,13 +499,13 @@ export default function SolutionsPage() {
       </section>
 
       {/* Donjon Intelligence Systems Breakdown */}
-      <section className="py-20 bg-white dark:bg-gray-950">
+      <section className="py-20 bg-slate-900/50">
         <div className="container">
           <div className="mb-16 flex flex-col gap-6">
-            <h2 className="text-4xl font-bold text-center text-[#1A365D] dark:text-blue-300">
+            <h2 className="text-4xl font-bold text-center text-white">
               Donjon Intelligence Systems Breakdown
             </h2>
-            <p className="mx-auto max-w-4xl text-center text-xl leading-relaxed text-gray-600 dark:text-gray-300">
+            <p className="mx-auto max-w-4xl text-center text-xl leading-relaxed text-slate-400">
               Complete AI platform with subscription tiers, standalone modules, and add-ons. Choose the right combination for your team's needs.
             </p>
           </div>
@@ -519,13 +513,13 @@ export default function SolutionsPage() {
           {/* Donjon Tiers */}
           <div className="mb-20">
             <div className="text-center mb-12">
-              <Badge className="mb-4 bg-[#FF7F00] text-white hover:bg-[#FF7F00]/90">
+              <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-500/90">
                 Subscription Tiers
               </Badge>
-              <h3 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">
+              <h3 className="text-3xl font-bold text-white mb-4">
                 Choose Your Donjon Plan
               </h3>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto">
                 From getting started to enterprise scale, find the plan that fits your team's AI needs.
               </p>
             </div>
@@ -536,60 +530,60 @@ export default function SolutionsPage() {
                 return (
                   <Card
                     key={tier.id}
-                    className={`flex flex-col border-2 ${
+                    className={`flex flex-col border-2 bg-white/5 backdrop-blur-sm ${
                       tier.highlight
-                        ? "border-[#FF7F00] shadow-xl shadow-[#FF7F00]/20 scale-105 relative"
-                        : "border-gray-200 dark:border-gray-700 hover:border-[#0076FF]/50"
+                        ? "border-sky-400 shadow-xl shadow-sky-400/20 scale-105 relative"
+                        : "border-white/10 hover:border-sky-500/50"
                     } transition-all duration-300 hover:shadow-lg`}
                   >
                     {tier.highlight && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-[#FF7F00] text-white px-4 py-1">
+                        <Badge className="bg-sky-500 text-white px-4 py-1">
                           Most Popular
                         </Badge>
                       </div>
                     )}
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between mb-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F1FF] text-[#1A365D] dark:bg-[#1A365D] dark:text-white">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400">
                           <Icon className="h-5 w-5" />
                         </div>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-white/20 text-slate-300">
                           {tier.tagline}
                         </Badge>
                       </div>
-                      <CardTitle className="text-2xl mb-2 text-[#1A365D] dark:text-blue-100">
+                      <CardTitle className="text-2xl mb-2 text-white">
                         {tier.name}
                       </CardTitle>
                       <div className="mb-3">
-                        <div className="text-3xl font-bold text-[#1A365D] dark:text-blue-300">
+                        <div className="text-3xl font-bold text-sky-400">
                           {tier.price}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-slate-500 mt-1">
                           {tier.bestFor}
                         </p>
                       </div>
-                      <CardDescription className="text-gray-600 dark:text-gray-300">
+                      <CardDescription className="text-slate-400">
                         {tier.description}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-4">
                       <div>
-                        <h4 className="font-semibold text-[#1A365D] dark:text-blue-200 mb-2 text-sm">What's included:</h4>
+                        <h4 className="font-semibold text-white mb-2 text-sm">What's included:</h4>
                         <ul className="space-y-2">
                           {tier.features.map((feature, i) => (
                             <li key={i} className="flex items-start text-sm">
-                              <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                              <span className="text-gray-700 dark:text-gray-200">{feature}</span>
+                              <Check className="h-4 w-4 text-sky-400 mr-2 flex-shrink-0 mt-0.5" />
+                              <span className="text-slate-300">{feature}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div className="bg-blue-50 dark:bg-gray-800 p-3 rounded-lg border border-[#0076FF]/20">
-                        <h4 className="font-semibold text-[#1A365D] dark:text-blue-200 mb-2 text-sm">Outcomes:</h4>
+                      <div className="bg-slate-800/50 p-3 rounded-lg border border-sky-500/20">
+                        <h4 className="font-semibold text-white mb-2 text-sm">Outcomes:</h4>
                         <ul className="space-y-1">
                           {tier.outcomes.map((outcome, i) => (
-                            <li key={i} className="flex items-start text-sm text-gray-700 dark:text-gray-200">
+                            <li key={i} className="flex items-start text-sm text-slate-300">
                               <span className="mr-2">✓</span>
                               <span>{outcome}</span>
                             </li>
@@ -601,8 +595,8 @@ export default function SolutionsPage() {
                       <Button
                         className={`w-full ${
                           tier.highlight
-                            ? "bg-[#FF7F00] hover:bg-[#FF7F00]/90"
-                            : "bg-[#1A365D] hover:bg-[#1A365D]/90 dark:bg-[#0076FF] dark:hover:bg-[#0076FF]/90"
+                            ? "bg-sky-500 hover:bg-sky-400"
+                            : "bg-sky-600 hover:bg-sky-500"
                         } text-white`}
                         size="lg"
                         asChild
@@ -619,13 +613,13 @@ export default function SolutionsPage() {
           {/* Agent Templates Included */}
           <div className="mb-16">
             <div className="text-center mb-12">
-              <Badge className="mb-4 bg-[#FF7F00] text-white hover:bg-[#FF7F00]/90">
+              <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-500/90">
                 Agent Templates
               </Badge>
-              <h3 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">
+              <h3 className="text-3xl font-bold text-white mb-4">
                 Pre-Built Agent Templates
               </h3>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto">
                 All agent templates are included with the AiGency Workbench. Deploy specialized agents instantly or customize them for your specific workflows.
               </p>
             </div>
@@ -636,30 +630,30 @@ export default function SolutionsPage() {
                 return (
                   <Card
                     key={template.id}
-                    className="flex flex-col border-2 border-gray-200 dark:border-gray-700 hover:border-[#FF7F00]/50 transition-all hover:shadow-md"
+                    className="flex flex-col border-2 border-white/10 bg-white/5 backdrop-blur-sm hover:border-sky-500/50 transition-all hover:shadow-md"
                   >
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between mb-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F1FF] text-[#1A365D] dark:bg-[#1A365D] dark:text-white">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400">
                           <Icon className="h-5 w-5" />
                         </div>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-white/20 text-slate-300">
                           {template.category}
                         </Badge>
                       </div>
-                      <CardTitle className="text-xl mb-2 text-[#1A365D] dark:text-blue-100">
+                      <CardTitle className="text-xl mb-2 text-white">
                         {template.name}
                       </CardTitle>
-                      <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
+                      <CardDescription className="text-slate-400 text-sm">
                         {template.description}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                      <div className="bg-gradient-to-r from-[#FF7F00]/10 to-[#1A365D]/10 p-3 rounded-lg border border-[#FF7F00]/20">
-                        <p className="text-sm font-semibold text-[#1A365D] dark:text-blue-200 mb-1">
+                      <div className="bg-sky-500/10 p-3 rounded-lg border border-sky-500/20">
+                        <p className="text-sm font-semibold text-sky-300 mb-1">
                           ✅ Included with all tiers
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                        <p className="text-xs text-slate-400">
                           Ready to deploy in 1-click
                         </p>
                       </div>
@@ -673,24 +667,24 @@ export default function SolutionsPage() {
           {/* Add-ons */}
           <div className="mb-12">
             <div className="text-center mb-8">
-              <Badge className="mb-4 bg-[#1A365D] text-white hover:bg-[#1A365D]/90 dark:bg-[#0076FF] dark:hover:bg-[#0076FF]/90">
+              <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-400">
                 Add-Ons
               </Badge>
-              <h3 className="text-2xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">
+              <h3 className="text-2xl font-bold text-white mb-4">
                 Enhance Your Donjon Stack
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="text-slate-400 max-w-2xl mx-auto">
                 Extend functionality with add-ons for capacity, customization, and premium support.
               </p>
             </div>
 
-            <Card className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700">
+            <Card className="bg-slate-800/30 border-2 border-white/10 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {addons.map((addon, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <span className="text-sm text-gray-700 dark:text-gray-200">{addon.name}</span>
-                      <Badge variant="outline" className="text-xs font-semibold text-[#FF7F00] border-[#FF7F00]">
+                    <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+                      <span className="text-sm text-slate-300">{addon.name}</span>
+                      <Badge variant="outline" className="text-xs font-semibold text-sky-400 border-sky-500">
                         {addon.price}
                       </Badge>
                     </div>
@@ -701,7 +695,7 @@ export default function SolutionsPage() {
           </div>
 
           {/* Common Use Cases */}
-          <div className="bg-gradient-to-br from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599] rounded-2xl p-8 text-white">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 text-white border border-white/10">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2">Common Use Cases</h3>
               <p className="text-white/80">
@@ -759,55 +753,55 @@ export default function SolutionsPage() {
       </section>
 
       {/* Individual Tools - A la Carte */}
-      <section className="bg-slate-100 py-16 dark:bg-slate-900/40">
+      <section className="bg-slate-900/30 py-16">
         <div className="container">
           <div className="mx-auto mb-10 max-w-3xl text-center">
-            <Badge className="mb-4 bg-[#FF7F00] text-white hover:bg-[#FF7F00]/90">
+            <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-400">
               INDIVIDUAL TOOLS (If They Insist)
             </Badge>
-            <h3 className="text-3xl font-semibold text-[#1A365D] dark:text-blue-200">
+            <h3 className="text-3xl font-semibold text-white">
               A la Carte Pricing When You Only Need One Piece
             </h3>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            <p className="mt-4 text-lg text-slate-400">
               We still recommend starting with a bundle for faster ROI, but here's the updated pricing when a single
               tool is all you need.
             </p>
           </div>
 
-          <Card className="overflow-hidden border-2 border-dashed border-[#FF7F00]/40 bg-white dark:border-[#FF7F00]/60 dark:bg-slate-950/60">
+          <Card className="overflow-hidden border-2 border-dashed border-sky-500/40 bg-white/5 backdrop-blur-sm">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-900">
-                    <TableHead>Tool</TableHead>
-                    <TableHead>What&apos;s Included</TableHead>
-                    <TableHead className="text-right">New Price</TableHead>
+                  <TableRow className="bg-slate-800/50">
+                    <TableHead className="text-slate-300">Tool</TableHead>
+                    <TableHead className="text-slate-300">What&apos;s Included</TableHead>
+                    <TableHead className="text-right text-slate-300">New Price</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {individualTools.map((tool) => (
-                    <TableRow key={tool.name}>
-                      <TableCell className="font-semibold text-[#1A365D] dark:text-blue-100">{tool.name}</TableCell>
-                      <TableCell className="text-gray-600 dark:text-gray-300">{tool.coverage}</TableCell>
-                      <TableCell className="text-right font-semibold text-[#FF7F00] dark:text-[#FFB347]">
+                    <TableRow key={tool.name} className="border-white/10">
+                      <TableCell className="font-semibold text-white">{tool.name}</TableCell>
+                      <TableCell className="text-slate-400">{tool.coverage}</TableCell>
+                      <TableCell className="text-right font-semibold text-sky-400">
                         {tool.price}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
-                <TableCaption className="px-6 pb-6 text-left text-gray-500 dark:text-gray-400">
+                <TableCaption className="px-6 pb-6 text-left text-slate-500">
                   Bundle later without penalty. We credit your first month if you upgrade to a package within 60 days.
                 </TableCaption>
               </Table>
             </CardContent>
-            <CardFooter className="flex flex-col gap-4 border-t border-dashed border-[#FF7F00]/40 p-6 text-left sm:flex-row sm:items-center sm:justify-between dark:border-[#FF7F00]/60">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+            <CardFooter className="flex flex-col gap-4 border-t border-dashed border-sky-500/40 p-6 text-left sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-400">
                 Not sure which path to take? We&apos;ll map ROI during a 15-minute strategy call.
               </p>
               <Button
                 asChild
                 variant="outline"
-                className="border-[#FF7F00] text-[#FF7F00] hover:bg-[#FF7F00] hover:text-white dark:border-[#FFB347] dark:text-[#FFB347] dark:hover:bg-[#FFB347] dark:hover:text-slate-950"
+                className="border-sky-500 text-sky-400 hover:bg-sky-500 hover:text-white"
               >
                 <Link href="/contact">Book a Quick Call</Link>
               </Button>
@@ -817,49 +811,49 @@ export default function SolutionsPage() {
       </section>
 
       {/* Custom Packages */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+      <section className="py-16 bg-slate-900/50">
         <div className="container">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <Badge className="mb-4 bg-[#1A365D] text-white hover:bg-[#1A365D]/90 dark:bg-[#0076FF] dark:hover:bg-[#0076FF]/90">
+              <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-400">
                 Custom Solutions
               </Badge>
-              <h2 className="text-3xl font-bold text-[#1A365D] dark:text-blue-300 mb-4">
+              <h2 className="text-3xl font-bold text-white mb-4">
                 Need Something Custom?
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="text-slate-400 max-w-2xl mx-auto">
                 We can build exactly what you need, tailored to your business processes and workflows.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               {customPackages.map((pkg) => (
-                <Card key={pkg.name} className="border-2 border-gray-200 dark:border-gray-700 hover:border-[#0076FF] dark:hover:border-blue-600 transition-all shadow-md">
+                <Card key={pkg.name} className="border-2 border-white/10 bg-white/5 backdrop-blur-sm hover:border-sky-500/50 transition-all shadow-md">
                   <CardHeader>
                     <div className="mb-2">
-                      <span className="text-sm font-medium text-[#0076FF] dark:text-blue-400">{pkg.tagline}</span>
+                      <span className="text-sm font-medium text-sky-400">{pkg.tagline}</span>
                     </div>
-                    <CardTitle className="text-2xl mb-2 text-[#1A365D] dark:text-blue-100">{pkg.name}</CardTitle>
+                    <CardTitle className="text-2xl mb-2 text-white">{pkg.name}</CardTitle>
                     <div className="mb-4">
-                      <div className="text-3xl font-bold text-[#1A365D] dark:text-blue-300">
+                      <div className="text-3xl font-bold text-sky-400">
                         ${pkg.price.toLocaleString()}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-sm text-slate-500">
                         + ${pkg.monthlyFee}/month • {pkg.timeline}
                       </div>
                     </div>
-                    <CardDescription className="text-gray-600 dark:text-gray-300">{pkg.description}</CardDescription>
+                    <CardDescription className="text-slate-400">{pkg.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2 mb-6">
                       {pkg.features.map((feature, i) => (
                         <li key={i} className="flex items-start">
-                          <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-gray-700 dark:text-gray-200">{feature}</span>
+                          <Check className="h-5 w-5 text-sky-400 mr-2 flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-slate-300">{feature}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full bg-[#0076FF] hover:bg-[#0076FF]/90 text-white" size="lg" asChild>
+                    <Button className="w-full bg-sky-500 hover:bg-sky-400 text-white" size="lg" asChild>
                       <a href={pkg.checkoutUrl} target="_blank" rel="noopener noreferrer">
                         Get Started
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -870,19 +864,19 @@ export default function SolutionsPage() {
               ))}
             </div>
 
-            <Card className="bg-gradient-to-br from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599] text-white border-0 shadow-xl">
+            <Card className="bg-gradient-to-br from-sky-900/50 to-slate-900 text-white border border-sky-500/30 shadow-xl">
               <CardContent className="p-8">
                 <div className="flex items-center gap-3 mb-4">
-                  <Shield className="h-8 w-8" />
+                  <Shield className="h-8 w-8 text-sky-400" />
                   <h3 className="text-2xl font-bold">Enterprise & Complex Projects</h3>
                 </div>
-                <p className="mb-4 text-white/90">
+                <p className="mb-4 text-slate-300">
                   Multi-location operations, franchises, or need something truly unique? We build custom enterprise solutions starting at $25,000.
                 </p>
-                <p className="mb-6 text-white/90">
+                <p className="mb-6 text-slate-300">
                   Includes dedicated development team, unlimited users, white-label options, and 24/7 support.
                 </p>
-                <Button className="bg-white text-[#0076FF] hover:bg-gray-100" size="lg" asChild>
+                <Button className="bg-sky-500 text-white hover:bg-sky-400" size="lg" asChild>
                   <Link href="/contact">
                     Let's Talk About Your Needs
                     <ArrowRight className="ml-2 h-4 w-4" />

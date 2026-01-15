@@ -19,6 +19,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        mono: ["var(--font-fira-code)", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -59,6 +63,7 @@ const config = {
           silver: "#C0C0C0",
           ember: "#FF6B35",
           platinum: "#E5E4E2",
+          dark: "#030712",
         },
       },
       borderRadius: {
@@ -83,11 +88,21 @@ const config = {
             "background-position": "100% 50%",
           },
         },
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(20px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "gradient-x": "gradient-x 15s ease infinite",
+        "fade-up": "fade-up 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards",
+        "fade-in": "fade-in 0.6s ease-out forwards",
       },
     },
   },

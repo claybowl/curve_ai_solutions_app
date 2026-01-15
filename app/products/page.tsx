@@ -158,22 +158,22 @@ export default function ProductsPage() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#030712]">
       {/* Hero Section */}
-      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599]">
+      <SkyBackground className="w-full py-16 md:py-24 bg-gradient-to-b from-slate-900 to-[#030712]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-4 bg-donjon-ember text-white hover:bg-donjon-ember/90">
+            <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-400">
               AI Agent Products
             </Badge>
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white mb-6">
               Revolutionary AI Agent Products
             </h1>
-            <p className="max-w-[800px] mx-auto text-gray-100 md:text-xl mb-4">
+            <p className="max-w-[800px] mx-auto text-slate-200 md:text-xl mb-4">
               Experience the future of AI agents with personality, orchestration, and sales intelligence.
               Built on cutting-edge knowledge graph memory and multi-agent architectures.
             </p>
-            <p className="max-w-[700px] mx-auto text-gray-200 text-lg mb-8">
+            <p className="max-w-[700px] mx-auto text-slate-300 text-lg mb-8">
               From philosophical gangsters to Starfleet engineering crews to aggressive sales agents
             </p>
           </div>
@@ -181,17 +181,17 @@ export default function ProductsPage() {
       </SkyBackground>
 
       {/* Products Grid */}
-      <section className="py-16 bg-white dark:bg-gray-950">
+      <section className="py-16 bg-[#030712]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-3 gap-8 mb-12">
               {products.map((product) => {
                 const Icon = product.icon
                 return (
-                  <Card
-                    key={product.id}
-                    className="flex flex-col border-2 hover:border-donjon-indigo dark:border-gray-700 dark:hover:border-blue-600 transition-all hover:shadow-xl"
-                  >
+<Card
+                                    key={product.id}
+                                    className="flex flex-col border-2 bg-white/5 border-white/10 hover:border-sky-500 transition-all hover:shadow-xl"
+                                  >
                     <CardHeader className={`bg-gradient-to-br ${product.gradient} text-white rounded-t-lg`}>
                       <div className="flex items-center justify-between mb-2">
                         <Icon className="h-10 w-10" />
@@ -205,19 +205,19 @@ export default function ProductsPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow p-6">
-                      <p className="text-gray-700 dark:text-gray-300 mb-6">
+                      <p className="text-slate-300 mb-6">
                         {product.description}
                       </p>
 
                       <div className="mb-6">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-donjon-indigo" />
+<h4 className="font-semibold text-sm text-white mb-3 flex items-center gap-2">
+                                          <Sparkles className="h-4 w-4 text-sky-400" />
                           Key Highlights
                         </h4>
                         <ul className="space-y-2">
                           {product.highlights.map((highlight, i) => (
-                            <li key={i} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
-                              <span className="text-donjon-indigo mr-2">•</span>
+<li key={i} className="flex items-start text-sm text-slate-400">
+                                              <span className="text-sky-400 mr-2">•</span>
                               <span>{highlight}</span>
                             </li>
                           ))}
@@ -225,18 +225,18 @@ export default function ProductsPage() {
                       </div>
 
                       <div className="mb-6">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                          <Zap className="h-4 w-4 text-donjon-indigo" />
+<h4 className="font-semibold text-sm text-white mb-3 flex items-center gap-2">
+                                          <Zap className="h-4 w-4 text-sky-400" />
                           Core Features
                         </h4>
                         <div className="space-y-3">
                           {product.features.map((feature, i) => (
-                            <div key={i} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
-                              <div className="font-medium text-sm text-gray-900 dark:text-gray-100 mb-1">
+<div key={i} className="bg-slate-800/50 p-3 rounded-md">
+                                              <div className="font-medium text-sm text-white mb-1">
                                 {feature.title}
                               </div>
-                              <div className="text-xs text-gray-600 dark:text-gray-400">
-                                {feature.description}
+<div className="text-xs text-slate-400">
+                                                {feature.description}
                               </div>
                             </div>
                           ))}
@@ -244,8 +244,8 @@ export default function ProductsPage() {
                       </div>
 
                       <div className="mb-6">
-                        <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                          <Users className="h-4 w-4 text-donjon-indigo" />
+<h4 className="font-semibold text-sm text-white mb-3 flex items-center gap-2">
+                                          <Users className="h-4 w-4 text-sky-400" />
                           Use Cases
                         </h4>
                         <div className="flex flex-wrap gap-2">
@@ -274,41 +274,41 @@ export default function ProductsPage() {
             </div>
 
             {/* Technology Stack Section */}
-            <Card className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-2 border-donjon-indigo/20">
+            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-2 border-sky-500/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-donjon-indigo" />
+<CardTitle className="flex items-center gap-2 text-white">
+                                  <Brain className="h-6 w-6 text-sky-400" />
                   Built on Advanced Technology
                 </CardTitle>
-                <CardDescription>
-                  Our agent products leverage cutting-edge AI infrastructure
-                </CardDescription>
+<CardDescription className="text-slate-400">
+                                  Our agent products leverage cutting-edge AI infrastructure
+                                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="flex items-start gap-3">
-                    <Database className="h-5 w-5 text-donjon-indigo mt-1" />
+                    <Database className="h-5 w-5 text-sky-400 mt-1" />
                     <div>
-                      <div className="font-semibold text-sm mb-1">Knowledge Graph Memory</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+<div className="font-semibold text-sm mb-1 text-white">Knowledge Graph Memory</div>
+                                      <div className="text-xs text-slate-400">
                         Persistent context across sessions with relationship mapping
                       </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Network className="h-5 w-5 text-donjon-indigo mt-1" />
+                    <Network className="h-5 w-5 text-sky-400 mt-1" />
                     <div>
-                      <div className="font-semibold text-sm mb-1">Multi-Agent Orchestration</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+<div className="font-semibold text-sm mb-1 text-white">Multi-Agent Orchestration</div>
+                                      <div className="text-xs text-slate-400">
                         Coordinated workflows with specialized agent roles
                       </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-donjon-indigo mt-1" />
+                    <Shield className="h-5 w-5 text-sky-400 mt-1" />
                     <div>
-                      <div className="font-semibold text-sm mb-1">Enterprise Security</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+<div className="font-semibold text-sm mb-1 text-white">Enterprise Security</div>
+                                      <div className="text-xs text-slate-400">
                         Role-based access control and data encryption
                       </div>
                     </div>
@@ -321,7 +321,7 @@ export default function ProductsPage() {
       </section>
 
       {/* CTA Section */}
-      <SkyBackground className="py-16 bg-gradient-to-b from-[#1A365D] to-[#0076FF] dark:from-[#0D1F36] dark:to-[#004599] text-white">
+      <SkyBackground className="py-16 bg-gradient-to-b from-slate-900 to-[#030712] text-white">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-6">
