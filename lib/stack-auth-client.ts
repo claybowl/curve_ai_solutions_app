@@ -34,86 +34,77 @@ export async function signInWithEmail(email: string, password: string) {
     // Stack Auth's signInWithCredential might need to be called differently
     // Try to get the method with proper error handling
     const client = stackClientApp as any
+    const authTargets = [
+      { label: 'client', target: client },
+      { label: 'auth', target: client?.auth },
+      { label: 'authClient', target: client?.authClient },
+      { label: 'authentication', target: client?.authentication },
+    ].filter(({ target }) => !!target)
     
     // Check available methods for debugging
     if (process.env.NODE_ENV === 'development') {
       console.log('Available Stack Auth methods:', Object.getOwnPropertyNames(client).filter(name => typeof client[name] === 'function'))
-    }
-    
-    // Try signInWithCredential with noRedirect option
-    if (typeof client.signInWithCredential === 'function') {
-      try {
-        const result = await client.signInWithCredential({
-          email,
-          password,
-          noRedirect: true,
-        })
-        
-        // Validate result before returning
-        if (result === null || result === undefined) {
-          throw new Error('Sign in returned an empty result. Please check your credentials.')
-        }
-        
-        // Handle result
-        if (result && typeof result === 'object') {
-          if ('status' in result && result.status === 'error') {
-            throw new Error(result.error?.message || 'Sign in failed')
-          }
-          // Check if result has user or accessToken property (Stack Auth success indicators)
-          if ('user' in result || 'accessToken' in result) {
-            return result
-          }
-        }
-        
-        // If we get here, the result is valid but unexpected format
-        return result
-      } catch (methodError: any) {
-        // If noRedirect doesn't work, try alternative methods first
-        // Don't retry without noRedirect as it may return undefined
-        if (methodError.message?.includes('noRedirect') || methodError.message?.includes('accessToken')) {
-          // Instead of retrying without noRedirect, try alternative methods
-          // This prevents the undefined return issue
-          console.warn('signInWithCredential with noRedirect failed, trying alternative methods')
-        } else {
-          // Re-throw if it's not a noRedirect/accessToken error
-          throw methodError
+      for (const { label, target } of authTargets) {
+        if (target && typeof target === 'object') {
+          console.log(`Available Stack Auth methods on ${label}:`, Object.getOwnPropertyNames(target).filter(name => typeof target[name] === 'function'))
         }
       }
     }
     
-    // Fallback: try alternative method names
-    const alternativeMethods = ['signInWithPassword', 'signIn', 'authenticate']
-    for (const methodName of alternativeMethods) {
-      if (typeof client[methodName] === 'function') {
+    const isErrorStatus = (result: any) => {
+      return result && typeof result === 'object' && 'status' in result && result.status === 'error'
+    }
+
+    const hasSuccessShape = (result: any) => {
+      return result && typeof result === 'object' && ('user' in result || 'accessToken' in result || 'data' in result)
+    }
+
+    const validateResult = (result: any, methodName: string) => {
+      if (result === null || result === undefined) {
+        throw new Error(`${methodName} returned an empty result`)
+      }
+      if (isErrorStatus(result)) {
+        throw new Error((result as any).error?.message || 'Sign in failed')
+      }
+      return result
+    }
+
+    const tryMethod = async (target: any, methodName: string, args: Record<string, any>, fallbackArgs?: Record<string, any>) => {
+      if (!target || typeof target[methodName] !== 'function') return null
+      const method = target[methodName]
+      try {
+        const result = method.length >= 2 ? await method(email, password) : await method(args)
+        return validateResult(result, methodName)
+      } catch (methodError: any) {
+        if (fallbackArgs && (methodError.message?.includes('noRedirect') || methodError.message?.includes('redirect'))) {
+          const fallbackResult = method.length >= 2 ? await method(email, password) : await method(fallbackArgs)
+          return validateResult(fallbackResult, methodName)
+        }
+        throw methodError
+      }
+    }
+
+    const methodCandidates = [
+      { name: 'signInWithCredential', args: { email, password, noRedirect: true }, fallbackArgs: { email, password } },
+      { name: 'signInWithPassword', args: { email, password } },
+      { name: 'signInWithEmailPassword', args: { email, password } },
+      { name: 'signIn', args: { email, password } },
+      { name: 'authenticate', args: { email, password } },
+      { name: 'login', args: { email, password } },
+    ]
+
+    for (const { target } of authTargets) {
+      for (const candidate of methodCandidates) {
         try {
-          const result = await client[methodName]({ email, password })
-          
-          // Validate result
-          if (result === null || result === undefined) {
-            console.warn(`${methodName} returned undefined, trying next method`)
-            continue
-          }
-          
-          // Check for error in result
-          if (result && typeof result === 'object') {
-            if ('status' in result && result.status === 'error') {
-              throw new Error((result as any).error?.message || 'Sign in failed')
-            }
-            // Valid result
-            if ('user' in result || 'accessToken' in result || 'data' in result) {
+          const result = await tryMethod(target, candidate.name, candidate.args, candidate.fallbackArgs)
+          if (result !== null) {
+            if (hasSuccessShape(result) || typeof result !== 'object') {
               return result
             }
+            return result
           }
-          
-          return result
         } catch (methodError: any) {
-          // If this method fails, try the next one
-          console.warn(`${methodName} failed:`, methodError.message)
-          if (methodName === alternativeMethods[alternativeMethods.length - 1]) {
-            // Last method failed, throw the error
-            throw methodError
-          }
-          continue
+          console.warn(`${candidate.name} failed:`, methodError.message)
         }
       }
     }
@@ -132,38 +123,58 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signUpWithEmail(email: string, password: string, displayName?: string) {
   try {
     const client = stackClientApp as any
+    const authTargets = [
+      { label: 'client', target: client },
+      { label: 'auth', target: client?.auth },
+      { label: 'authClient', target: client?.authClient },
+      { label: 'authentication', target: client?.authentication },
+    ].filter(({ target }) => !!target)
     
     // Try signUp method
-    if (typeof client.signUp === 'function') {
+    const isErrorStatus = (result: any) => {
+      return result && typeof result === 'object' && 'status' in result && result.status === 'error'
+    }
+
+    const tryMethod = async (target: any, methodName: string, args: Record<string, any>, fallbackArgs?: Record<string, any>) => {
+      if (!target || typeof target[methodName] !== 'function') return null
+      const method = target[methodName]
       try {
-        const result = await client.signUp({
-          email,
-          password,
-          displayName,
-          noRedirect: true,
-        })
-        
-        // Handle result safely - check if result exists and is an object before using 'in' operator
-        if (result != null && typeof result === 'object' && !Array.isArray(result)) {
-          if ('status' in result && result.status === 'error') {
-            throw new Error((result as any).error?.message || 'Sign up failed')
-          }
+        const result = method.length >= 2 ? await method(email, password, displayName) : await method(args)
+        if (result != null && typeof result === 'object' && !Array.isArray(result) && isErrorStatus(result)) {
+          throw new Error((result as any).error?.message || 'Sign up failed')
         }
-        
         return result
       } catch (methodError: any) {
-        // If noRedirect doesn't work, try without it
-        if (methodError.message?.includes('noRedirect') || methodError.message?.includes('accessToken')) {
-          return await client.signUp({
-            email,
-            password,
-            displayName,
-          })
+        if (fallbackArgs && (methodError.message?.includes('noRedirect') || methodError.message?.includes('redirect'))) {
+          const fallbackResult = method.length >= 2 ? await method(email, password, displayName) : await method(fallbackArgs)
+          if (fallbackResult != null && typeof fallbackResult === 'object' && !Array.isArray(fallbackResult) && isErrorStatus(fallbackResult)) {
+            throw new Error((fallbackResult as any).error?.message || 'Sign up failed')
+          }
+          return fallbackResult
         }
         throw methodError
       }
     }
-    
+
+    const methodCandidates = [
+      { name: 'signUp', args: { email, password, displayName, noRedirect: true }, fallbackArgs: { email, password, displayName } },
+      { name: 'signUpWithEmailPassword', args: { email, password, displayName } },
+      { name: 'register', args: { email, password, displayName } },
+    ]
+
+    for (const { target } of authTargets) {
+      for (const candidate of methodCandidates) {
+        try {
+          const result = await tryMethod(target, candidate.name, candidate.args, candidate.fallbackArgs)
+          if (result !== null) {
+            return result
+          }
+        } catch (methodError: any) {
+          console.warn(`${candidate.name} failed:`, methodError.message)
+        }
+      }
+    }
+
     throw new Error('Stack Auth signUp method not available')
   } catch (error: any) {
     console.error("Error signing up:", error)

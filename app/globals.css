@@ -19,6 +19,23 @@ body {
    DONJON SYSTEMS DESIGN SYSTEM
    ============================================ */
 
+/* Ambient Background - Subtle grid pattern */
+.ambient-bg {
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Vignette effect for edges */
+.vignette-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(3, 7, 18, 0.3) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* Glass Panel - Frosted glass effect for cards and containers */
 @layer components {
   .glass-panel {
@@ -121,22 +138,35 @@ body {
 /* Synapse Glow Orbs - Floating background elements */
 .synapse-glow {
   position: fixed;
-  width: 400px;
-  height: 400px;
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
-  filter: blur(60px);
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+  filter: blur(80px);
   pointer-events: none;
   z-index: 0;
-  transition: transform 2s ease-in-out;
+  animation: glow-pulse 8s ease-in-out infinite;
 }
 
 .synapse-glow:nth-child(2) {
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+  animation: glow-pulse 10s ease-in-out infinite reverse;
 }
 
 .synapse-glow:nth-child(3) {
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+  animation: glow-pulse 12s ease-in-out infinite 2s;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 @keyframes fade-up {
@@ -174,6 +204,33 @@ body {
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
 
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(20px) rotate(-5deg); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+.animate-float-reverse { animation: float-reverse 7s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
+.animation-delay-1000 { animation-delay: 1s; }
+.animation-delay-2000 { animation-delay: 2s; }
+
 .mobile-menu {
   max-height: 0;
   overflow: hidden;
@@ -209,35 +266,35 @@ body {
   }
 
   .dark {
-    --background: 0 0% 8%;
-    --foreground: 0 0% 90%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 90%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 90%;
-    --primary: 225 100% 60%;
-    --primary-foreground: 0 0% 8%;
-    --secondary: 0 0% 18%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 15 100% 60%;
-    --accent-foreground: 0 0% 8%;
+    --background: 222 47% 3%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 222 47% 3%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 222 47% 3%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 90%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 225 100% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 199 89% 48%;
 
     /* Sidebar variables for dark mode */
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 0 0% 90%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 0 0% 18%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 225 100% 60%;
+    --sidebar-background: 222 47% 3%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222 47% 3%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 199 89% 48%;
   }
 }
 

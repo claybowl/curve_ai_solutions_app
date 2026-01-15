@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${firaCode.variable} font-sans bg-donjon-dark text-slate-50 antialiased overflow-x-hidden`} suppressHydrationWarning>
+      <body className={`${outfit.variable} ${firaCode.variable} font-sans bg-[#030712] text-slate-50 antialiased overflow-x-hidden`} suppressHydrationWarning>
         <StackAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <SynapseBackground />

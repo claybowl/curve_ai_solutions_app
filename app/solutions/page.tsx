@@ -107,6 +107,101 @@ const packageBundles: PackageBundle[] = [
   },
 ]
 
+type ProjectHighlight = {
+  name: string
+  tagline: string
+  href: string
+  type: "Product" | "Project"
+  cta: string
+}
+
+const projectHighlights: ProjectHighlight[] = [
+  {
+    name: "ServicePro-v2",
+    tagline: "Comprehensive business management platform for service teams",
+    href: "https://github.com/claybowl/ServicePro-v2",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Alfie Business Manager",
+    tagline: "3D knowledge graph business intelligence platform",
+    href: "https://github.com/claybowl/alfie-business-manager",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Amazon Listing Enhancer AI",
+    tagline: "E-commerce listing optimization with GPT-4o and DALL-E 3",
+    href: "https://github.com/claybowl/Amazon_Listing_Enhancer_AI",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Know-Defeat",
+    tagline: "Algorithmic trading system with probability-driven execution",
+    href: "https://github.com/claybowl/Know-Defeat",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Taygency",
+    tagline: "Multi-tenant AI agency platform with knowledge graph integration",
+    href: "https://github.com/claybowl/Taygency",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Curve AiGency Knowledge Studio",
+    tagline: "Knowledge studio for Curve AI with graph-based context",
+    href: "https://github.com/claybowl/Curve-AiGency-Knowledge-Studio",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Agent Workbench V2",
+    tagline: "Rapid prototyping workbench for multi-agent workflows",
+    href: "https://github.com/claybowl/Agent-Workbench-V2",
+    type: "Project",
+    cta: "View Project",
+  },
+  {
+    name: "Ai-Search-Chat-Morphic",
+    tagline: "Conversational AI search with morphic UX",
+    href: "https://github.com/claybowl/Ai-Search-Chat-Morphic",
+    type: "Project",
+    cta: "View Project",
+  },
+  {
+    name: "The-Nanny",
+    tagline: "Claude computer-use assistant for automated workflows",
+    href: "https://github.com/claybowl/The-Nanny",
+    type: "Project",
+    cta: "View Project",
+  },
+  {
+    name: "Multi-tenant Donjon",
+    tagline: "Minimalistic multi-tenant Next.js starter template",
+    href: "https://github.com/claybowl/multi-tenant-donjon",
+    type: "Project",
+    cta: "View Project",
+  },
+  {
+    name: "Clean Machine Web App",
+    tagline: "Customer-facing web app for Clean Machine",
+    href: "https://github.com/claybowl/clean-machine-webapp",
+    type: "Product",
+    cta: "View Product",
+  },
+  {
+    name: "Drone-Fruit.Ai",
+    tagline: "Agricultural AI project for smart crop insights",
+    href: "https://github.com/claybowl/Drone-Fruit.Ai",
+    type: "Project",
+    cta: "View Project",
+  },
+]
+
 type IndividualTool = {
   name: string
   coverage: string
@@ -495,6 +590,49 @@ export default function SolutionsPage() {
           <p className="mt-10 text-center text-sm text-white/80">
             Want a hybrid approach? We can layer tools onto any package after we launch your core system.
           </p>
+        </div>
+      </section>
+
+      <section className="py-20 bg-slate-950/80 text-white">
+        <div className="container">
+          <div className="mb-12 text-center">
+            <Badge className="mb-4 bg-sky-500 text-white hover:bg-sky-500/90">
+              Projects & Products
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">Curated Project Highlights</h2>
+            <p className="text-lg text-white/70 max-w-3xl mx-auto">
+              Investor-facing highlights from GitHub. Full products live alongside solutions, while experimental builds
+              are listed as projects.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {projectHighlights.map((project) => (
+              <Card key={project.name} className="border border-white/10 bg-white/5 text-white">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <CardTitle className="text-xl text-white">{project.name}</CardTitle>
+                    <Badge variant="outline" className="border-white/20 text-white/70">
+                      {project.type}
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-white/70">{project.tagline}</CardDescription>
+                </CardHeader>
+                <CardFooter>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full border-white/20 text-white hover:bg-white/10"
+                  >
+                    <a href={project.href} target="_blank" rel="noopener noreferrer">
+                      {project.cta}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
