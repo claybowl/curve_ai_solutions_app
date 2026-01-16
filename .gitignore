@@ -27,3 +27,7 @@ yarn-error.log*
 next-env.d.ts
 .aider*
 .env*.local
+
+# Windows reserved device files
+nul
+NUL
