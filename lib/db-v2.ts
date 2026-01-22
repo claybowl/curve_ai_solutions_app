@@ -7,7 +7,7 @@
  * - Neon PostgreSQL: @/lib/db.ts for database operations
  */
 
-import { getCurrentUserServer } from './stack-auth-server'
+import { getCurrentUserServer } from './supabase-server'
 
 /**
  * Get a database client for database operations

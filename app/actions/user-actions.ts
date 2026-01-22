@@ -2,8 +2,40 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { getCurrentUserServer, requireAdmin, isUserAdmin } from "@/lib/stack-auth-server"
-import { getAllUsers, getUserById, updateUser, deleteUser, assignRoleToUser } from "@/lib/stack-auth-admin"
+import { getCurrentUserServer, requireAdmin, isUserAdmin } from "@/lib/supabase-server"
+
+// TODO: Implement these user management functions for Supabase
+// These are stub functions - the real implementation needs Supabase Admin API or direct DB queries
+async function getAllUsers(_options?: { limit?: number; offset?: number; search?: string }): Promise<any[]> {
+  console.warn('getAllUsers not yet implemented for Supabase')
+  return []
+}
+
+async function getUserById(_userId: string): Promise<any | null> {
+  console.warn('getUserById not yet implemented for Supabase')
+  return null
+}
+
+async function createUser(_userData: Record<string, unknown>): Promise<any> {
+  throw new Error('createUser not yet implemented for Supabase')
+}
+
+async function updateUser(_userId: string, _userData: Record<string, unknown>): Promise<any> {
+  throw new Error('updateUser not yet implemented for Supabase')
+}
+
+async function deleteUser(_userId: string): Promise<void> {
+  throw new Error('deleteUser not yet implemented for Supabase')
+}
+
+async function assignPermissionToUser(_userId: string, _permission: string): Promise<void> {
+  throw new Error('assignPermissionToUser not yet implemented for Supabase')
+}
+
+async function removePermissionFromUser(_userId: string, _permission: string): Promise<void> {
+  throw new Error('removePermissionFromUser not yet implemented for Supabase')
+}
+
 import type { 
   UserProfile, 
   UserSummary, 

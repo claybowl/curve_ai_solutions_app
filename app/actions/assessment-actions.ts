@@ -9,7 +9,7 @@
  * TODO: All database queries need to be migrated to Stack Auth database or separate database.
  */
 
-import { getCurrentUserServer } from "@/lib/stack-auth-server"
+import { getCurrentUserServer } from "@/lib/supabase-server"
 // TODO: Import business database client when implemented
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -872,8 +872,8 @@ export async function getAllAssessments(filter?: AssessmentFilter) {
       throw new Error("Authentication required")
     }
 
-    // Check if user is admin using Stack Auth
-    const { isUserAdmin } = await import('@/lib/stack-auth-server')
+    // Check if user is admin using Supabase Auth
+    const { isUserAdmin } = await import('@/lib/supabase-server')
     const isAdmin = await isUserAdmin()
 
     if (!isAdmin) {
@@ -974,7 +974,7 @@ export async function deleteAssessment(assessmentId: string) {
     // const sql = neon(process.env.DATABASE_URL!)
     // const assessment = await sql`SELECT user_id FROM assessments WHERE id = ${assessmentId}`
     
-    const { isUserAdmin } = await import('@/lib/stack-auth-server')
+    const { isUserAdmin } = await import('@/lib/supabase-server')
     const isAdmin = await isUserAdmin()
     
     // For now, allow deletion if user is admin

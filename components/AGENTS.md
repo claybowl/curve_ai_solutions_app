@@ -19,7 +19,7 @@ components/
 | Task | Location | Notes |
 |------|----------|-------|
 | Form controls | `ui/input.tsx`, `ui/button.tsx`, `ui/select.tsx` | Use `cn()` for className |
-| Layout shells | `admin/dashboard-layout.tsx`, `admin/admin-sidebar.tsx` | Stack Auth integrated |
+| Layout shells | `admin/dashboard-layout.tsx`, `admin/admin-sidebar.tsx` | Supabase Auth integrated |
 | Data tables | `admin-dashboard/*-table.tsx` | User/assessment/consultation |
 | Glass effects | `donjon/glass-card.tsx` | Wraps content in glass-panel |
 | Backgrounds | `donjon/synapse-background.tsx`, `sky-background.tsx` | Ambient glow effects |

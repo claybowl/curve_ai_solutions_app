@@ -1,44 +1,158 @@
 /**
- * DEPRECATED: This project uses Stack Auth for authentication and Neon PostgreSQL for database.
- * This file exists only for backward compatibility with legacy imports.
+ * Supabase Server Configuration
  * 
- * Please migrate to:
- * - Stack Auth Server: import from '@/lib/stack-auth-server'
- * - Database: import from '@/lib/db.ts' (Neon PostgreSQL)
+ * This file provides Supabase server-side utilities for use in Server Components and Server Actions.
  */
+
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 /**
  * Create a Supabase client for server-side operations
- * DEPRECATED: Use Stack Auth or Neon PostgreSQL instead
+ * Uses cookies for session management
  */
 export async function createServerSupabaseClient() {
-  throw new Error(
-    'Supabase is not used in this project. ' +
-    'Please use Stack Auth server APIs (from "@/lib/stack-auth-server") ' +
-    'or Neon PostgreSQL (from "@/lib/db.ts") for database operations.'
-  )
+  const cookieStore = await cookies()
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'
+    )
+  }
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
+      },
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          )
+        } catch {
+          // The `setAll` method was called from a Server Component.
+          // This can be ignored if you have middleware refreshing user sessions.
+        }
+      },
+    },
+  })
 }
 
 /**
- * Backward-compatible alias expected by server actions
- * DEPRECATED: Use Stack Auth or Neon PostgreSQL instead
+ * Alias for backward compatibility
  */
-export async function createClient() {
-  throw new Error(
-    'Supabase is not used. Please use Stack Auth server APIs or Neon PostgreSQL instead.'
-  )
+export const createClient = createServerSupabaseClient
+
+/**
+ * Get current authenticated user (server-side)
+ */
+export async function getCurrentUserServer() {
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error) {
+      console.error('Error getting current user:', error)
+      return null
+    }
+    
+    return user
+  } catch (error) {
+    console.error('Error in getCurrentUserServer:', error)
+    return null
+  }
+}
+
+/**
+ * Check if user is authenticated
+ */
+export async function isAuthenticated(): Promise<boolean> {
+  const user = await getCurrentUserServer()
+  return !!user
+}
+
+/**
+ * Require authentication - throw error if not authenticated
+ */
+export async function requireAuth() {
+  const user = await getCurrentUserServer()
+  if (!user) {
+    throw new Error('Unauthorized - authentication required')
+  }
+  return user
+}
+
+/**
+ * Get user profile from profiles table
+ */
+export async function getUserProfile(userId: string) {
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single()
+    
+    if (error) {
+      console.error('Error getting user profile:', error)
+      return null
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Error in getUserProfile:', error)
+    return null
+  }
 }
 
 /**
  * Verify that the current authenticated user has admin role.
- * DEPRECATED: Use Stack Auth admin checks instead
+ * Checks both profiles.role and email allowlist.
  */
 export async function verifyAdminRole(): Promise<boolean> {
   try {
-    const { verifyAdminRole: stackVerifyAdmin } = await import('@/lib/stack-auth-server')
-    return await stackVerifyAdmin()
-  } catch {
-    // Fallback to false if Stack Auth not available
+    const user = await getCurrentUserServer()
+    if (!user) return false
+
+    // Check email allowlist first (emergency access)
+    const allowlistRaw = process.env.ADMIN_EMAIL_ALLOWLIST || ''
+    const allowlistedEmails = allowlistRaw
+      .split(',')
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+    
+    const userEmail = user.email?.toLowerCase() || ''
+    if (userEmail && allowlistedEmails.includes(userEmail)) {
+      return true
+    }
+
+    // Check profiles.role
+    const profile = await getUserProfile(user.id)
+    return profile?.role === 'admin'
+  } catch (error) {
+    console.error('Error checking admin permission:', error)
     return false
   }
+}
+
+/**
+ * Alias for backward compatibility
+ */
+export const isUserAdmin = verifyAdminRole
+
+/**
+ * Require admin permission - throw error if not admin
+ */
+export async function requireAdmin() {
+  const user = await requireAuth()
+  const isAdmin = await verifyAdminRole()
+  if (!isAdmin) {
+    throw new Error('Unauthorized - admin access required')
+  }
+  return user
 }

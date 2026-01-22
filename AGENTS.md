@@ -1,12 +1,12 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-01-15
-**Commit:** 412c1c2
+**Generated:** 2026-01-21
+**Commit:** Updated
 **Branch:** main
 
 ## OVERVIEW
 
-Next.js 14 App Router platform for AI consultation services (Donjon Intelligence Systems). Stack Auth + Neon PostgreSQL. Dark glassmorphism design system ("Donjon").
+Next.js 14 App Router platform for AI consultation services (Donjon Intelligence Systems). Supabase Auth + Neon PostgreSQL. Dark glassmorphism design system ("Donjon").
 
 ## STRUCTURE
 
@@ -17,30 +17,30 @@ curve_ai_solutions_app/
 ├── components/             # React components (see AGENTS.md there)
 │   ├── ui/                 # Shadcn/ui primitives
 │   ├── admin/              # Admin dashboard components
-│   └── donjon/             # NEW: Glassmorphism design system
+│   └── donjon/             # Glassmorphism design system
 ├── lib/                    # Core utilities (see AGENTS.md there)
-├── providers/              # React context providers (Stack Auth)
-├── stack/                  # Stack Auth client/server init
+├── providers/              # React context providers (Supabase Auth)
 ├── alfie-agent/            # AI agent documentation/PDFs
 ├── prompts/                # AI prompt templates (JSON)
 ├── n8n-workflows/          # N8N workflow exports
-└── supabase/               # DB migrations (legacy naming)
+└── supabase/               # DB migrations
 ```
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Auth flow | `lib/stack-auth-*.ts`, `providers/stack-auth-provider.tsx` | NOT Supabase despite CLAUDE.md |
-| Database ops | `lib/db*.ts` | Neon PostgreSQL, not Supabase |
+| Auth flow | `lib/supabase-*.ts`, `providers/supabase-auth-provider.tsx` | Supabase Auth |
+| Database ops | `lib/db*.ts` | Neon PostgreSQL for business data |
 | Server actions | `app/actions/` | Heavy files - see subdir AGENTS.md |
 | Design system | `components/donjon/`, `app/globals.css` | Glass effects, sky-400 accents |
-| Admin routes | `app/admin/` | Uses Stack Auth permissions |
-| Landing page | `app/page.tsx` | Recently redesigned |
+| Admin routes | `app/admin/` | Uses Supabase profiles.role + email allowlist |
+| Landing page | `app/page.tsx` | Donjon themed |
+| Login/Signup | `app/login/`, `app/signup/` | Donjon themed, Supabase Auth |
 
 ## CONVENTIONS
 
-**Auth**: Stack Auth (not Supabase). Check `isUserAdmin()` via permissions, not roles. Configure 'admin' permission in Stack dashboard.
+**Auth**: Supabase Auth. Admin access via `profiles.role = 'admin'` OR `ADMIN_EMAIL_ALLOWLIST` env var.
 
 **Database**: Neon PostgreSQL via `DATABASE_URL`. Server actions use `sql` from `lib/db.ts`. No ORM.
 
@@ -57,7 +57,6 @@ curve_ai_solutions_app/
 
 ## ANTI-PATTERNS (THIS PROJECT)
 
-- **NEVER** use Supabase auth functions - they throw/redirect to Stack Auth
 - **NEVER** import from deprecated files: `middleware-old-UNSAFE.ts`, `*-old.ts`
 - **NEVER** suppress build errors with `ignoreBuildErrors` (currently set - technical debt)
 - **AVOID** adding to 500+ line files - refactor first (see complexity hotspots below)
@@ -74,7 +73,6 @@ Files >500 lines needing refactoring:
 
 | File | Status | Notes |
 |------|--------|-------|
-| `lib/supabase-*.ts` | Deprecated | Throws errors, redirects to Stack |
 | `middleware-old-UNSAFE.ts` | Remove | Security risk |
 | `middleware-broken.ts.bak` | Remove | Backup artifact |
 | `*-old.ts`, `*-old-backup.tsx` | Remove | Version control through files |
@@ -93,5 +91,4 @@ pnpm start        # Production server
 - **No tests**: Zero test framework/coverage. RLS test panel is UI component, not automated tests.
 - **Build errors suppressed**: `next.config.mjs` has `ignoreBuildErrors: true` - hides real issues.
 - **Middleware gap**: Current middleware doesn't protect admin routes - security concern.
-- **Doc drift**: CLAUDE.md says Supabase Auth but code uses Stack Auth. Trust code.
 - **Design transition**: Site migrating to Donjon dark theme. Secondary pages still have old styling.

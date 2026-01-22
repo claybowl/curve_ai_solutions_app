@@ -1,19 +1,18 @@
 "use server"
 
 /**
- * Auth actions for Stack Auth authentication
- * Main authentication is handled through Stack Auth SDK
+ * Auth actions for Supabase authentication
+ * Main authentication is handled through Supabase Auth SDK
  */
 
 import { redirect } from "next/navigation"
-import { getCurrentUserServer, isAuthenticated } from "@/lib/stack-auth-server"
-import { signOut as stackSignOut } from "@/lib/stack-auth-client"
+import { getCurrentUserServer, isAuthenticated } from "@/lib/supabase-server"
 
 /**
  * Server action to sign out user
  */
 export async function signOutAction() {
-  // Stack Auth handles sign out on client side via the provider
+  // Supabase handles sign out on client side via the provider
   // Server action redirects after client-side sign out
   redirect('/login')
 }

@@ -1,55 +1,148 @@
 "use client"
 
 /**
- * DEPRECATED: This project uses Stack Auth for authentication and Neon PostgreSQL for database.
- * This file exists only for backward compatibility with legacy imports.
+ * Supabase Client Configuration
  * 
- * Please migrate to:
- * - Stack Auth: import from '@/lib/stack-auth-client' or '@/stack/client'
- * - Database: import from '@/lib/db.ts' (Neon PostgreSQL)
+ * This file initializes Supabase for client-side operations.
  */
 
-// Create a minimal mock that won't break during build
-const mockClient = {
-  auth: {
-    getUser: async () => ({ data: { user: null }, error: null }),
-    getSession: async () => ({ data: { session: null }, error: null }),
-    signInWithPassword: async () => ({ data: null, error: { message: 'Use Stack Auth instead' } }),
-    signOut: async () => ({ error: null }),
+import { createBrowserClient } from '@supabase/ssr'
+
+// Create a singleton Supabase client for client-side usage
+let supabaseClient: ReturnType<typeof createBrowserClient> | null = null
+
+export function createClient() {
+  if (supabaseClient) {
+    return supabaseClient
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'
+    )
+  }
+
+  supabaseClient = createBrowserClient(supabaseUrl, supabaseAnonKey)
+  return supabaseClient
+}
+
+// Legacy export for backward compatibility
+export const supabase = {
+  get auth() {
+    return createClient().auth
   },
-  from: () => ({
-    select: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
-    insert: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
-    update: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
-    delete: () => ({ data: null, error: { message: 'Use Neon PostgreSQL instead' } }),
-  }),
-  channel: () => ({
-    on: () => ({ subscribe: () => {} }),
-    subscribe: () => {},
-  }),
+  from(table: string) {
+    return createClient().from(table)
+  },
+  channel(name: string) {
+    return createClient().channel(name)
+  },
 }
 
-export const supabase = mockClient as any
-
+/**
+ * Get current user from Supabase Auth
+ */
 export async function getCurrentUser() {
-  const { getCurrentUserClient } = await import('@/lib/stack-auth-client')
-  return getCurrentUserClient()
+  const client = createClient()
+  const { data: { user }, error } = await client.auth.getUser()
+  if (error) {
+    console.error('Error getting current user:', error)
+    return null
+  }
+  return user
 }
 
-export async function updateUserMetadata(updates: Record<string, any>) {
-  throw new Error('Supabase is not used. Please use Stack Auth user management APIs instead.')
-}
-
+/**
+ * Sign in with email and password
+ */
 export async function signInWithEmail(email: string, password: string) {
-  const { signInWithEmail: stackSignIn } = await import('@/lib/stack-auth-client')
-  return stackSignIn(email, password)
+  const client = createClient()
+  const { data, error } = await client.auth.signInWithPassword({
+    email,
+    password,
+  })
+  
+  if (error) {
+    throw new Error(error.message)
+  }
+  
+  return data
 }
 
+/**
+ * Sign up with email and password
+ */
 export async function signUpWithEmail(
   email: string,
   password: string,
-  metadata: Record<string, any> = {}
+  metadata: { displayName?: string; firstName?: string; lastName?: string } = {}
 ) {
-  const { signUpWithEmail: stackSignUp } = await import('@/lib/stack-auth-client')
-  return stackSignUp(email, password, metadata.displayName)
+  const client = createClient()
+  const { data, error } = await client.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: metadata.displayName,
+        first_name: metadata.firstName,
+        last_name: metadata.lastName,
+      },
+    },
+  })
+  
+  if (error) {
+    throw new Error(error.message)
+  }
+  
+  return data
+}
+
+/**
+ * Sign out current user
+ */
+export async function signOut() {
+  const client = createClient()
+  const { error } = await client.auth.signOut()
+  
+  if (error) {
+    throw new Error(error.message)
+  }
+}
+
+/**
+ * Sign in with OAuth provider
+ */
+export async function signInWithOAuth(provider: 'google' | 'github') {
+  const client = createClient()
+  const { data, error } = await client.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  })
+  
+  if (error) {
+    throw new Error(error.message)
+  }
+  
+  return data
+}
+
+/**
+ * Update user metadata
+ */
+export async function updateUserMetadata(updates: Record<string, unknown>) {
+  const client = createClient()
+  const { data, error } = await client.auth.updateUser({
+    data: updates,
+  })
+  
+  if (error) {
+    throw new Error(error.message)
+  }
+  
+  return data
 }

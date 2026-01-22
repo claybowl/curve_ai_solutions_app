@@ -17,7 +17,7 @@ import {
   LogOut,
   Menu,
 } from "lucide-react"
-import { useAuth } from "@/providers/stack-auth-provider"
+import { useAuth } from "@/providers/supabase-auth-provider"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 

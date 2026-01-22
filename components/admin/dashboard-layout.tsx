@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { useAuth } from "@/providers/stack-auth-provider"
+import { useAuth } from "@/providers/supabase-auth-provider"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -29,7 +29,7 @@ const DashboardLayout = ({
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    // Check admin status from Stack Auth user permissions
+    // Check admin status from Supabase user
     if (authLoading) {
       return // Still loading
     }
@@ -39,8 +39,18 @@ const DashboardLayout = ({
       return
     }
 
-    const permissions = (user as any).permissions || []
-    const adminStatus = Array.isArray(permissions) && permissions.includes('admin')
+    // Check email allowlist
+    const allowlistedEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+
+    const userEmail = user.email?.toLowerCase() || ""
+    const isAllowlisted = userEmail && allowlistedEmails.includes(userEmail)
+    
+    // Check user metadata for admin role
+    const userRole = user.user_metadata?.role
+    const adminStatus = isAllowlisted || userRole === "admin"
     setIsAdmin(adminStatus)
     
     if (!adminStatus) {

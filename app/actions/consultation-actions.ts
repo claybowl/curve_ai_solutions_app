@@ -13,7 +13,7 @@
  * All functions with database queries will return empty arrays/errors until database is configured.
  */
 
-import { getCurrentUserServer, isUserAdmin } from "@/lib/stack-auth-server"
+import { getCurrentUserServer, isUserAdmin } from "@/lib/supabase-server"
 // TODO: Import business database client when implemented
 // import { getBusinessDatabaseClient } from "@/lib/db-business"
 import { revalidatePath } from "next/cache"

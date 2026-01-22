@@ -10,9 +10,9 @@ Server actions for all business operations. Pattern: `"use server"` + Zod valida
 | AI Tools | `tool-actions.ts` | **801 lines** - CRUD, categories, usage tracking |
 | Prompt Library | `prompt-actions.ts` | **690 lines** - prompts, collections, tags |
 | Consultations | `consultation-actions.ts` | **648 lines** - requests, scheduling, status |
-| User Management | `user-actions.ts` | **547 lines** - profiles, roles via Stack Auth Admin |
+| User Management | `user-actions.ts` | **547 lines** - profiles, roles |
 | N8N Workflows | `workflow-actions.ts` | Workflow orchestration, executions |
-| Authentication | `auth-actions.ts` | Sign out, auth checks (42 lines - simple) |
+| Authentication | `auth-actions.ts` | Sign out, auth checks (simple) |
 | Dashboard Stats | `stats-actions.ts` | Admin metrics, charts data |
 | Permissions | `permission-actions.ts` | RBAC roles, permission checks |
 | Contact Forms | `contact-actions.ts` | Contact messages, email notifications |
@@ -22,9 +22,9 @@ Server actions for all business operations. Pattern: `"use server"` + Zod valida
 
 ## CONVENTIONS
 
-**Auth Patterns** (inconsistent - migration in progress):
-- Stack Auth: `getCurrentUserServer()`, `requireAdmin()`, `isUserAdmin()` from `@/lib/stack-auth-server`
-- Legacy Supabase: `getCurrentSupabaseUser()` from `@/lib/db-v2` - **avoid in new code**
+**Auth Patterns**:
+- Supabase Auth: `getCurrentUserServer()`, `requireAdmin()`, `isUserAdmin()` from `@/lib/supabase-server`
+- Legacy: `getCurrentSupabaseUser()` from `@/lib/db-v2` - **avoid in new code**
 
 **Zod Validation**: Define schema at top, validate in action body before DB ops.
 
@@ -46,7 +46,5 @@ Files needing refactoring (>500 lines):
 
 ## ANTI-PATTERNS
 
-- **NEVER import** from `*-old.ts` files (deprecated, use Supabase auth)
-- **NEVER import** from `lib/supabase-*` in new actions (migrating to Stack Auth)
-- **AVOID** mixing Stack Auth and Supabase auth in same action
+- **NEVER import** from `*-old.ts` files (deprecated)
 - **AVOID** `redirect()` in try/catch - it throws and gets caught as error

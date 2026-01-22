@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { MainNavWrapper } from "@/components/main-nav-wrapper"
 import { ChatButton } from "@/components/chat-button"
 import { Footer } from "@/components/footer"
-import { StackAuthProvider } from "@/providers/stack-auth-provider"
+import { SupabaseAuthProvider } from "@/providers/supabase-auth-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { SynapseBackground } from "@/components/donjon/synapse-background"
 
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
       <body className={`${outfit.variable} ${firaCode.variable} font-sans bg-[#030712] text-slate-50 antialiased overflow-x-hidden`} suppressHydrationWarning>
-        <StackAuthProvider>
+        <SupabaseAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <SynapseBackground />
             <div className="relative z-10 flex min-h-screen flex-col">
@@ -46,7 +46,7 @@ export default function RootLayout({
             </div>
             <Toaster />
           </ThemeProvider>
-        </StackAuthProvider>
+        </SupabaseAuthProvider>
       </body>
     </html>
   )

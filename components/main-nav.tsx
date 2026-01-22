@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, LogOut, ChevronDown } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { useAuth } from "@/providers/stack-auth-provider"
+import { useAuth } from "@/providers/supabase-auth-provider"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -37,8 +37,9 @@ export function MainNav() {
     }
   }, [pathname])
 
-  // Check admin permission from Stack Auth user
-  const isAdmin = user?.permissions?.includes('admin') || false
+  // Check admin permission from user metadata or email allowlist
+  const isAdmin = user?.user_metadata?.role === 'admin' || 
+    (process.env.NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST || '').split(',').map(e => e.trim().toLowerCase()).includes(user?.email?.toLowerCase() || '')
   const isLoggedIn = !!user
 
   useEffect(() => {
@@ -302,6 +303,15 @@ export function MainNav() {
             ) : (
               <>
                 <Button
+                  variant="outline"
+                  className="border-sky-500/50 text-sky-400 hover:bg-sky-500/10 hover:text-sky-300 transition-all duration-300"
+                  asChild
+                >
+                  <Link href="/login">
+                    Log In
+                  </Link>
+                </Button>
+                <Button
                   className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
                   asChild
                 >
@@ -449,6 +459,16 @@ export function MainNav() {
                 </>
               ) : (
                 <>
+                  <Button
+                    variant="outline"
+                    className="border-sky-500/50 text-sky-400 hover:bg-sky-500/10 hover:text-sky-300 transition-all duration-300"
+                    asChild
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link href="/login">
+                      Log In
+                    </Link>
+                  </Button>
                   <Button
                     className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
                     asChild

@@ -12,9 +12,8 @@ Server-side utilities for database, auth, email, and external integrations.
 | Prompts CRUD | `db-prompts.ts` | Tags, user saves |
 | Permissions/Roles | `db-permissions.ts` | Role-permission matrix, overrides |
 | Admin stats | `db-stats.ts` | Dashboard aggregations |
-| Client auth | `stack-auth-client.ts` | `signInWithEmail()`, OAuth |
-| Server auth | `stack-auth-server.ts` | `isUserAdmin()`, `requireAuth()` |
-| Admin user mgmt | `stack-auth-admin.ts` | CRUD users, permissions |
+| Client auth | `supabase-client.ts` | `signInWithEmail()`, `signUpWithEmail()`, OAuth |
+| Server auth | `supabase-server.ts` | `isUserAdmin()`, `requireAuth()`, `getCurrentUserServer()` |
 | Email notifications | `email.ts` | Resend/SendGrid, HTML templates |
 | N8N integration | `n8n-client.ts` | Webhook triggers, execution status |
 | Prompt files | `prompt-loader.ts` | Load JSON from `/prompts` dir |
@@ -24,7 +23,7 @@ Server-side utilities for database, auth, email, and external integrations.
 ## CONVENTIONS
 
 - **Neon queries**: Use `sql.query(query, params)` - parameterized only
-- **Auth checks**: `isUserAdmin()` checks Stack Auth permissions array
+- **Auth checks**: `isUserAdmin()` checks Supabase profiles.role OR email allowlist
 - **Error handling**: Try-catch in all db functions, log + rethrow
 - **Transactions**: `await sql\`BEGIN\``, `COMMIT`, `ROLLBACK` (db-permissions)
 - **Type imports**: `import type { X } from '@/types/*'` - separate type files
@@ -32,8 +31,6 @@ Server-side utilities for database, auth, email, and external integrations.
 ## ANTI-PATTERNS
 
 **NEVER import from:**
-- `supabase-client.ts` - Mock that redirects to Stack Auth
-- `supabase-server.ts` - Throws errors, use `stack-auth-server.ts`
 - `db-v2.ts` - Deprecated Supabase wrapper
 - `db-tools-v2.ts` - Uses deprecated Supabase client
 - `db-business.ts` - Stub, not implemented
@@ -49,10 +46,10 @@ Server-side utilities for database, auth, email, and external integrations.
 import { sql, executeQuery, getSql } from '@/lib/db'
 
 // Auth (server)
-import { isUserAdmin, requireAuth, requireAdmin } from '@/lib/stack-auth-server'
+import { isUserAdmin, requireAuth, requireAdmin, getCurrentUserServer } from '@/lib/supabase-server'
 
 // Auth (client) 
-import { signInWithEmail, signOut } from '@/lib/stack-auth-client'
+import { signInWithEmail, signOut, signUpWithEmail, signInWithOAuth } from '@/lib/supabase-client'
 
 // Utils
 import { cn } from '@/lib/utils'

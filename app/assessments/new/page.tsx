@@ -1,6 +1,6 @@
 import { getAssessmentQuestions } from "@/app/actions/assessment-actions"
 import { AssessmentForm } from "@/components/assessment-form"
-import { getCurrentUserServer } from "@/lib/stack-auth-server"
+import { getCurrentUserServer } from "@/lib/supabase-server"
 
 // This page can be accessed without login
 export const dynamic = 'force-dynamic'

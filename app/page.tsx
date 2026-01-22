@@ -176,6 +176,10 @@ export default function Home() {
               <Calendar className="h-4 w-4" />
               Schedule Consultation
             </Link>
+            <Link href="/login" className="btn-ghost group border-sky-500/30 hover:border-sky-400/50 hover:bg-sky-500/10">
+              <Shield className="h-4 w-4 text-sky-400" />
+              <span className="text-sky-400">Log In</span>
+            </Link>
           </div>
         </div>
         

@@ -44,6 +44,8 @@
     "@radix-ui/react-tooltip": "1.1.6",
     "@sendgrid/mail": "^8.1.6",
     "@stackframe/js": "^2.8.48",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.91.0",
     "@vercel/oidc": "^3.0.3",
     "ai": "latest",
     "autoprefixer": "^10.4.20",
