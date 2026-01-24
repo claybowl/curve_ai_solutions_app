@@ -62,11 +62,10 @@ export function MainNav() {
 
   const navigation: NavItem[] = [
     { name: "Home", href: "/" },
-    { name: "Solutions", href: "/solutions" },
     { name: "Platforms", href: "/platforms/vibe-native", dropdown: true },
-    { name: "Knowledge Vault", href: "/knowledge-vault", dropdown: true },
-    { name: "Assessments", href: "/assessments" },
-    { name: "Consultation", href: "/consultation" },
+    { name: "Services", href: "/services" },
+    { name: "Consulting", href: "/consulting" },
+    { name: "Labs", href: "/labs" },
     { name: "About", href: "/about" },
   ]
 
@@ -177,76 +176,6 @@ export function MainNav() {
                               )}
                             >
                               ServicePro
-                            </Link>
-                          </div>
-                        </NavigationMenuContent>
-                      </NavigationMenuItem>
-                    </NavigationMenuList>
-                  </NavigationMenu>
-                </div>
-              )
-            }
-            if (item.name === "Knowledge Vault") {
-              return (
-                <div key={item.name} className="relative">
-                  <NavigationMenu>
-                    <NavigationMenuList>
-                      <NavigationMenuItem>
-                        <NavigationMenuTrigger
-                          className={cn(
-                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
-                            mounted && ((pathname || currentPath).includes("/knowledge-vault") || (pathname || currentPath) === "/roi-calculator" || (pathname || currentPath) === "/solutions/prompts")
-                              ? "text-sky-400"
-                              : "text-slate-400 hover:text-sky-400"
-                          )}
-                        >
-                          Knowledge Vault
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="w-[240px] p-2 glass-panel rounded-lg shadow-xl">
-                            <Link
-                              href="/knowledge-vault"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/knowledge-vault"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              Home
-                            </Link>
-                            <Link
-                              href="/knowledge-vault/documentation"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/knowledge-vault/documentation"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              Documentation
-                            </Link>
-                            <Link
-                              href="/solutions/prompts"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/solutions/prompts"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              Prompts
-                            </Link>
-                            <Link
-                              href="/roi-calculator"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/roi-calculator"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              ROI Calculator
                             </Link>
                           </div>
                         </NavigationMenuContent>
@@ -381,61 +310,6 @@ export function MainNav() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       ServicePro
-                    </Link>
-                  </div>
-                )
-              }
-              if (item.name === "Knowledge Vault") {
-                return (
-                  <div key={item.name} className="flex flex-col gap-2">
-                    <div className="text-sm font-semibold text-slate-500">Knowledge Vault</div>
-                    <Link
-                      href="/knowledge-vault"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/knowledge-vault"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      href="/knowledge-vault/documentation"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/knowledge-vault/documentation"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Documentation
-                    </Link>
-                    <Link
-                      href="/solutions/prompts"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/solutions/prompts"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Prompts
-                    </Link>
-                    <Link
-                      href="/roi-calculator"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/roi-calculator"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      ROI Calculator
                     </Link>
                   </div>
                 )
