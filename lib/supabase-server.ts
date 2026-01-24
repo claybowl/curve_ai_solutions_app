@@ -95,7 +95,7 @@ export async function getUserProfile(userId: string) {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('user_id', userId)
+      .eq('id', userId)
       .single()
     
     if (error) {
@@ -118,18 +118,6 @@ export async function verifyAdminRole(): Promise<boolean> {
   try {
     const user = await getCurrentUserServer()
     if (!user) return false
-
-    // Check email allowlist first (emergency access)
-    const allowlistRaw = process.env.ADMIN_EMAIL_ALLOWLIST || ''
-    const allowlistedEmails = allowlistRaw
-      .split(',')
-      .map((email) => email.trim().toLowerCase())
-      .filter(Boolean)
-    
-    const userEmail = user.email?.toLowerCase() || ''
-    if (userEmail && allowlistedEmails.includes(userEmail)) {
-      return true
-    }
 
     // Check profiles.role
     const profile = await getUserProfile(user.id)

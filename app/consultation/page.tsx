@@ -6,7 +6,7 @@ import { Testimonials } from "@/components/testimonials"
 import { CalendlyPromotion } from "@/components/calendly-promotion"
 
 export const metadata = {
-  title: "Consultation | Curve AI Solutions",
+  title: "Consultation | Donjon Intelligence Systems",
   description: "Schedule a consultation with our AI experts to discuss your business needs and solutions.",
 }
 

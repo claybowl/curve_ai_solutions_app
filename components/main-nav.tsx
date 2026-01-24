@@ -17,17 +17,13 @@ import {
 
 export function MainNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [dashboardUrl, setDashboardUrl] = useState("/dashboard")
   const [mounted, setMounted] = useState(false)
   const [currentPath, setCurrentPath] = useState("")
-  const { user, loading, signOut } = useAuth()
+  const { user, signOut } = useAuth()
 
-  // Router hooks must be called unconditionally (Rules of Hooks)
-  // If they fail, the component will need to be dynamically imported with ssr: false
   const router = useRouter()
   const pathname = usePathname()
 
-  // Ensure component is mounted and sync pathname
   useEffect(() => {
     setMounted(true)
     if (pathname) {
@@ -37,19 +33,7 @@ export function MainNav() {
     }
   }, [pathname])
 
-  // Check admin permission from user metadata or email allowlist
-  const isAdmin = user?.user_metadata?.role === 'admin' || 
-    (process.env.NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST || '').split(',').map(e => e.trim().toLowerCase()).includes(user?.email?.toLowerCase() || '')
   const isLoggedIn = !!user
-
-  useEffect(() => {
-    // Update dashboard URL based on admin status
-    if (isAdmin) {
-      setDashboardUrl("/admin")
-    } else {
-      setDashboardUrl("/dashboard")
-    }
-  }, [isAdmin])
 
   const handleLogout = async () => {
     try {
@@ -69,17 +53,21 @@ export function MainNav() {
     }
   }
 
-  const navigation = [
+  type NavItem = {
+    name: string
+    href: string
+    dropdown?: boolean
+    external?: boolean
+  }
+
+  const navigation: NavItem[] = [
     { name: "Home", href: "/" },
-    { name: "Solutions", href: "/solutions" },
+    { name: "Solutions", href: "/solutions", dropdown: true },
+    { name: "Platforms", href: "/aipex-platform-prototype", dropdown: true },
     { name: "Knowledge Vault", href: "/knowledge-vault", dropdown: true },
     { name: "Assessments", href: "/assessments" },
-    { name: "Prompts", href: "/solutions/prompts" },
-    { name: "AiPex Platform", href: "/aipex-platform-prototype" },
-    { name: "AiGency Workbench", href: "/aigency-platform" },
-    { name: "Knowledge Studio", href: "/donjon-chat" },
-    { name: "About", href: "/about" },
     { name: "Consultation", href: "/consultation" },
+    { name: "About", href: "/about" },
   ]
 
   return (
@@ -187,6 +175,65 @@ export function MainNav() {
                 </div>
               )
             }
+            if (item.name === "Platforms") {
+              return (
+                <div key={item.name} className="relative">
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger
+                          className={cn(
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
+                            mounted && ((pathname || currentPath).includes("/aipex") || (pathname || currentPath).includes("/aigency") || (pathname || currentPath).includes("/donjon-chat"))
+                              ? "text-sky-400"
+                              : "text-slate-400 hover:text-sky-400"
+                          )}
+                        >
+                          Platforms
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <div className="w-[220px] p-2 glass-panel rounded-lg shadow-xl">
+                            <Link
+                              href="/aipex-platform-prototype"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/aipex-platform-prototype"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
+                              )}
+                            >
+                              AiPex Platform
+                            </Link>
+                            <Link
+                              href="/aigency-platform"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/aigency-platform"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
+                              )}
+                            >
+                              AiGency Workbench
+                            </Link>
+                            <Link
+                              href="/donjon-chat"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/donjon-chat"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
+                              )}
+                            >
+                              Knowledge Studio
+                            </Link>
+                          </div>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </div>
+              )
+            }
             if (item.name === "Knowledge Vault") {
               return (
                 <div key={item.name} className="relative">
@@ -196,7 +243,7 @@ export function MainNav() {
                         <NavigationMenuTrigger
                           className={cn(
                             "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
-                            mounted && (pathname || currentPath).includes("/knowledge-vault")
+                            mounted && ((pathname || currentPath).includes("/knowledge-vault") || (pathname || currentPath) === "/roi-calculator" || (pathname || currentPath) === "/solutions/prompts")
                               ? "text-sky-400"
                               : "text-slate-400 hover:text-sky-400"
                           )}
@@ -226,6 +273,17 @@ export function MainNav() {
                               )}
                             >
                               Documentation
+                            </Link>
+                            <Link
+                              href="/solutions/prompts"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/solutions/prompts"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
+                              )}
+                            >
+                              Prompts
                             </Link>
                             <Link
                               href="/roi-calculator"
@@ -289,7 +347,7 @@ export function MainNav() {
             {isLoggedIn ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href={dashboardUrl}>Dashboard</Link>
+                  <Link href="/dashboard">Dashboard</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -311,16 +369,16 @@ export function MainNav() {
                     Log In
                   </Link>
                 </Button>
-                <Button
-                  className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
-                  asChild
-                >
-                  <Link href="/consultation">
-                    Schedule Consultation
-                  </Link>
-                </Button>
               </>
             )}
+            <Button
+              className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
+              asChild
+            >
+              <Link href="/consultation">
+                Schedule Consultation
+              </Link>
+            </Button>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -363,6 +421,49 @@ export function MainNav() {
                   </div>
                 )
               }
+              if (item.name === "Platforms") {
+                return (
+                  <div key={item.name} className="flex flex-col gap-2">
+                    <div className="text-sm font-semibold text-slate-500">Platforms</div>
+                    <Link
+                      href="/aipex-platform-prototype"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/aipex-platform-prototype"
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      AiPex Platform
+                    </Link>
+                    <Link
+                      href="/aigency-platform"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/aigency-platform"
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      AiGency Workbench
+                    </Link>
+                    <Link
+                      href="/donjon-chat"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/donjon-chat"
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Knowledge Studio
+                    </Link>
+                  </div>
+                )
+              }
               if (item.name === "Knowledge Vault") {
                 return (
                   <div key={item.name} className="flex flex-col gap-2">
@@ -390,6 +491,18 @@ export function MainNav() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Documentation
+                    </Link>
+                    <Link
+                      href="/solutions/prompts"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/solutions/prompts"
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Prompts
                     </Link>
                     <Link
                       href="/roi-calculator"
@@ -447,7 +560,7 @@ export function MainNav() {
               {isLoggedIn ? (
                 <>
                   <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
-                    <Link href={dashboardUrl}>Dashboard</Link>
+                    <Link href="/dashboard">Dashboard</Link>
                   </Button>
                   <Button
                     className="text-red-600 border-red-900 hover:bg-red-950 hover:text-red-700"
@@ -458,28 +571,26 @@ export function MainNav() {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Button
-                    variant="outline"
-                    className="border-sky-500/50 text-sky-400 hover:bg-sky-500/10 hover:text-sky-300 transition-all duration-300"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link href="/login">
-                      Log In
-                    </Link>
-                  </Button>
-                  <Button
-                    className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
-                    asChild
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Link href="/consultation">
-                      Schedule Consultation
-                    </Link>
-                  </Button>
-                </>
+                <Button
+                  variant="outline"
+                  className="border-sky-500/50 text-sky-400 hover:bg-sky-500/10 hover:text-sky-300 transition-all duration-300"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link href="/login">
+                    Log In
+                  </Link>
+                </Button>
               )}
+              <Button
+                className="bg-sky-500 hover:bg-sky-400 text-black font-bold transition-all duration-300"
+                asChild
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Link href="/consultation">
+                  Schedule Consultation
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

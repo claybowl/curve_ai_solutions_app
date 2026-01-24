@@ -41,81 +41,32 @@ import {
 } from "@/components/donjon/decorative-elements"
 
 const productIcons: Record<string, typeof Rocket> = {
-  "Vibe Native": Sparkles,
   "K8 (Communik8)": MessageSquare,
-  "Know-Defeat": LineChart,
-  "Alfie Business Manager": Brain,
-  "AEGIS v2": Users,
-  "Amazon Listing Enhancer AI": ShoppingCart,
-  "Donjon Intelligence Systems": Building2,
-  "Knowledge Studio": Lightbulb,
-  "AiPex Builder": Workflow,
-  "Taygency": Code2,
+  "ServicePro AI": Rocket,
+  "Vibe Native": Sparkles,
 }
 
 const productCategories: Record<string, string> = {
-  "Vibe Native": "AI Studio",
   "K8 (Communik8)": "Communication",
-  "Know-Defeat": "Trading System",
-  "Alfie Business Manager": "Intelligence",
-  "AEGIS v2": "Agent System",
-  "Amazon Listing Enhancer AI": "E-Commerce",
-  "Donjon Intelligence Systems": "Enterprise",
-  "Knowledge Studio": "Knowledge Graph",
-  "AiPex Builder": "Automation",
-  "Taygency": "Multi-Tenant",
+  "ServicePro AI": "Business Platform",
+  "Vibe Native": "AI Studio",
 }
 
 const featuredProducts = [
-  {
-    name: "Vibe Native",
-    tagline: "Comprehensive AI Studio Suite with 15+ integrated tools",
-    href: "https://vibenative.studio/",
-  },
   {
     name: "K8 (Communik8)",
     tagline: "Privacy-first AI communication bridge with ephemeral sessions",
     href: "https://im-k8.lovable.app/",
   },
   {
-    name: "Know-Defeat",
-    tagline: "Production-grade algorithmic trading system with 19K+ LOC",
-    href: "https://github.com/claybowl/Know-Defeat",
+    name: "ServicePro AI",
+    tagline: "Complete digital transformation for service businesses in 48 hours",
+    href: "/products#servicepro",
   },
   {
-    name: "Alfie Business Manager",
-    tagline: "3D knowledge graph business intelligence platform",
-    href: "https://github.com/claybowl/alfie-business-manager",
-  },
-  {
-    name: "AEGIS v2",
-    tagline: "Multi-agent orchestration with 5 collaboration modes",
+    name: "Vibe Native",
+    tagline: "Comprehensive AI Studio Suite with 15+ integrated tools",
     href: "https://vibenative.studio/",
-  },
-  {
-    name: "Amazon Listing Enhancer AI",
-    tagline: "E-commerce optimization with GPT-4o/DALL-E 3",
-    href: "https://github.com/claybowl/Amazon_Listing_Enhancer_AI",
-  },
-  {
-    name: "Donjon Intelligence Systems",
-    tagline: "Enterprise AI consultation platform",
-    href: "https://github.com/claybowl/curve_ai_solutions_app",
-  },
-  {
-    name: "Knowledge Studio",
-    tagline: "Graph-based RAG system with Zep/Graphiti",
-    href: "https://vibenative.studio/",
-  },
-  {
-    name: "AiPex Builder",
-    tagline: "Visual workflow automation with Gemini-3-Pro",
-    href: "https://vibenative.studio/",
-  },
-  {
-    name: "Taygency",
-    tagline: "Multi-tenant AI agency platform",
-    href: "https://github.com/claybowl/Taygency",
   },
 ]
 
@@ -133,36 +84,36 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 glass-panel px-4 py-2 animate-fade-up">
             <Sparkles className="h-4 w-4 text-sky-400" />
             <span className="fira-label tracking-[0.3em] uppercase text-slate-400">
-              Engineering Resilient Intelligence
+              AI Solutions for Tulsa Businesses
             </span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extralight leading-tight animate-fade-up delay-100 text-white">
-            Where We Keep{" "}
+            Grow Your Business{" "}
             <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-sky-300 to-indigo-400 animate-gradient">
-              Intelligence Secure
+              With AI That Works
             </span>
           </h1>
           
           <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed animate-fade-up delay-200">
-            We build systems that don&apos;t just process information—they{" "}
-            <span className="text-sky-400/80">understand context</span>,{" "}
-            <span className="text-indigo-400/80">learn from experience</span>, and{" "}
-            <span className="text-emerald-400/80">adapt to evolving challenges</span> in real-time.
+            We help small and medium businesses in the Tulsa metro area{" "}
+            <span className="text-sky-400/80">save time</span>,{" "}
+            <span className="text-indigo-400/80">close more deals</span>, and{" "}
+            <span className="text-emerald-400/80">run smoother operations</span> — with AI tools built for how you actually work.
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 pt-4 animate-fade-up delay-300">
             <div className="glass-panel px-4 py-2 flex items-center gap-2 hover:border-emerald-500/30 transition-colors">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs text-slate-300 font-mono">Architecture: Resilient</span>
+              <span className="text-xs text-slate-300 font-mono">48-Hour Setup</span>
             </div>
             <div className="glass-panel px-4 py-2 flex items-center gap-2 hover:border-sky-500/30 transition-colors">
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse animation-delay-1000" />
-              <span className="text-xs text-slate-300 font-mono">Design: Evolutionary</span>
+              <span className="text-xs text-slate-300 font-mono">Local Support</span>
             </div>
             <div className="glass-panel px-4 py-2 flex items-center gap-2 hover:border-indigo-500/30 transition-colors">
               <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse animation-delay-2000" />
-              <span className="text-xs text-slate-300 font-mono">Security: Enterprise-Grade</span>
+              <span className="text-xs text-slate-300 font-mono">Packages from $1,299</span>
             </div>
           </div>
 
@@ -194,23 +145,24 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sky-500/5 to-transparent" />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20">
-                <Calendar className="h-5 w-5 text-sky-400" />
-              </div>
-              <span className="text-sm font-medium text-white">Coming Soon:</span>
-            </div>
             <div className="flex flex-wrap items-center justify-center gap-6">
               <div className="flex items-center gap-2 group">
+                <div className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+                  <Check className="h-4 w-4 text-emerald-400" />
+                </div>
                 <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Customer Site Template</span>
                 <span className="text-xs bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full font-mono border border-emerald-500/20">
-                  LIVE
+                  Available
                 </span>
               </div>
+              <div className="w-px h-6 bg-white/10 hidden md:block" />
               <div className="flex items-center gap-2 group">
+                <div className="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/20">
+                  <Calendar className="h-4 w-4 text-sky-400" />
+                </div>
                 <span className="text-sm text-slate-300 group-hover:text-white transition-colors">New Agent Line-up</span>
                 <span className="text-xs bg-sky-500/20 text-sky-400 px-3 py-1 rounded-full font-mono border border-sky-500/20">
-                  January 2026
+                  Coming Soon
                 </span>
               </div>
             </div>
@@ -419,64 +371,76 @@ export default function Home() {
               <Code2 className="h-6 w-6 text-emerald-400" />
             </div>
           </div>
-          <SectionDivider title="Intelligence Projects" className="mb-16" />
+          <SectionDivider title="What We Can Build" className="mb-4" />
+          <p className="text-center text-slate-400 text-sm mb-12 max-w-2xl mx-auto">
+            Beyond our packaged solutions, we build custom AI systems for unique challenges. Here&apos;s a sample of our capabilities.
+          </p>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <ProjectCard
-              code="0x01_INTEGRATION"
+              code="Integration"
               codeColor="text-sky-400"
-              title="AiGent® System"
-              description="Our proprietary AI orchestration platform with agent crew management and message bus capabilities."
+              title="AI Agent Systems"
+              description="Custom AI assistants that handle customer service, scheduling, and routine tasks automatically."
               tags={[
-                { label: "Orchestration", color: "sky" },
-                { label: "Agents", color: "emerald" },
+                { label: "Automation", color: "sky" },
+                { label: "24/7", color: "emerald" },
               ]}
             />
             <ProjectCard
-              code="0x02_ANALYTICS"
+              code="Analytics"
               codeColor="text-emerald-400"
-              title="Data Visualization Suite"
-              description="Transform complex data into actionable insights with advanced visualization tools."
+              title="Business Dashboards"
+              description="See your sales, operations, and customer data in one place with real-time insights."
               tags={[
                 { label: "Analytics", color: "emerald" },
-                { label: "Insights", color: "sky" },
+                { label: "Reports", color: "sky" },
               ]}
             />
             <ProjectCard
-              code="0x03_PLATFORM"
+              code="Platform"
               codeColor="text-indigo-400"
-              title="AiPex Platform"
-              description="Our AI Platform Exchange connecting businesses with specialized AI solutions and tools."
+              title="Custom Web Apps"
+              description="Customer portals, booking systems, and internal tools tailored to your workflow."
               tags={[
-                { label: "Marketplace", color: "indigo" },
-                { label: "Exchange", color: "violet" },
+                { label: "Web Apps", color: "indigo" },
+                { label: "Portals", color: "violet" },
               ]}
             />
             <ProjectCard
-              code="0x04_AUTOMATION"
+              code="Workflow"
               codeColor="text-violet-400"
-              title="n8n Integration Tools"
-              description="Seamlessly integrate AI capabilities into your n8n workflows."
+              title="Process Automation"
+              description="Connect your existing tools and automate repetitive tasks across your business."
               tags={[
                 { label: "Workflow", color: "violet" },
-                { label: "n8n", color: "amber" },
+                { label: "Integration", color: "amber" },
               ]}
             />
           </div>
 
-          <div className="flex justify-center mt-12 gap-4">
-            <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 group" asChild>
-              <Link href="/solutions">
-                View All Solutions
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-            <Button className="bg-sky-500 hover:bg-sky-400 text-black font-semibold group" asChild>
-              <Link href="/products">
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Buy Now
-              </Link>
-            </Button>
+          <div className="mt-16">
+            <GlassCard className="p-8 text-center">
+              <h3 className="text-2xl font-semibold text-white mb-3">Have a unique challenge?</h3>
+              <p className="text-slate-400 mb-6 max-w-xl mx-auto">
+                We love building custom solutions for problems that don&apos;t fit in a box. Tell us what you&apos;re trying to solve.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button className="bg-sky-500 hover:bg-sky-400 text-black font-semibold group" asChild>
+                  <Link href="/consultation">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Let&apos;s Talk
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 group" asChild>
+                  <Link href="/solutions">
+                    View All Solutions
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
+            </GlassCard>
           </div>
         </div>
       </section>
@@ -496,8 +460,8 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-3">
             {[
               {
-                title: "Donjon Intelligence has magic hands!",
-                subtitle: "Small Business Owner - Client",
+                title: "Thorough and Professional",
+                subtitle: "Service Business Owner",
                 quote: "Wow, Clayton! Really an amazingly thorough outline. I can't wait to see everything implemented as we progress. Thank you for the excellent work and timely update!",
                 author: "Jody Beeson",
                 role: "Founder, Clean Machine Tulsa",
@@ -507,26 +471,28 @@ export default function Home() {
                 rating: 5,
               },
               {
-                title: "5x the Fun in Half the Time",
-                subtitle: "The Metaverse of Shenanigans",
-                quote: "Since integrating Donjon Intelligence's awesome technology into our digital playgrounds, the frequency of spontaneous dance-offs has increased by 500%.",
-                author: "DJ Don Dog",
-                role: "Party Architect & Developer",
-                initials: "DD",
+                title: "Finally, AI That Makes Sense",
+                subtitle: "Local Retail Business",
+                quote: "I was skeptical about AI, but the team explained everything in plain English. Now I have a chatbot handling customer questions 24/7 and it actually sounds like my business.",
+                author: "Coming Soon",
+                role: "Your testimonial here",
+                initials: "?",
                 gradient: "from-violet-500 to-violet-400",
                 avatarGradient: "from-violet-500 to-violet-600",
                 rating: 5,
+                placeholder: true,
               },
               {
-                title: "Simplifying Complexity, One Mind at a Time",
-                subtitle: "Futuristic Space Exploration",
-                quote: "Donjon Intelligence's innovative solutions have been instrumental in streamlining our mission control processes.",
-                author: "Lucy V",
-                role: "Galactic Traveler & Developer",
-                initials: "LV",
+                title: "Saved Us Hours Every Week",
+                subtitle: "Professional Services",
+                quote: "The automation tools they built for our scheduling and follow-ups have given us back 10+ hours a week. That's time we now spend actually serving customers.",
+                author: "Coming Soon",
+                role: "Your testimonial here",
+                initials: "?",
                 gradient: "from-emerald-500 to-emerald-400",
                 avatarGradient: "from-emerald-500 to-emerald-600",
                 rating: 5,
+                placeholder: true,
               },
             ].map((testimonial, i) => (
               <GlassCard key={i} className="overflow-hidden group" hover>
@@ -574,8 +540,8 @@ export default function Home() {
           <div className="grid gap-12 lg:grid-cols-2">
             <div className="space-y-8">
               <p className="text-xl text-slate-300 leading-relaxed">
-                We engineer intelligent, resilient systems that serve as the{" "}
-                <span className="text-sky-400 font-medium">cognitive strongholds</span> of the modern world — integrating knowledge, automation, and reasoning into fortified architectures that stand the test of time.
+                We&apos;re a Tulsa-based team that helps local businesses{" "}
+                <span className="text-sky-400 font-medium">work smarter with AI</span>. No buzzwords, no complexity — just practical tools that save you time and help you grow.
               </p>
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -583,7 +549,7 @@ export default function Home() {
                   Our Philosophy
                 </h3>
                 <p className="text-slate-400">
-                  <span className="text-white font-medium">Above all else show the data.</span> We believe in transparent, data-driven solutions that provide clear insights and measurable results.
+                  <span className="text-white font-medium">Show results, not just promises.</span> We believe in transparent, data-driven solutions where you can see exactly what&apos;s working and why.
                 </p>
               </div>
               <div className="space-y-4">
@@ -592,7 +558,7 @@ export default function Home() {
                   Our Approach
                 </h3>
                 <p className="text-slate-400">
-                  We follow <span className="text-sky-400">Agile methodologies</span> and <span className="text-indigo-400">DevOps practices</span> to ensure rapid, iterative development and continuous improvement of our AI solutions.
+                  We start by understanding your business, then build solutions that fit how you already work. Fast turnaround, ongoing support, and no tech jargon required.
                 </p>
               </div>
             </div>
@@ -600,32 +566,32 @@ export default function Home() {
             <div className="grid gap-4 sm:grid-cols-2">
               {[
                 {
-                  icon: Shield,
+                  icon: Users,
                   iconColor: "text-sky-400",
                   bgColor: "bg-sky-500/10",
-                  title: "Expert Team",
-                  description: "Our team consists of AI specialists, data scientists, and software engineers with decades of combined experience.",
-                },
-                {
-                  icon: Database,
-                  iconColor: "text-indigo-400",
-                  bgColor: "bg-indigo-500/10",
-                  title: "Technology Stack",
-                  description: "We leverage cutting-edge technologies including OpenAI, Google Generative AI, and custom ML models.",
+                  title: "Local Team",
+                  description: "Based in Tulsa, we understand local businesses and provide hands-on support when you need it.",
                 },
                 {
                   icon: Zap,
                   iconColor: "text-emerald-400",
                   bgColor: "bg-emerald-500/10",
-                  title: "Rapid Deployment",
-                  description: "Our Docker-based infrastructure ensures consistent, reliable deployment of AI solutions.",
+                  title: "Fast Setup",
+                  description: "Most solutions are up and running in 48 hours. No months-long implementations.",
+                },
+                {
+                  icon: Shield,
+                  iconColor: "text-indigo-400",
+                  bgColor: "bg-indigo-500/10",
+                  title: "Built to Last",
+                  description: "We use proven, reliable technology so your tools keep working as your business grows.",
                 },
                 {
                   icon: BarChart2,
                   iconColor: "text-violet-400",
                   bgColor: "bg-violet-500/10",
-                  title: "Data-Driven",
-                  description: "We prioritize data visualization and transparency in all our solutions.",
+                  title: "Clear Results",
+                  description: "Track your ROI with dashboards that show exactly how AI is helping your bottom line.",
                 },
               ].map((card, i) => (
                 <GlassCard key={i} className="p-6 group" hover>
@@ -651,7 +617,7 @@ export default function Home() {
               <Heart className="h-6 w-6 text-pink-400" />
             </div>
           </div>
-          <SectionDivider title="Support Our Mission" className="mb-16" />
+          <SectionDivider title="Partner With Us" className="mb-16" />
 
           <GlowBorder color="violet">
             <div className="p-8 md:p-12">
@@ -659,20 +625,20 @@ export default function Home() {
                 <div className="space-y-6">
                   <h2 className="text-3xl font-bold text-white flex items-center gap-3">
                     <Rocket className="h-8 w-8 text-sky-400" />
-                    Support Our Kickstarter
+                    Join Our Growth Journey
                   </h2>
                   <p className="text-slate-300">
-                    Help us bring AI solutions to more businesses by supporting our startup journey
+                    We&apos;re building the future of AI for local businesses. Looking for investors, advisors, and strategic partners who share our vision.
                   </p>
                   <h3 className="text-xl font-semibold text-white flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-amber-400" />
-                    Why Support Us?
+                    Partnership Opportunities
                   </h3>
                   <ul className="space-y-3">
                     {[
-                      "Accelerate development of our AI agent infrastructure",
-                      "Help us bring cutting-edge AI solutions to small businesses",
-                      "Be part of our journey from the beginning",
+                      "Investment: Fuel our expansion across the Tulsa metro and beyond",
+                      "Advisory: Share your expertise in AI, business development, or local markets",
+                      "Strategic Partners: Collaborate on solutions for your industry or client base",
                     ].map((text, i) => (
                       <li key={i} className="flex items-start group">
                         <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-sky-500/20 to-violet-500/20 flex items-center justify-center mr-3 mt-0.5 group-hover:from-sky-500/30 group-hover:to-violet-500/30 transition-colors">
@@ -684,13 +650,13 @@ export default function Home() {
                   </ul>
                   <div className="flex flex-wrap gap-4 pt-4">
                     <Button className="bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-black font-semibold group" asChild>
-                      <a href="https://buy.stripe.com/00gcN2ctT5Xw4cE004" target="_blank" rel="noopener noreferrer">
-                        <Heart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                        Donate Now
-                      </a>
+                      <Link href="/consultation">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Start a Conversation
+                      </Link>
                     </Button>
                     <Button variant="outline" className="border-white/10 text-white hover:bg-white/5" asChild>
-                      <Link href="/fundraising">Campaign Details</Link>
+                      <Link href="/fundraising">Learn More</Link>
                     </Button>
                   </div>
                 </div>
@@ -702,25 +668,25 @@ export default function Home() {
                         <div className="relative glass-panel p-4 rounded-xl">
                           <div className="flex items-center justify-center gap-2 mb-3">
                             <QrCode className="h-5 w-5 text-sky-400" />
-                            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Scan to Donate</span>
+                            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Early Supporter</span>
                           </div>
                           <img 
                             src="/images/supporter-qr-code.png" 
-                            alt="Donation QR Code" 
+                            alt="Supporter QR Code" 
                             className="w-48 h-48 object-contain mx-auto rounded-lg" 
                           />
                         </div>
                       </div>
-                      <p className="text-white text-center text-lg mt-4 font-medium">Scan to donate</p>
+                      <p className="text-white text-center text-lg mt-4 font-medium">Become an early supporter</p>
                       <p className="text-slate-400 text-center text-sm mt-1">
-                        Or visit:{" "}
+                        Contribute:{" "}
                         <a
                           href="https://buy.stripe.com/00gcN2ctT5Xw4cE004"
                           className="text-sky-400 hover:text-sky-300 underline transition-colors"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          buy.stripe.com
+                          Support our mission
                         </a>
                       </p>
                     </div>

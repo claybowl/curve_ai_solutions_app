@@ -1,30 +1,54 @@
 /**
- * Next.js Middleware for Stack Auth
+ * Next.js Middleware for Supabase Auth
  * 
- * Handles authentication redirects using Stack Auth.
+ * Protects authenticated routes.
  */
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { stackServerApp } from '@/stack/server'
+import { createServerClient } from '@supabase/ssr'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
-  // Handle auth callback routes
-  if (path.startsWith('/auth/callback')) {
-    // Stack Auth handles OAuth/magic link callbacks automatically
-    // The callback route handler will process the token
+  if (!path.startsWith('/dashboard')) {
     return NextResponse.next()
   }
 
-  return NextResponse.next()
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.next()
+  }
+
+  let response = NextResponse.next()
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options)
+        )
+      },
+    },
+  })
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    const redirectUrl = new URL('/login', request.url)
+    redirectUrl.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  return response
 }
 
 // Configure middleware matcher
 export const config = {
-  matcher: [
-    '/auth/callback/:path*',
-  ],
+  matcher: ['/dashboard/:path*'],
 }
-

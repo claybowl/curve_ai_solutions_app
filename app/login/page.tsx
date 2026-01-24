@@ -18,7 +18,7 @@ import { GlassCard } from '@/components/donjon/glass-card'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams?.get('callbackUrl') || '/dashboard'
+  const callbackUrl = searchParams?.get('callbackUrl')
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +32,7 @@ export default function LoginPage() {
 
     try {
       await signInWithEmail(email, password)
-      window.location.href = callbackUrl
+      window.location.href = callbackUrl || '/dashboard'
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign in'
       setError(errorMessage)

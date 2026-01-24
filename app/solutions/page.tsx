@@ -153,7 +153,7 @@ const projectHighlights: ProjectHighlight[] = [
   },
   {
     name: "Curve AiGency Knowledge Studio",
-    tagline: "Knowledge studio for Curve AI with graph-based context",
+    tagline: "Knowledge studio with graph-based context management",
     href: "https://github.com/claybowl/Curve-AiGency-Knowledge-Studio",
     type: "Product",
     cta: "View Product",
