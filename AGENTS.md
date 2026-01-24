@@ -10,13 +10,13 @@
 
 ```bash
 # Development
-pnpm dev          # Dev server (localhost:3000) - custom dev-server.js with 8GB heap
-pnpm build        # Production build (NOTE: build errors suppressed - see KNOWN ISSUES)
-pnpm start        # Production server
-pnpm lint         # ESLint (NOTE: lint errors suppressed during builds)
+npm run dev        # Dev server (localhost:3000) - custom dev-server.js with 8GB heap
+npm run build      # Production build (NOTE: build errors suppressed - see KNOWN ISSUES)
+npm run start      # Production server
+npm run lint       # ESLint (NOTE: lint errors suppressed during builds)
 
 # Utilities
-pnpm sync-stripe  # Sync Stripe products (scripts/sync-stripe-products.js)
+npm run sync-stripe  # Sync Stripe products (scripts/sync-stripe-products.js)
 ```
 
 **Testing:** No test framework configured. Zero automated tests.
