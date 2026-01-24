@@ -62,8 +62,8 @@ export function MainNav() {
 
   const navigation: NavItem[] = [
     { name: "Home", href: "/" },
-    { name: "Solutions", href: "/solutions", dropdown: true },
-    { name: "Platforms", href: "/aipex-platform-prototype", dropdown: true },
+    { name: "Solutions", href: "/solutions" },
+    { name: "Platforms", href: "/platforms/vibe-native", dropdown: true },
     { name: "Knowledge Vault", href: "/knowledge-vault", dropdown: true },
     { name: "Assessments", href: "/assessments" },
     { name: "Consultation", href: "/consultation" },
@@ -127,54 +127,6 @@ export function MainNav() {
         </Link>
         <nav className="ml-auto hidden md:flex gap-6 items-center">
           {navigation.map((item) => {
-            if (item.name === "Solutions") {
-              return (
-                <div key={item.name} className="relative">
-                  <NavigationMenu>
-                    <NavigationMenuList>
-                      <NavigationMenuItem>
-                        <NavigationMenuTrigger
-                          className={cn(
-                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
-                            mounted && ((pathname || currentPath) === "/solutions" || (pathname || currentPath) === "/products")
-                              ? "text-sky-400"
-                              : "text-slate-400 hover:text-sky-400"
-                          )}
-                        >
-                          Solutions
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="w-[200px] p-2 glass-panel rounded-lg shadow-xl">
-                            <Link
-                              href="/solutions"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/solutions"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              Solutions
-                            </Link>
-                            <Link
-                              href="/products"
-                              className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/products"
-                                  ? "bg-sky-500/20 text-sky-400 font-medium"
-                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
-                              )}
-                            >
-                              Products
-                            </Link>
-                          </div>
-                        </NavigationMenuContent>
-                      </NavigationMenuItem>
-                    </NavigationMenuList>
-                  </NavigationMenu>
-                </div>
-              )
-            }
             if (item.name === "Platforms") {
               return (
                 <div key={item.name} className="relative">
@@ -184,7 +136,7 @@ export function MainNav() {
                         <NavigationMenuTrigger
                           className={cn(
                             "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
-                            mounted && ((pathname || currentPath).includes("/aipex") || (pathname || currentPath).includes("/aigency") || (pathname || currentPath).includes("/donjon-chat"))
+                            mounted && ((pathname || currentPath).includes("/platforms"))
                               ? "text-sky-400"
                               : "text-slate-400 hover:text-sky-400"
                           )}
@@ -194,37 +146,37 @@ export function MainNav() {
                         <NavigationMenuContent>
                           <div className="w-[220px] p-2 glass-panel rounded-lg shadow-xl">
                             <Link
-                              href="/aipex-platform-prototype"
+                              href="/platforms/vibe-native"
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/aipex-platform-prototype"
+                                (pathname || currentPath) === "/platforms/vibe-native"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
-                              AiPex Platform
+                              Vibe Native
                             </Link>
                             <Link
-                              href="/aigency-platform"
+                              href="/platforms/im-k8"
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/aigency-platform"
+                                (pathname || currentPath) === "/platforms/im-k8"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
-                              AiGency Workbench
+                              I'm K8
                             </Link>
                             <Link
-                              href="/donjon-chat"
+                              href="/platforms/servicepro"
                               className={cn(
                                 "block px-4 py-2 rounded-md text-sm transition-colors",
-                                (pathname || currentPath) === "/donjon-chat"
+                                (pathname || currentPath) === "/platforms/servicepro"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
                               )}
                             >
-                              Knowledge Studio
+                              ServicePro
                             </Link>
                           </div>
                         </NavigationMenuContent>
@@ -390,76 +342,45 @@ export function MainNav() {
         <div className="md:hidden">
           <div className="container py-4 px-4 sm:px-6 flex flex-col gap-4 glass-panel border-t border-white/5">
             {navigation.map((item) => {
-              if (item.name === "Solutions") {
-                return (
-                  <div key={item.name} className="flex flex-col gap-2">
-                    <div className="text-sm font-semibold text-slate-500">Solutions</div>
-                    <Link
-                      href="/solutions"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/solutions"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Solutions
-                    </Link>
-                    <Link
-                      href="/products"
-                      className={cn(
-                        "text-sm font-medium transition-colors pl-4",
-                        pathname === "/products"
-                          ? "text-sky-400"
-                          : "text-slate-400 hover:text-sky-400",
-                      )}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Products
-                    </Link>
-                  </div>
-                )
-              }
               if (item.name === "Platforms") {
                 return (
                   <div key={item.name} className="flex flex-col gap-2">
                     <div className="text-sm font-semibold text-slate-500">Platforms</div>
                     <Link
-                      href="/aipex-platform-prototype"
+                      href="/platforms/vibe-native"
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
-                        pathname === "/aipex-platform-prototype"
+                        pathname === "/platforms/vibe-native"
                           ? "text-sky-400"
                           : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      AiPex Platform
+                      Vibe Native
                     </Link>
                     <Link
-                      href="/aigency-platform"
+                      href="/platforms/im-k8"
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
-                        pathname === "/aigency-platform"
+                        pathname === "/platforms/im-k8"
                           ? "text-sky-400"
                           : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      AiGency Workbench
+                      I'm K8
                     </Link>
                     <Link
-                      href="/donjon-chat"
+                      href="/platforms/servicepro"
                       className={cn(
                         "text-sm font-medium transition-colors pl-4",
-                        pathname === "/donjon-chat"
+                        pathname === "/platforms/servicepro"
                           ? "text-sky-400"
                           : "text-slate-400 hover:text-sky-400",
                       )}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Knowledge Studio
+                      ServicePro
                     </Link>
                   </div>
                 )
