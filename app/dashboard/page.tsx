@@ -1,232 +1,144 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { supabase } from "@/lib/supabase-client"
+import { redirect } from "next/navigation"
+import { getCurrentUserServer } from "@/lib/supabase-server"
 import {
-  FileText,
-  PlusCircle,
-  BarChart,
-  Bot,
-  LineChart,
-  Database,
-  User,
-  AlertCircle,
-  RefreshCw,
-  LogOut,
-} from "lucide-react"
-import { Loader2 } from "lucide-react"
+  getDashboardOverview,
+  getUserAssessmentData,
+  getFeaturedTools,
+  getRecentToolUsage,
+  getFeaturedPrompts,
+  getUserCollections,
+  getActiveConsultations,
+  getRecentActivity,
+  getNotifications
+} from "@/app/actions/dashboard-actions"
+import { DashboardHero } from "@/components/dashboard/DashboardHero"
+import { AssessmentOverview } from "@/components/dashboard/AssessmentOverview"
+import { ToolsHub } from "@/components/dashboard/ToolsHub"
+import { PromptLibraryAccess } from "@/components/dashboard/PromptLibraryAccess"
+import { ConsultationCenter } from "@/components/dashboard/ConsultationCenter"
+import { LearningInsights } from "@/components/dashboard/LearningInsights"
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed"
 
-export default function DashboardPage() {
-  const [session, setSession] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  useEffect(() => {
-    async function checkSession() {
-      try {
-        const { data, error } = await supabase.auth.getSession()
-        
-        if (error) {
-          console.error("Session error:", error.message)
-          window.location.href = "/login"
-          return
-        }
-        
-        if (data?.session) {
-          setSession(data.session)
-        } else {
-          // No session, redirect to login
-          window.location.href = "/login"
-          return
-        }
-      } catch (err) {
-        console.error("Error checking session:", err)
-        window.location.href = "/login"
-        return
-      } finally {
-        setLoading(false)
-      }
-    }
-    
-    checkSession()
-  }, [])
-
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut()
-      window.location.href = "/"
-    } catch (error) {
-      console.error("Error signing out:", error)
-    }
+export default async function DashboardPage() {
+  const user = await getCurrentUserServer()
+  
+  if (!user) {
+    redirect("/login")
   }
 
-  // Simple loading check - no complex screens
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0076FF]" />
-      </div>
-    )
+  const [
+    overviewResult,
+    assessmentResult,
+    toolsResult,
+    recentToolsResult,
+    promptsResult,
+    collectionsResult,
+    consultationsResult,
+    activityResult,
+    notificationsResult
+  ] = await Promise.all([
+    getDashboardOverview(),
+    getUserAssessmentData(),
+    getFeaturedTools(),
+    getRecentToolUsage(),
+    getFeaturedPrompts(),
+    getUserCollections(),
+    getActiveConsultations(),
+    getRecentActivity(),
+    getNotifications()
+  ])
+
+  const overview = overviewResult.success ? overviewResult.data! : {
+    daysSinceSignup: 0,
+    assessmentsCompleted: 0,
+    toolsExplored: 0,
+    subscriptionStatus: "free",
+    firstName: null,
+    lastName: null
   }
 
-  // If no session, redirect will happen automatically
-  if (!session) {
-    return null
+  const assessmentData = assessmentResult.success ? assessmentResult.data! : {
+    latestAssessment: null,
+    categoryScores: [],
+    assessmentHistory: []
   }
 
-  // User is authenticated, show the dashboard
-  const user = session?.user
+  const featuredTools = toolsResult.success ? toolsResult.data! as any : []
+  const recentTools = recentToolsResult.success ? recentToolsResult.data! : []
+  const featuredPrompts = promptsResult.success ? promptsResult.data! as any : []
+  const collections = collectionsResult.success ? collectionsResult.data! : []
+  const consultations = consultationsResult.success ? consultationsResult.data! : []
+  const activity = activityResult.success ? activityResult.data!.map(event => ({
+    ...event,
+    timestamp: event.createdAt,
+    description: event.description || undefined
+  })) as any : []
+  const notifications = notificationsResult.success ? notificationsResult.data! : []
+
+  const hasAssessments = assessmentData.latestAssessment !== null
+  const overallScore = assessmentData.latestAssessment?.overallScore || 0
+  const improvementAreas = assessmentData.categoryScores
+    .filter(cat => cat.score < 60)
+    .map(cat => cat.categoryName)
 
   return (
-    <div className="container py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-[#1A365D]">Dashboard</h1>
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Log Out
-          </Button>
-          <Button asChild className="bg-[#0076FF] hover:bg-[#0076FF]/90 text-white">
-            <Link href="/assessments/new">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              New Assessment
-            </Link>
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#030712]">
+      <div className="absolute inset-0 ambient-bg opacity-30 pointer-events-none" />
+      
+      <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+        <DashboardHero
+          firstName={overview.firstName}
+          lastName={overview.lastName}
+          daysSinceSignup={overview.daysSinceSignup}
+          assessmentsCompleted={overview.assessmentsCompleted}
+          toolsExplored={overview.toolsExplored}
+          subscriptionStatus={overview.subscriptionStatus}
+          className="mb-8"
+        />
 
-      {/* Welcome card with user info */}
-      <Card className="mb-8 border-2 border-[#0076FF]/20">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 rounded-full bg-[#0076FF] flex items-center justify-center text-white">
-              <User className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">
-                Welcome, {user?.user_metadata?.firstName || user?.name?.split(' ')[0]} {user?.user_metadata?.lastName || user?.name?.split(' ')[1] || ''}
-              </h2>
-              <p className="text-gray-500">{user?.email}</p>
-            </div>
+        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <AssessmentOverview
+              overallScore={overallScore}
+              categoryScores={assessmentData.categoryScores}
+              hasAssessments={hasAssessments}
+              className="mb-8"
+            />
+            
+            <ToolsHub
+              featuredTools={featuredTools}
+              recentUsage={recentTools}
+            />
           </div>
-          <p className="text-gray-600 mb-4">
-            Your personal dashboard gives you quick access to AI readiness assessments, recommended tools, and insights
-            for your business.
-          </p>
+
+          <div className="space-y-8">
+            <ActivityFeed
+              recentActivity={activity}
+              notifications={notifications}
+            />
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <PromptLibraryAccess
+            featuredPrompts={featuredPrompts}
+            collections={collections}
+          />
           
-          {/* Role info handled by admin user management */}
-        </CardContent>
-      </Card>
+          <ConsultationCenter
+            activeConsultations={consultations}
+          />
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Readiness</CardTitle>
-            <CardDescription>Your current AI readiness score</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-center py-4">
-              <div className="w-32 h-32 rounded-full bg-[#0076FF] text-white flex items-center justify-center text-4xl font-bold">
-                75%
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="border-t pt-4">
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/assessments/1/results">
-                <BarChart className="mr-2 h-4 w-4" />
-                View Details
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Assessments</CardTitle>
-            <CardDescription>Your assessment history</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              <li className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <FileText className="mr-2 h-4 w-4 text-[#0076FF]" />
-                  <span>Assessment #1</span>
-                </div>
-                <Link href="/assessments/1/results" className="text-[#0076FF] hover:underline text-sm">
-                  View
-                </Link>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <FileText className="mr-2 h-4 w-4 text-[#0076FF]" />
-                  <span>Assessment #2</span>
-                </div>
-                <Link href="/assessments/2/results" className="text-[#0076FF] hover:underline text-sm">
-                  View
-                </Link>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter className="border-t pt-4">
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/assessments/new">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Start New Assessment
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommended Tools</CardTitle>
-            <CardDescription>AI tools based on your assessment</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <div className="w-8 h-8 rounded bg-[#0076FF]/10 flex items-center justify-center mr-3">
-                  <Bot className="h-4 w-4 text-[#0076FF]" />
-                </div>
-                <div>
-                  <p className="font-medium">AI Agent Builder</p>
-                  <p className="text-sm text-gray-500">Create custom AI agents</p>
-                </div>
-              </li>
-              <li className="flex items-center">
-                <div className="w-8 h-8 rounded bg-[#7928CA]/10 flex items-center justify-center mr-3">
-                  <LineChart className="h-4 w-4 text-[#7928CA]" />
-                </div>
-                <div>
-                  <p className="font-medium">Trading Analytics</p>
-                  <p className="text-sm text-gray-500">Advanced trading metrics</p>
-                </div>
-              </li>
-              <li className="flex items-center">
-                <div className="w-8 h-8 rounded bg-[#FF7F00]/10 flex items-center justify-center mr-3">
-                  <Database className="h-4 w-4 text-[#FF7F00]" />
-                </div>
-                <div>
-                  <p className="font-medium">Data Integration</p>
-                  <p className="text-sm text-gray-500">Connect your data sources</p>
-                </div>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter className="border-t pt-4">
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/solutions">Explore All Tools</Link>
-            </Button>
-          </CardFooter>
-        </Card>
+        <LearningInsights
+          engagementScore={Math.min(
+            (overview.assessmentsCompleted * 30) + 
+            (overview.toolsExplored * 10) + 
+            (consultations.length * 20),
+            100
+          )}
+          improvementAreas={improvementAreas}
+        />
       </div>
     </div>
   )
