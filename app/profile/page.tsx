@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
+import { AlertCircle, CheckCircle, Loader2, MessageSquare } from "lucide-react"
 import { supabase, getCurrentUser, updateUserMetadata } from "@/lib/supabase-client"
+import { ConsultationHistory } from "@/components/profile/consultation-history"
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -206,9 +207,13 @@ export default function ProfilePage() {
       )}
 
       <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="mb-6">
+<TabsList className="mb-6">
           <TabsTrigger value="personal">Personal Information</TabsTrigger>
           <TabsTrigger value="contact">Contact Details</TabsTrigger>
+          <TabsTrigger value="consultations">
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Consultations
+          </TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
         </TabsList>
 
@@ -383,6 +388,18 @@ export default function ProfilePage() {
                 </Button>
               </CardFooter>
             </form>
+          </Card>
+        </TabsContent>
+
+<TabsContent value="consultations">
+          <Card>
+            <CardHeader>
+              <CardTitle>Consultation History</CardTitle>
+              <CardDescription>View your past and upcoming consultations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ConsultationHistory />
+            </CardContent>
           </Card>
         </TabsContent>
 

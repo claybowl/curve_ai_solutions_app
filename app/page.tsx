@@ -161,7 +161,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-slate-50 mb-3">Services</h3>
               <p className="text-slate-400 mb-4">
-                Pre-built n8n templates, a la carte development, and custom enterprise solutions.
+                Pre-built workflow templates, a la carte development, and custom enterprise solutions.
               </p>
               <span className="text-emerald-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
                 View Services <ArrowRight className="h-4 w-4" />

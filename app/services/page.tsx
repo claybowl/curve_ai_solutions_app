@@ -6,27 +6,27 @@ import { CheckCircle2, Workflow, ShoppingCart, Building2, Wrench, Zap, ArrowRigh
 
 export const metadata: Metadata = {
   title: "Services - A La Carte & Custom Solutions | Donjon Systems",
-  description: "Pre-built n8n agent templates, a la carte services, and custom enterprise solutions.",
+  description: "Pre-built Automation Workflow templates, a la carte services, and custom enterprise solutions.",
 }
 
-const n8nTemplates = [
+const workflowTemplates = [
   {
-    name: "Lead Qualification Agent",
+    name: "Lead Qualification Workflow",
     description: "Automatically qualify incoming leads, enrich data, and route to appropriate sales workflows.",
     price: "$299",
     features: ["CRM Integration", "Email Automation", "Lead Scoring", "Slack Notifications"],
   },
   {
-    name: "Customer Support Bot",
-    description: "AI-powered support agent that handles common queries and escalates complex issues.",
+    name: "Customer Support Workflow",
+    description: "Automated support workflow that handles common queries and escalates complex issues.",
     price: "$399",
-    features: ["Ticket Creation", "FAQ Handling", "Sentiment Analysis", "Human Handoff"],
+    features: ["Ticket Creation", "FAQ Handling", "Smart Routing", "Human Handoff"],
   },
   {
     name: "Content Pipeline",
     description: "Automate content creation, scheduling, and distribution across multiple channels.",
     price: "$349",
-    features: ["AI Content Generation", "Social Scheduling", "SEO Optimization", "Analytics Tracking"],
+    features: ["Smart Content Generation", "Social Scheduling", "SEO Optimization", "Analytics Tracking"],
   },
   {
     name: "Data Sync Orchestrator",
@@ -38,7 +38,7 @@ const n8nTemplates = [
 
 const alaCarteServices = [
   {
-    name: "n8n Workflow Development",
+    name: "Automation Workflow Development",
     description: "Custom workflow automation built to your specifications.",
     price: "From $500",
     icon: Workflow,
@@ -100,7 +100,7 @@ export default function ServicesPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center gap-4 mb-8">
             <Workflow className="h-6 w-6 text-sky-400" />
-            <h2 className="text-2xl font-bold text-slate-50">Pre-Built n8n Agent Templates</h2>
+            <h2 className="text-2xl font-bold text-slate-50">Pre-Built Automation Workflows</h2>
             <div className="neon-line flex-1" />
           </div>
           <p className="text-slate-400 mb-8 max-w-2xl">
@@ -108,7 +108,7 @@ export default function ServicesPage() {
             setup documentation, customization guide, and 30 days of support.
           </p>
           <div className="grid md:grid-cols-2 gap-6 mb-16">
-            {n8nTemplates.map((template) => (
+            {workflowTemplates.map((template) => (
               <Card key={template.name} className="glass-panel border-white/10 hover:border-sky-500/30 transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">

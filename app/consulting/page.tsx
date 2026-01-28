@@ -22,8 +22,8 @@ const services = [
   },
   {
     icon: Workflow,
-    title: "AI Workflow Automation",
-    description: "End-to-end automation using n8n, custom AI agents, and intelligent workflow orchestration to streamline business processes and reduce manual overhead.",
+    title: "Workflow Automation",
+    description: "End-to-end automation using custom workflows and intelligent orchestration to streamline business processes and reduce manual overhead.",
   },
   {
     icon: Terminal,
@@ -40,11 +40,11 @@ const services = [
 const skills = [
   {
     category: "Core Technologies",
-    items: ["Next.js 14/15", "TypeScript", "Supabase Auth", "Neon PostgreSQL", "n8n Workflows", "React 18+", "Tailwind CSS", "Zod Validation"],
+    items: ["Next.js 14/15", "TypeScript", "Supabase Auth", "Neon PostgreSQL", "Automation Workflows", "React 18+", "Tailwind CSS", "Zod Validation"],
   },
   {
-    category: "AI & Automation",
-    items: ["AI Agents (OpenAI, Anthropic, XAI)", "Prompt Engineering", "RAG & Vector Embeddings", "Custom LLM Integration", "n8n Orchestration"],
+    category: "Automation",
+    items: ["Workflow Orchestration", "Business Process Automation", "Third-party Integrations", "Smart Routing", "Custom Workflow Development"],
   },
   {
     category: "Backend & Infrastructure",
@@ -87,6 +87,71 @@ export default function ConsultingPage() {
                 asChild
               >
                 <Link href="/contact">Get in Touch</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+            <section className="relative py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-sky-500/5 via-violet-500/5 to-sky-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-500/10 via-transparent to-transparent animate-pulse" style={{ animationDuration: '4s' }} />
+        
+        <div className="container mx-auto max-w-4xl relative z-10">
+          <div className="glass-panel border-sky-500/20 p-8 rounded-2xl text-center hover:border-sky-500/40 transition-all duration-500 group cursor-pointer">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/10 border border-sky-500/30 mb-6 group-hover:bg-sky-500/20 group-hover:border-sky-500/50 transition-all duration-300">
+              <Users className="h-5 w-5 text-sky-400" />
+              <span className="text-sm font-mono text-sky-400 uppercase tracking-wider">Client Portal</span>
+            </div>
+            
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-50 mb-4">
+              Access Your Consultation Hub
+            </h2>
+            
+            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+              View your active consultations, join video sessions, share files, and collaborate with your consultant in real-time.
+            </p>
+            
+            <Button
+              size="lg"
+              className="bg-sky-500 hover:bg-sky-400 text-black font-bold text-lg px-8 py-6 h-auto transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 group-hover:scale-105"
+              asChild
+            >
+              <Link href="/consultation">
+                <span className="flex items-center gap-2">
+                  Open Consultation Hub
+                  <Rocket className="h-5 w-5" />
+                </span>
+              </Link>
+            </Button>
+            
+            <div className="mt-6 flex items-center justify-center gap-6 text-sm text-slate-500">
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                Video Sessions
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                Whiteboard Collaboration
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                Code Sandbox
+              </span>
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <Button
+                variant="ghost"
+                className="text-slate-400 hover:text-sky-400 hover:bg-sky-500/10"
+                asChild
+              >
+                <Link href="/consultation/room/demo">
+                  <span className="flex items-center gap-2">
+                    Try Demo Room
+                    <Rocket className="h-4 w-4" />
+                  </span>
+                </Link>
               </Button>
             </div>
           </div>

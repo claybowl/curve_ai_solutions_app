@@ -87,25 +87,23 @@ export async function requireAuth() {
 }
 
 /**
- * Get user profile from profiles table
- */
+  * Get user profile from profiles table (Neon PostgreSQL)
+  */
 export async function getUserProfile(userId: string) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+    const { sql } = await import('@/lib/db')
+    const result = await sql.query(
+      `SELECT * FROM profiles WHERE user_id = $1`,
+      [userId]
+    )
     
-    if (error) {
-      console.error('Error getting user profile:', error)
+    if (!result || !result.rows || result.rows.length === 0) {
       return null
     }
     
-    return data
+    return result.rows[0]
   } catch (error) {
-    console.error('Error in getUserProfile:', error)
+    console.error('Error getting user profile:', error)
     return null
   }
 }
