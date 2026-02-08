@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "workspace": {
+    "name": "curve_ai_solutions_app",
+    "createdAt": 1770521381882,
+    "preset": "starter"
+  },
+  "authorizedRoots": [
+    "C:\\Users\\clayb\\OneDrive\\Documents\\GitHub\\curve_ai_solutions_app"
+  ]
+}

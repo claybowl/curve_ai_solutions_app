@@ -65,6 +65,7 @@ export function MainNav() {
     { name: "Platforms", href: "/platforms/vibe-native", dropdown: true },
     { name: "Services", href: "/services" },
     { name: "Consulting", href: "/consulting" },
+    { name: "Roadmap", href: "/roadmap" },
     { name: "Labs", href: "/labs" },
     { name: "About", href: "/about" },
   ]

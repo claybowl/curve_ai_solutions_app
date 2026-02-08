@@ -31,6 +31,9 @@ const MIGRATION_ORDER = [
   // 3. Additional migrations (depend on base tables) - Neon-compatible versions
   'supabase/migrations/002_n8n_workflows.sql',
   'supabase/migrations/003_consultation_platform.sql',
+  
+  // 4. Roadmap tables
+  'supabase/migrations/004_roadmap_tables.sql',
 ];
 
 // Tracking table creation SQL
