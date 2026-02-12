@@ -135,8 +135,9 @@ export function MainNav() {
                     <NavigationMenuList>
                       <NavigationMenuItem>
                         <NavigationMenuTrigger
+                          onClick={(e) => e.preventDefault()}
                           className={cn(
-                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400",
+                            "text-sm font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-sky-400 cursor-default",
                             mounted && ((pathname || currentPath).includes("/platforms"))
                               ? "text-sky-400"
                               : "text-slate-400 hover:text-sky-400"
