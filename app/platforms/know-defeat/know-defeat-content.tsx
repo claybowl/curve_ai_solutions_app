@@ -120,7 +120,7 @@ export function KnowDefeatContent() {
             </div>
             <h1 className={styles.title}>Know-Defeat</h1>
             <p className={styles.description}>
-              Probability-driven execution for precision trading. Empower your portfolio with <strong>100+ algorithmic bots</strong>, dynamic fund allocation, and real-time market analysis.
+              A collaboration between <strong>Jordan Pack</strong> and <strong>Clayton Christian</strong>. Probability-driven execution for precision trading. Empower your portfolio with <strong>100+ algorithmic bots</strong>, dynamic fund allocation, and real-time market analysis.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button asChild size="lg" className="bg-[#00d2ff] hover:bg-[#00d2ff]/90 text-black font-bold">
