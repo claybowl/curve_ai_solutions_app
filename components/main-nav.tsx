@@ -144,12 +144,12 @@ export function MainNav() {
                         >
                           Platforms
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="w-[220px] p-2 glass-panel rounded-lg shadow-xl">
+                        <NavigationMenuContent className="w-[200px] sm:w-[220px]">
+                          <div className="p-2 glass-panel rounded-lg shadow-xl">
                             <Link
                               href="/platforms/vibe-native"
                               className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                "block px-3 sm:px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/platforms/vibe-native"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
@@ -160,7 +160,7 @@ export function MainNav() {
                             <Link
                               href="/platforms/im-k8"
                               className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                "block px-3 sm:px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/platforms/im-k8"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
@@ -171,7 +171,7 @@ export function MainNav() {
                             <Link
                               href="/platforms/servicepro"
                               className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                "block px-3 sm:px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/platforms/servicepro"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
@@ -182,7 +182,7 @@ export function MainNav() {
                             <Link
                               href="/platforms/know-defeat"
                               className={cn(
-                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                "block px-3 sm:px-4 py-2 rounded-md text-sm transition-colors",
                                 (pathname || currentPath) === "/platforms/know-defeat"
                                   ? "bg-sky-500/20 text-sky-400 font-medium"
                                   : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
