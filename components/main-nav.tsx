@@ -65,6 +65,7 @@ export function MainNav() {
     { name: "Platforms", href: "/platforms/vibe-native", dropdown: true },
     { name: "Services", href: "/services" },
     { name: "Consulting", href: "/consulting" },
+    { name: "Knowledge Vault", href: "/knowledge-vault" },
     { name: "Roadmap", href: "/roadmap" },
     { name: "Labs", href: "/labs" },
     { name: "About", href: "/about" },
@@ -177,6 +178,17 @@ export function MainNav() {
                               )}
                             >
                               ServicePro
+                            </Link>
+                            <Link
+                              href="/platforms/know-defeat"
+                              className={cn(
+                                "block px-4 py-2 rounded-md text-sm transition-colors",
+                                (pathname || currentPath) === "/platforms/know-defeat"
+                                  ? "bg-sky-500/20 text-sky-400 font-medium"
+                                  : "text-slate-400 hover:bg-white/5 hover:text-sky-400"
+                              )}
+                            >
+                              Know-Defeat
                             </Link>
                           </div>
                         </NavigationMenuContent>
@@ -311,6 +323,18 @@ export function MainNav() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       ServicePro
+                    </Link>
+                    <Link
+                      href="/platforms/know-defeat"
+                      className={cn(
+                        "text-sm font-medium transition-colors pl-4",
+                        pathname === "/platforms/know-defeat"
+                          ? "text-sky-400"
+                          : "text-slate-400 hover:text-sky-400",
+                      )}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Know-Defeat
                     </Link>
                   </div>
                 )

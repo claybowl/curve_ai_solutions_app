@@ -1,85 +1,120 @@
-   ▲ Next.js 15.3.3
-   - Local:        http://localhost:3001
-   - Network:      http://10.255.255.254:3001
-   - Environments: .env.development.local, .env.local
 
- ✓ Starting...
- ✓ Ready in 26.7s
- ○ Compiling / ...
- ✓ Compiled / in 24.1s (1343 modules)
- GET / 200 in 26223ms
- ✓ Compiled in 3.8s (571 modules)
- ✓ Compiled in 2.4s (571 modules)
- ✓ Compiled in 1570ms (571 modules)
- ✓ Compiled in 1619ms (571 modules)
- ✓ Compiled in 1826ms (571 modules)
- ✓ Compiled in 1554ms (571 modules)
- ✓ Compiled in 1611ms (571 modules)
- ✓ Compiled in 1579ms (571 modules)
- ✓ Compiled in 1679ms (571 modules)
- ✓ Compiled in 1525ms (571 modules)
- ✓ Compiled in 1585ms (571 modules)
- ✓ Compiled in 1453ms (571 modules)
- ✓ Compiled in 1447ms (571 modules)
- ✓ Compiled in 1429ms (571 modules)
- ✓ Compiled in 1550ms (571 modules)
- ✓ Compiled in 1526ms (571 modules)
- ✓ Compiled in 1706ms (571 modules)
- ✓ Compiled in 1481ms (571 modules)
- ✓ Compiled in 1642ms (571 modules)
- ✓ Compiled in 1581ms (571 modules)
- ✓ Compiled in 1548ms (571 modules)
- ✓ Compiled in 1604ms (571 modules)
- ✓ Compiled in 1666ms (571 modules)
- ✓ Compiled in 1415ms (571 modules)
- ✓ Compiled in 1547ms (571 modules)
- ✓ Compiled in 1736ms (571 modules)
- ✓ Compiled in 1788ms (571 modules)
- ✓ Compiled in 2.2s (571 modules)
- ✓ Compiled in 1937ms (571 modules)
- ✓ Compiled in 1823ms (571 modules)
- ✓ Compiled in 1884ms (571 modules)
- ✓ Compiled in 1721ms (571 modules)
- ✓ Compiled in 1475ms (571 modules)
- ✓ Compiled in 1653ms (571 modules)
- ✓ Compiled in 1647ms (571 modules)
- ✓ Compiled in 1458ms (571 modules)
- ✓ Compiled in 1643ms (571 modules)
- ✓ Compiled in 1562ms (571 modules)
- ✓ Compiled in 1482ms (571 modules)
- ✓ Compiled in 1505ms (571 modules)
- ✓ Compiled in 1553ms (571 modules)
- ✓ Compiled in 1410ms (571 modules)
- ✓ Compiled in 1596ms (571 modules)
- ✓ Compiled in 1599ms (571 modules)
- ✓ Compiled in 1515ms (571 modules)
- ✓ Compiled in 1554ms (571 modules)
- ✓ Compiled in 1571ms (571 modules)
- ✓ Compiled in 1488ms (571 modules)
- ✓ Compiled in 1505ms (571 modules)
- ✓ Compiled in 1782ms (571 modules)
- ✓ Compiled in 1484ms (571 modules)
- ✓ Compiled in 1573ms (571 modules)
- ✓ Compiled in 1429ms (571 modules)
- ✓ Compiled in 1526ms (571 modules)
- ✓ Compiled in 1576ms (571 modules)
- ✓ Compiled in 1692ms (571 modules)
- ✓ Compiled in 1635ms (571 modules)
- ✓ Compiled in 1807ms (571 modules)
- ✓ Compiled in 1659ms (571 modules)
- ✓ Compiled in 1583ms (571 modules)
- ✓ Compiled in 1672ms (571 modules)
- ✓ Compiled in 1617ms (571 modules)
- ✓ Compiled in 1700ms (571 modules)
- ✓ Compiled in 1622ms (571 modules)
- ✓ Compiled in 1598ms (571 modules)
- ✓ Compiled in 2.7s (571 modules)
- ✓ Compiled in 1723ms (571 modules)
- ✓ Compiled in 1659ms (571 modules)
- ✓ Compiled in 1620ms (571 modules)
- ✓ Compiled in 1595ms (571 modules)
- ✓ Compiled in 1487ms (571 modules)
- ✓ Compiled in 1585ms (571 modules)
- ✓ Compiled in 1660ms (571 modules)
- ✓ Compiled in 1588ms (571 modules)
- ✓ Compiled in 1562ms (571 modules)
+> donjon-intelligence-systems@0.1.0 dev
+> node --max-old-space-size=8192 dev-server.js
+
+🚀 Starting optimized dev server...
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\clayb\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\package-lock.json
+
+✅ Next.js app prepared
+🎉 Ready on http://localhost:3000
+ ○ Compiling /middleware ...
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled /middleware in 7s (1248 modules)
+ HEAD / 200 in 8256ms
+ GET / 200 in 8242ms
+ ✓ Compiled in 3s (423 modules)
+ ✓ Compiled in 960ms (423 modules)
+ ✓ Compiled in 736ms (423 modules)
+ ✓ Compiled in 688ms (423 modules)
+ ✓ Compiled in 706ms (423 modules)
+ ✓ Compiled in 797ms (423 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1212ms (1029 modules)
+ GET / 404 in 1851ms
+ ✓ Compiled in 1035ms (424 modules)
+ GET / 200 in 427ms
+ GET / 200 in 354ms
+ ✓ Compiled in 878ms (424 modules)
+ ✓ Compiled in 591ms (424 modules)
+ ✓ Compiled in 796ms (424 modules)
+ ✓ Compiled in 865ms (424 modules)
+ ✓ Compiled in 1263ms (424 modules)
+ ✓ Compiled in 921ms (424 modules)
+ ✓ Compiled in 968ms (424 modules)
+ ✓ Compiled in 1606ms (424 modules)
+ ✓ Compiled in 1118ms (424 modules)
+ ✓ Compiled in 1019ms (424 modules)
+ ✓ Compiled in 1128ms (424 modules)
+ GET / 200 in 503ms
+ ○ Compiling /services ...
+ ✓ Compiled /services in 2.4s (1034 modules)
+ GET /services/ 200 in 2396ms
+ ✓ Compiled in 1352ms (424 modules)
+ ✓ Compiled in 806ms (424 modules)
+ ✓ Compiled in 685ms (424 modules)
+ ✓ Compiled in 674ms (424 modules)
+ ✓ Compiled in 1080ms (424 modules)
+ ✓ Compiled in 883ms (424 modules)
+ ✓ Compiled in 1239ms (424 modules)
+ ✓ Compiled in 778ms (424 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 751ms (619 modules)
+ GET / 404 in 1690ms
+ GET / 404 in 1804ms
+ ✓ Compiled in 1596ms (424 modules)
+ ✓ Compiled in 792ms (424 modules)
+ ✓ Compiled in 504ms (424 modules)
+ ✓ Compiled in 775ms (424 modules)
+ ✓ Compiled in 459ms (424 modules)
+ ✓ Compiled in 808ms (424 modules)
+ ✓ Compiled in 1001ms (424 modules)
+ ✓ Compiled in 638ms (424 modules)
+ ✓ Compiled in 705ms (424 modules)
+ ✓ Compiled in 730ms (424 modules)
+ ✓ Compiled in 687ms (424 modules)
+ ✓ Compiled in 727ms (424 modules)
+ ✓ Compiled in 521ms (424 modules)
+ ✓ Compiled in 726ms (424 modules)
+ ✓ Compiled in 568ms (424 modules)
+ ✓ Compiled in 925ms (424 modules)
+ ✓ Compiled in 743ms (424 modules)
+ ✓ Compiled in 627ms (424 modules)
+ ✓ Compiled in 1201ms (424 modules)
+ ✓ Compiled in 663ms (424 modules)
+ ✓ Compiled in 862ms (424 modules)
+ ✓ Compiled in 830ms (424 modules)
+ ✓ Compiled in 583ms (424 modules)
+ ✓ Compiled in 832ms (424 modules)
+ ✓ Compiled in 804ms (424 modules)
+ ✓ Compiled in 636ms (424 modules)
+ ✓ Compiled in 843ms (424 modules)
+ ✓ Compiled in 827ms (424 modules)
+ ✓ Compiled in 1080ms (424 modules)
+ ✓ Compiled in 943ms (424 modules)
+ ✓ Compiled in 738ms (424 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 792ms (424 modules)
+ ✓ Compiled in 792ms (424 modules)
+ ✓ Compiled in 982ms (424 modules)
+ ✓ Compiled in 889ms (424 modules)
+ ✓ Compiled in 974ms (424 modules)
+ ✓ Compiled in 986ms (424 modules)
+ ✓ Compiled in 821ms (424 modules)
+ ✓ Compiled in 1102ms (424 modules)
+ ✓ Compiled in 1056ms (424 modules)
+ ✓ Compiled in 891ms (424 modules)
+ ✓ Compiled in 1188ms (424 modules)
+ ✓ Compiled in 3.5s (424 modules)
+ ✓ Compiled in 2.3s (424 modules)
+ ✓ Compiled in 2.7s (424 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 2.5s (424 modules)
+ ✓ Compiled in 3.2s (416 modules)
+ ✓ Compiled in 2.7s (416 modules)
+ ✓ Compiled in 2.2s (416 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 2.8s (416 modules)
+ ✓ Compiled in 2.2s (416 modules)
+ ✓ Compiled in 3.5s (416 modules)
+ ✓ Compiled in 2.7s (416 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\1.pack.gz'
+ ✓ Compiled in 3.6s (416 modules)
+ ✓ Compiled in 3.6s (416 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'

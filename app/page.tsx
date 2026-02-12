@@ -22,6 +22,12 @@ const platforms = [
     href: "/platforms/servicepro",
     externalUrl: "https://cleanmachinetulsa.com/dashboard",
   },
+  {
+    name: "Know-Defeat",
+    tagline: "Algorithmic trading system with probability-driven execution",
+    href: "/platforms/know-defeat",
+    externalUrl: "https://github.com/claybowl/Know-Defeat",
+  },
 ] as const
 
 export default function Home() {
@@ -71,22 +77,22 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
             <Button size="lg" className="bg-sky-500 hover:bg-sky-400 text-black font-bold group" asChild>
-              <Link href="/services">
+              <Link href="/services" className="flex items-center">
                 <Rocket className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                Explore Services
+                <span>Explore Services</span>
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-white/10 text-white hover:bg-white/5 group" asChild>
-              <Link href="/consultation">
+              <Link href="/consultation" className="flex items-center">
                 <Calendar className="mr-2 h-4 w-4" />
-                Schedule Consultation
+                <span>Schedule Consultation</span>
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-sky-500/30 text-sky-400 hover:bg-sky-500/10 group" asChild>
-              <Link href="/login">
+              <Link href="/login" className="flex items-center">
                 <Shield className="mr-2 h-4 w-4" />
-                Log In
+                <span>Log In</span>
               </Link>
             </Button>
           </div>
@@ -192,9 +198,9 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-sky-500 hover:bg-sky-400 text-black font-bold" asChild>
-              <Link href="/consultation">
+              <Link href="/consultation" className="flex items-center">
                 <Calendar className="mr-2 h-5 w-5" />
-                Schedule Free Consultation
+                <span>Schedule Free Consultation</span>
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-sky-500/50 text-sky-400 hover:bg-sky-500/10" asChild>

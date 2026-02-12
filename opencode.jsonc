@@ -11,13 +11,14 @@
       "type": "local"
     },
     "notion": {
-      "type": "remote",
       "enabled": true,
-      "url": "https://mcp.notion.com/mcp",
-      "oauth": {}
+      "oauth": {},
+      "type": "remote",
+      "url": "https://mcp.notion.com/mcp"
     }
   },
   "plugin": [
     "opencode-scheduler"
-  ]
+  ],
+  "model": "google/antigravity-gemini-3-flash"
 }

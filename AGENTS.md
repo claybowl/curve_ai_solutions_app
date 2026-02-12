@@ -1,335 +1,210 @@
 # AGENT CODING GUIDE
 
-**For:** AI coding agents operating in this repository  
-**Updated:** 2026-01-24  
-**Stack:** Next.js 14 App Router, Supabase Auth, Neon PostgreSQL, Tailwind CSS
+**Stack:** Next.js 15.5.7, TypeScript, Supabase Auth, Neon PostgreSQL, Tailwind CSS, shadcn/ui
 
 ---
 
 ## COMMANDS
 
 ```bash
-# Development
-npm run dev        # Dev server (localhost:3000) - custom dev-server.js with 8GB heap
-npm run build      # Production build (NOTE: build errors suppressed - see KNOWN ISSUES)
-npm run start      # Production server
-npm run lint       # ESLint (NOTE: lint errors suppressed during builds)
-
-# Utilities
-npm run sync-stripe  # Sync Stripe products (scripts/sync-stripe-products.js)
+npm run dev          # Dev server (localhost:3000) with 8GB heap
+npm run build        # Production build (errors suppressed - see below)
+npm run start        # Production server
+npm run lint         # ESLint
+npm run sync-stripe  # Sync Stripe products
 ```
 
 **Testing:** No test framework configured. Zero automated tests.
 
 ---
 
-## CODE STYLE CONVENTIONS
+## CODE STYLE
 
 ### Import Order
-
 ```typescript
-// 1. React/Next.js core (if needed)
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+// 1. React/Next
+import { useState } from "react"
 
-// 2. Third-party libraries
+// 2. Third-party
 import { z } from "zod"
 
-// 3. Internal utilities/libs (@ alias)
-import { getCurrentUserServer, requireAdmin } from "@/lib/supabase-server"
-import { sql } from "@/lib/db"
+// 3. Internal utilities (@/*)
 import { cn } from "@/lib/utils"
+import { sql } from "@/lib/db"
 
-// 4. Components (@ alias)
+// 4. Components (@/*)
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 
-// 5. Types (use "import type" for type-only imports)
-import type { UserProfile, UserSummary } from "@/types/users"
-```
-
-### TypeScript Conventions
-
-**Interfaces vs Types:**
-- Use `interface` for object shapes (default pattern in codebase)
-- Use `type` for unions, intersections, primitives
-
-**Type Imports:**
-```typescript
-// ✅ Correct - separate type imports
+// 5. Types (use "import type")
 import type { UserProfile } from "@/types/users"
-
-// ❌ Avoid - mixed imports
-import { UserProfile } from "@/types/users"
 ```
 
-**Props Typing:**
-```typescript
-// Components - use interface
-interface ComponentNameProps {
-  children?: ReactNode
-  className?: string  // Always optional, merge with cn()
-  onSubmit?: (data: FormData) => void
-}
+### Naming
+- **Files:** `kebab-case.tsx` (components), `*-actions.ts` (server actions)
+- **Components:** `PascalCase` (e.g., `UserCard`)
+- **Functions:** `camelCase`, verb prefix for actions (e.g., `getUserProfile`)
+- **Constants:** `UPPER_SNAKE_CASE`
 
-// Server actions - use Zod schemas + infer
-const userSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(2)
-})
-type UserInput = z.infer<typeof userSchema>
-```
+### TypeScript
+- Use `interface` for object shapes, `type` for unions
+- Separate type imports: `import type { X } from "..."`
+- Props interface always named `ComponentNameProps`
+- Always include optional `className?: string`, merge with `cn()`
 
-### Naming Conventions
+---
 
-**Files:**
-- Components: `kebab-case.tsx` (e.g., `assessment-form.tsx`)
-- Server actions: `*-actions.ts` (e.g., `user-actions.ts`)
-- Utilities: `kebab-case.ts` (e.g., `supabase-server.ts`)
-- Types: `kebab-case.ts` in `/types` (e.g., `users.ts`)
-
-**Functions:**
-- Components: `PascalCase` (e.g., `AssessmentForm`)
-- Server actions: `camelCase` with verb prefix (e.g., `getUserProfile`, `createAssessment`)
-- Utilities: `camelCase` (e.g., `getCurrentUserServer`, `executeQuery`)
-
-**Variables:**
-- `camelCase` for variables (e.g., `userId`, `isSubmitting`)
-- `UPPER_SNAKE_CASE` for constants (e.g., `ADMIN_EMAIL_ALLOWLIST`)
-
-### Server Actions Pattern (MANDATORY)
+## SERVER ACTIONS PATTERN
 
 ```typescript
 "use server"
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { getCurrentUserServer, requireAdmin } from "@/lib/supabase-server"
+import { requireAdmin } from "@/lib/supabase-server"
 import { sql } from "@/lib/db"
 
-// 1. Define Zod schema at top
-const inputSchema = z.object({
-  field: z.string().min(1)
-})
+const schema = z.object({ name: z.string().min(1) })
 
-// 2. Action function with validation + auth + db + revalidate
-export async function myServerAction(data: FormData | Record<string, unknown>) {
+export async function createItem(data: FormData | Record<string, unknown>) {
   try {
-    // Auth check
     const user = await requireAdmin()
-    if (!user) {
-      return { success: false, error: "Unauthorized" }
-    }
+    if (!user) return { success: false, error: "Unauthorized" }
 
-    // Validate input
-    const validated = inputSchema.parse(
+    const validated = schema.parse(
       data instanceof FormData ? Object.fromEntries(data) : data
     )
 
-    // Database operation
     const result = await sql.query(
-      `INSERT INTO table (field) VALUES ($1) RETURNING *`,
-      [validated.field]
+      `INSERT INTO items (name) VALUES ($1) RETURNING *`,
+      [validated.name]
     )
 
-    // Revalidate paths
-    revalidatePath('/admin/path')
-    
+    revalidatePath('/admin/items')
     return { success: true, data: result.rows[0] }
   } catch (error) {
-    console.error("Error in myServerAction:", error)
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error" 
-    }
+    console.error("createItem error:", error)
+    return { success: false, error: error instanceof Error ? error.message : "Failed" }
   }
 }
 ```
 
-**Key Rules:**
+**Rules:**
 - Always return `{ success: boolean, data?: T, error?: string }`
 - NEVER throw to client - catch all errors
-- Call `revalidatePath()` after mutations
-- Use parameterized queries only: `sql.query(query, params)`
+- Use parameterized queries only (`sql.query(query, params)`)
+- NEVER use `redirect()` inside try/catch (it throws internally)
 
-### Component Pattern
+---
+
+## COMPONENT PATTERN
 
 ```typescript
 "use client" // Only if using hooks/router/browser APIs
 
-import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface MyComponentProps {
   title: string
-  onAction?: () => void
   className?: string
 }
 
-export function MyComponent({ title, onAction, className }: MyComponentProps) {
+export function MyComponent({ title, className }: MyComponentProps) {
   const [state, setState] = useState(false)
-
   return (
     <div className={cn("glass-panel p-6", className)}>
       <h2>{title}</h2>
-      <Button onClick={onAction}>Action</Button>
     </div>
   )
 }
-
-// Export as default if page component
-// export default MyComponent
 ```
-
-### Error Handling
-
-**Server Actions:**
-```typescript
-try {
-  // operation
-  return { success: true, data }
-} catch (error) {
-  console.error("Context:", error)
-  return { success: false, error: "User-friendly message" }
-}
-```
-
-**Client Components:**
-```typescript
-try {
-  const result = await serverAction(data)
-  if (!result.success) {
-    toast.error(result.error)
-    return
-  }
-  // Success path
-} catch (error) {
-  console.error("Unexpected error:", error)
-  toast.error("Something went wrong")
-}
-```
-
-### Database Queries
-
-```typescript
-import { sql } from "@/lib/db"
-
-// ✅ Correct - parameterized
-const result = await sql.query(
-  `SELECT * FROM users WHERE email = $1`,
-  [email]
-)
-
-// ❌ NEVER - SQL injection risk
-const result = await sql.query(
-  `SELECT * FROM users WHERE email = '${email}'`
-)
-```
-
-### Donjon Design System
-
-**CSS Classes (use these, don't reinvent):**
-- `glass-panel` - Frosted glass card with backdrop blur
-- `glass-panel-solid` - Solid glass with less transparency
-- `data-card` - Interactive card with hover lift effect
-- `fira-label` - Monospace tech labels (font-mono text-xs)
-- `neon-line` - Glowing divider line
-- `tech-tag tech-tag-{sky|emerald|indigo|violet|pink|amber}` - Colored tags
-
-**Colors:**
-- Background: `bg-[#030712]`, `bg-slate-900`
-- Text: `text-slate-50`, `text-slate-400`
-- Accents: `sky-400`, `sky-500` (primary), `emerald-400` (success)
-- Borders: `border-white/10`, `border-sky-500/30`
 
 ---
 
 ## PROJECT STRUCTURE
 
 ```
-curve_ai_solutions_app/
-├── app/                    # Next.js App Router
-│   ├── actions/            # Server actions (see app/actions/AGENTS.md)
-│   ├── admin/              # Admin dashboard pages
-│   └── api/                # API routes (minimal - prefer server actions)
-├── components/             # React components (see components/AGENTS.md)
-│   ├── ui/                 # Shadcn/ui primitives (DO NOT MODIFY)
-│   ├── admin/              # Admin-specific components
-│   └── donjon/             # Donjon design system components
-├── lib/                    # Core utilities (see lib/AGENTS.md)
-├── types/                  # TypeScript type definitions
-├── providers/              # React context providers (Supabase Auth)
-├── public/                 # Static assets
-└── supabase/               # DB migrations
+app/
+  actions/          # Server actions (see app/actions/AGENTS.md)
+  admin/            # Admin dashboard pages
+  api/              # API routes (minimal - prefer server actions)
+components/
+  ui/               # shadcn/ui primitives (DO NOT MODIFY)
+  admin/            # Admin components
+  donjon/           # Donjon design system
+lib/                # Utilities (see lib/AGENTS.md)
+types/              # TypeScript definitions
 ```
 
 ---
 
-## ANTI-PATTERNS (BLOCKING VIOLATIONS)
+## DESIGN SYSTEM
+
+**CSS Classes:**
+- `glass-panel` - Frosted glass card
+- `glass-panel-solid` - Less transparency
+- `data-card` - Interactive card with hover
+- `fira-label` - Monospace tech labels
+- `tech-tag-{sky|emerald|indigo|violet|pink|amber}` - Colored tags
+
+**Colors:**
+- Background: `bg-[#030712]`, `bg-slate-900`
+- Text: `text-slate-50`, `text-slate-400`
+- Accents: `sky-400`, `sky-500`, `emerald-400`
+- Borders: `border-white/10`, `border-sky-500/30`
+
+---
+
+## QUICK REFERENCE
+
+**Auth (Server):**
+```typescript
+import { getCurrentUserServer, requireAdmin, isUserAdmin } from "@/lib/supabase-server"
+```
+
+**Auth (Client):**
+```typescript
+import { signInWithEmail, signOut, signUpWithEmail } from "@/lib/supabase-client"
+```
+
+**Database:**
+```typescript
+import { sql } from "@/lib/db"
+const result = await sql.query(`SELECT * FROM users WHERE id = $1`, [id])
+```
+
+**Utils:**
+```typescript
+import { cn } from "@/lib/utils"  // Tailwind class merge
+```
+
+---
+
+## ANTI-PATTERNS (BLOCKING)
 
 **NEVER:**
 - Import from `*-old.ts`, `*-old-backup.tsx`, `middleware-old-UNSAFE.ts`
 - Suppress type errors with `as any`, `@ts-ignore`, `@ts-expect-error`
-- Modify files in `components/ui/` (Shadcn-managed)
+- Modify files in `components/ui/` (shadcn-managed)
 - Use inline SQL without parameters
 - Throw errors from server actions to client
-- Use `redirect()` inside try/catch (it throws internally)
-- Add code to files >500 lines without refactoring first
+- Use `redirect()` inside try/catch
+- Import from `db-v2.ts` (deprecated)
+- Use `getCurrentSupabaseUser()` (legacy)
 
 **AVOID:**
-- Importing from `db-v2.ts` (deprecated Supabase wrapper)
-- Using `getCurrentSupabaseUser()` (legacy - use `getCurrentUserServer()`)
+- Adding to files >500 lines without refactoring
 - Duplicating admin components between `admin/` and `admin-dashboard/`
 
 ---
 
 ## KNOWN ISSUES
 
-⚠️ **Build errors suppressed** - `next.config.mjs` has `ignoreBuildErrors: true`  
-⚠️ **No automated tests** - Zero test coverage, no test framework  
-⚠️ **Middleware incomplete** - Admin routes not fully protected  
-⚠️ **Complexity hotspots** - See files needing refactoring below
-
-**Files >500 lines (refactor before adding):**
-- `app/actions/assessment-actions.ts` (1143 lines)
-- `app/solutions/page.tsx` (894 lines)
-- `app/actions/tool-actions.ts` (801 lines)
-- `components/ui/sidebar.tsx` (763 lines)
+- Build errors suppressed (`ignoreBuildErrors: true` in `next.config.mjs`)
+- No automated tests
+- Files needing refactoring: `assessment-actions.ts` (1143L), `tool-actions.ts` (801L), `sidebar.tsx` (763L)
 
 ---
 
-## QUICK REFERENCE
-
-**Auth:**
-```typescript
-// Server-side
-import { getCurrentUserServer, requireAdmin, isUserAdmin } from "@/lib/supabase-server"
-const user = await getCurrentUserServer()
-const admin = await requireAdmin()
-const isAdmin = await isUserAdmin()
-
-// Client-side
-import { signInWithEmail, signOut, signUpWithEmail } from "@/lib/supabase-client"
-```
-
-**Database:**
-```typescript
-import { sql, executeQuery } from "@/lib/db"
-const result = await sql.query(`SELECT * FROM table WHERE id = $1`, [id])
-```
-
-**Utils:**
-```typescript
-import { cn } from "@/lib/utils"  // Tailwind class merge
-const className = cn("base-class", conditionalClass && "conditional", props.className)
-```
-
----
-
-**For detailed conventions in subdirectories, see:**
-- `app/actions/AGENTS.md` - Server actions patterns
-- `components/AGENTS.md` - Component conventions
-- `lib/AGENTS.md` - Utility exports
+**See also:** `app/actions/AGENTS.md`, `components/AGENTS.md`, `lib/AGENTS.md`

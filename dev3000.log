@@ -1,0 +1,59 @@
+
+> donjon-intelligence-systems@0.1.0 dev
+> node --max-old-space-size=8192 node_modules/next/dist/bin/next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\clayb\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\package-lock.json
+
+   ▲ Next.js 15.5.9
+   - Local:        http://localhost:3000
+   - Network:      http://100.83.175.76:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 4.4s
+ ○ Compiling / ...
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled / in 41.6s (1043 modules)
+ ✓ Compiled in 10.7s (415 modules)
+ ✓ Compiled in 867ms (415 modules)
+ GET / 200 in 281ms
+ ✓ Compiled in 1100ms (415 modules)
+ ✓ Compiled in 908ms (415 modules)
+ ✓ Compiled in 740ms (415 modules)
+ GET / 200 in 224ms
+ ✓ Compiled in 811ms (415 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\1.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\1.pack.gz'
+ ✓ Compiled in 878ms (415 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 1037ms (415 modules)
+ ✓ Compiled in 908ms (415 modules)
+ ✓ Compiled in 1095ms (415 modules)
+ ✓ Compiled in 904ms (415 modules)
+ ✓ Compiled in 992ms (415 modules)
+ ✓ Compiled in 704ms (415 modules)
+ ✓ Compiled in 1213ms (415 modules)
+ ✓ Compiled in 1142ms (415 modules)
+ ✓ Compiled in 1068ms (415 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 1133ms (415 modules)
+ ✓ Compiled in 937ms (415 modules)
+ ✓ Compiled in 910ms (415 modules)
+ ✓ Compiled in 854ms (415 modules)
+ ✓ Compiled in 1548ms (415 modules)
+ ✓ Compiled in 1418ms (415 modules)
+ ✓ Compiled in 1078ms (415 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'
+ ✓ Compiled in 922ms (415 modules)
+ ✓ Compiled in 1690ms (415 modules)
+ ✓ Compiled in 4.4s (415 modules)
+ ✓ Compiled in 816ms (415 modules)
+ ✓ Compiled in 879ms (415 modules)
+ ✓ Compiled in 1359ms (415 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz_' -> 'C:\Users\clayb\OneDrive\Documents\GitHub\curve_ai_solutions_app\.next\cache\webpack\client-development\0.pack.gz'

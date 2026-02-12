@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
+import { toast } from 'sonner';
 import {
   Bot,
   Calendar,
@@ -17,7 +18,8 @@ import {
   Zap,
   BarChart3,
   Target,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 
 // Types
@@ -108,23 +110,44 @@ const INITIAL_ASSUMPTIONS: ModelAssumptions = {
 const PRODUCTS_CONFIG: ProductCategory[] = [
   {
     name: 'ServicePro AI Platform',
-    description: 'Bundled packages for complete digital transformation.',
+    description: 'Quick Close packages or SaaS subscription for complete digital transformation.',
     selectionType: 'single',
     products: [
-      { id: 'solo', name: 'SOLO Package', description: 'Website, AI chatbot, booking, database, email/SMS, Google integrations.', priceOneTime: 1299, priceMonthly: 29, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
-      { id: 'crew', name: 'CREW Package', description: 'Everything in SOLO + multi-user, unlimited customers, invoicing, payments.', priceOneTime: 2499, priceMonthly: 59, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
-      { id: 'fleet', name: 'FLEET Package', description: 'Everything in CREW + multi-location, route optimization, full CRM, API.', priceOneTime: 3999, priceMonthly: 99, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
+      { id: 'solo-saas', name: 'SOLO (SaaS)', description: 'Website, AI chatbot, booking, database, email/SMS, Google integrations. SaaS from $49/mo.', priceOneTime: 0, priceMonthly: 49, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
+      { id: 'solo-package', name: 'SOLO Package', description: 'Website, AI chatbot, booking, database, email/SMS, Google integrations. Quick Close: $1,299 + $29/mo.', priceOneTime: 1299, priceMonthly: 29, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
+      { id: 'crew-package', name: 'CREW Package', description: 'Everything in SOLO + multi-user accounts, unlimited customers, invoicing & payments. $2,499 + $59/mo.', priceOneTime: 2499, priceMonthly: 59, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
+      { id: 'fleet-package', name: 'FLEET Package', description: 'Everything in CREW + multi-location, route optimization, full CRM, API. $3,999 + $99/mo.', priceOneTime: 3999, priceMonthly: 99, gains: ['timeSavings', 'callsCaptured', 'noShowReduction', 'conversionLift', 'afterHoursBookings'] },
     ]
   },
   {
-    name: 'A La Carte Tools',
-    description: 'Select individual tools when you only need one piece of the puzzle.',
+    name: 'Donjon AiGency Suite',
+    description: 'Complete AI Agent Platform for building and orchestrating AI agents.',
+    selectionType: 'single',
+    products: [
+      { id: 'aigency-monthly', name: 'AiGency Suite (Monthly)', description: 'Knowledge Studio, AiGency Workbench, and AiPex Platform. From $199/mo.', priceOneTime: 0, priceMonthly: 199, gains: ['timeSavings', 'callsCaptured', 'conversionLift', 'afterHoursBookings'] },
+      { id: 'aigency-pilot', name: 'AiGency Pilot Program', description: 'Pilot program with $2,500 setup + $199/mo. Includes onboarding and initial configuration.', priceOneTime: 2500, priceMonthly: 199, gains: ['timeSavings', 'callsCaptured', 'conversionLift', 'afterHoursBookings'] },
+    ]
+  },
+  {
+    name: 'Automation Workflows',
+    description: 'Pre-built automation workflow templates you can deploy immediately.',
     selectionType: 'multiple',
     products: [
-      { id: 'chatbot', name: 'AI Chatbot', description: '24/7 lead capture, FAQs, warm hand-offs.', priceOneTime: 0, priceMonthly: 49, gains: ['callsCaptured', 'conversionLift', 'afterHoursBookings'] },
-      { id: 'booking', name: 'Booking System', description: 'Self-serve scheduling, reminders, calendar sync.', priceOneTime: 0, priceMonthly: 39, gains: ['timeSavings', 'noShowReduction'] },
-      { id: 'crm', name: 'Simple CRM', description: 'Pipeline tracking, customer notes, follow-ups.', priceOneTime: 0, priceMonthly: 59, gains: ['conversionLift'] },
-      { id: 'analytics', name: 'Analytics Dashboard', description: 'Dashboards for leads, bookings, revenue, and ROI.', priceOneTime: 0, priceMonthly: 29, gains: [] },
+      { id: 'workflow-lead', name: 'Lead Qualification Workflow', description: 'Automatically qualify leads, enrich data, and route to sales. One-time $299.', priceOneTime: 299, priceMonthly: 0, gains: ['conversionLift'] },
+      { id: 'workflow-support', name: 'Customer Support Workflow', description: 'Handle common queries and escalate complex issues. One-time $399.', priceOneTime: 399, priceMonthly: 0, gains: ['timeSavings', 'callsCaptured'] },
+      { id: 'workflow-content', name: 'Content Pipeline', description: 'Automate content creation, scheduling, and distribution. One-time $349.', priceOneTime: 349, priceMonthly: 0, gains: ['timeSavings'] },
+      { id: 'workflow-sync', name: 'Data Sync Orchestrator', description: 'Keep systems in sync with intelligent data flow. One-time $249.', priceOneTime: 249, priceMonthly: 0, gains: ['timeSavings'] },
+    ]
+  },
+  {
+    name: 'A La Carte Services',
+    description: 'Individual services when you need something specific.',
+    selectionType: 'multiple',
+    products: [
+      { id: 'alc-automation', name: 'Automation Workflow Development', description: 'Custom workflow automation built to your specs. From $500.', priceOneTime: 500, priceMonthly: 0, gains: ['timeSavings'] },
+      { id: 'alc-api', name: 'API Integration', description: 'Connect your tools with robust integrations. From $300.', priceOneTime: 300, priceMonthly: 0, gains: ['timeSavings'] },
+      { id: 'alc-database', name: 'Database Design', description: 'Schema design, optimization, and migration. From $400.', priceOneTime: 400, priceMonthly: 0, gains: [] },
+      { id: 'alc-ecommerce', name: 'E-Commerce Setup', description: 'Full e-commerce store with payments and inventory. From $1,500.', priceOneTime: 1500, priceMonthly: 0, gains: ['conversionLift'] },
     ]
   }
 ];
@@ -154,7 +177,7 @@ const ASSUMPTION_CONFIG = [
 export default function ROICalculatorPage() {
   const [inputs, setInputs] = useState<CalculatorInputs>(INITIAL_INPUTS);
   const [assumptions, setAssumptions] = useState<ModelAssumptions>(INITIAL_ASSUMPTIONS);
-  const [selectedIds, setSelectedIds] = useState<string[]>(['crew']);
+  const [selectedIds, setSelectedIds] = useState<string[]>(['crew-package']);
   const [businessType, setBusinessType] = useState('a small auto detailing shop');
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -307,10 +330,10 @@ export default function ROICalculatorPage() {
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-cyan-400">
-            ServicePro ROI Calculator
+            Donjon Systems ROI Calculator
           </h1>
           <p className="mt-4 text-slate-400 max-w-2xl mx-auto">
-            Build a solution to see the real cost of your current system and the immediate impact of automation.
+            Build a solution to see the real cost of your current system and the immediate impact of AI automation.
           </p>
         </header>
 
@@ -565,10 +588,10 @@ export default function ROICalculatorPage() {
               </CardContent>
             </Card>
 
-            {/* ServicePro Gains */}
+            {/* AI Automation Gains */}
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader>
-                <CardTitle className="text-xl text-green-400">ServicePro Impact Gains</CardTitle>
+                <CardTitle className="text-xl text-green-400">AI Automation Impact Gains</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -640,13 +663,13 @@ export default function ROICalculatorPage() {
                     you're losing approximately {formatCurrency(results.totalCurrentCost)} per month due to inefficiencies.
                   </p>
                   <p className="text-slate-300 mt-3 leading-relaxed">
-                    With ServicePro's automated scheduling, 24/7 call handling, and intelligent reminders,
+                    With Donjon's AI automation, 24/7 call handling, and intelligent workflows,
                     you could capture an additional {formatCurrency(results.totalMonthlyGain)} in monthly revenue,
                     resulting in a {results.roiPercentage.toFixed(0)}% ROI and payback in just {Math.round(results.paybackPeriodDays)} days.
                   </p>
                   <div className="mt-4 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
                     <p className="text-cyan-300 text-sm">
-                      <strong>Recommendation:</strong> The {PRODUCTS_CONFIG[0].products.find(p => p.id === selectedIds[0])?.name || 'selected package'}
+                      <strong>Recommendation:</strong> The {PRODUCTS_CONFIG.flatMap(cat => cat.products).find(p => selectedIds.includes(p.id))?.name || 'selected solution'}
                       offers the fastest path to positive ROI with comprehensive automation tools.
                     </p>
                   </div>
