@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Sparkles, Calendar, ExternalLink, Beaker, Wrench, Users, Rocket, MessageSquare, Shield } from "lucide-react"
+import { ArrowRight, Sparkles, Calendar, ExternalLink, Beaker, Wrench, Users, Rocket, MessageSquare, Shield, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -76,39 +76,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Button size="lg" className="bg-sky-500 hover:bg-sky-400 text-black font-bold group" asChild>
-              <Link href="/services" className="flex items-center">
-                <Rocket className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                <span>Explore Services</span>
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/10 text-white hover:bg-white/5 group" asChild>
-              <Link href="/consultation" className="flex items-center">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Schedule Consultation</span>
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-sky-500/30 text-sky-400 hover:bg-sky-500/10 group" asChild>
-              <Link href="/login" className="flex items-center">
-                <Shield className="mr-2 h-4 w-4" />
-                <span>Log In</span>
-              </Link>
-            </Button>
-          </div>
-        </div>
-        
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
-            <div className="w-1 h-2 bg-white/40 rounded-full animate-pulse" />
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-50 mb-4">Our Platforms</h2>
             <div className="neon-line mx-auto w-24 mb-4" />
             <p className="text-slate-400 max-w-2xl mx-auto">
               Three production-ready platforms solving real problems for real businesses.
@@ -141,6 +108,18 @@ export default function Home() {
                 </div>
               </Card>
             ))}
+          </div>
+          
+          {/* Documentation Highlight */}
+          <div className="mt-8 flex justify-center">
+            <Link 
+              href="/platforms/know-defeat/docs" 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00ffa3]/10 border border-[#00ffa3]/30 hover:border-[#00ffa3]/60 hover:bg-[#00ffa3]/20 transition-all text-[#00ffa3]"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span className="text-sm font-medium">Know-Defeat Documentation</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import {
   ArrowRight, BarChart3, Bot, Brain, Check, Code2, Cpu, Database,
   Github, Globe, Layers, LineChart, Lock, RefreshCw, Server, Shield,
-  Terminal, Timer, TrendingUp, Zap,
+  Terminal, Timer, TrendingUp, Zap, BookOpen,
 } from "lucide-react"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -135,6 +135,12 @@ export function KnowDefeatContent() {
                   View on GitHub
                 </Link>
               </Button>
+              <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-[#00ffa3]/50 hover:bg-[#00ffa3]/5 text-[#00ffa3]">
+                <Link href="/platforms/know-defeat/docs">
+                  <BookOpen className="mr-2 w-4 h-4" />
+                  Documentation
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -238,9 +244,11 @@ export function KnowDefeatContent() {
             <div className="md:w-1/3">
               <h2 className="text-3xl font-bold mb-6">Built for Scale</h2>
               <p className="text-[#94a3b8] mb-8">Enterprise-grade infrastructure designed for high-frequency data processing and low-latency execution.</p>
-              <Button variant="outline" className="border-white/10 hover:border-[#00d2ff]/50 hover:bg-[#00d2ff]/5">
-                <Code2 className="mr-2 w-4 h-4" />
-                View Documentation
+              <Button asChild variant="outline" className="border-white/10 hover:border-[#00d2ff]/50 hover:bg-[#00d2ff]/5">
+                <Link href="/platforms/know-defeat/docs">
+                  <BookOpen className="mr-2 w-4 h-4" />
+                  View Documentation
+                </Link>
               </Button>
             </div>
             <div className="md:w-2/3 grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -464,6 +472,12 @@ export function KnowDefeatContent() {
               <Link href="https://github.com/claybowl/Know-Defeat" target="_blank">
                 <Github className="mr-2 w-5 h-5" />
                 View on GitHub
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-[#00ffa3]/30 hover:border-[#00ffa3]/50 hover:bg-[#00ffa3]/5 text-[#00ffa3] h-12 px-8 text-lg">
+              <Link href="/platforms/know-defeat/docs">
+                <BookOpen className="mr-2 w-5 h-5" />
+                Documentation
               </Link>
             </Button>
           </div>
