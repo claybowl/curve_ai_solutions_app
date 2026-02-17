@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Sparkles, Calendar, ExternalLink, Beaker, Wrench, Users, Rocket, MessageSquare, Shield, BookOpen } from "lucide-react"
+import { ArrowRight, Sparkles, Calendar, ExternalLink, Beaker, Wrench, Users, Rocket, MessageSquare, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -82,7 +82,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {platforms.map((platform) => (
               <Card key={platform.name} className="glass-panel border-white/10 hover:border-sky-500/50 transition-all duration-300 group">
                 <CardHeader>
@@ -110,17 +110,7 @@ export default function Home() {
             ))}
           </div>
           
-          {/* Documentation Highlight */}
-          <div className="mt-8 flex justify-center">
-            <Link 
-              href="/platforms/know-defeat/docs" 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#00ffa3]/10 border border-[#00ffa3]/30 hover:border-[#00ffa3]/60 hover:bg-[#00ffa3]/20 transition-all text-[#00ffa3]"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span className="text-sm font-medium">Know-Defeat Documentation</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+
         </div>
       </section>
 
